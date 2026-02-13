@@ -4,6 +4,7 @@ import * as React from "react";
 import { motion } from "framer-motion";
 import { Section } from "@/components/ui/section";
 import { ContactForm } from "@/components/sections/contact-form";
+import { useLocale } from "@/lib/i18n";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -26,9 +27,10 @@ const staggerItem = {
 };
 
 export default function ContactPage() {
+  const { t } = useLocale();
+
   return (
     <main>
-      {/* Hero Section */}
       <Section variant="cream">
         <motion.div
           className="text-center max-w-4xl mx-auto"
@@ -37,17 +39,14 @@ export default function ContactPage() {
           variants={fadeInUp}
         >
           <h1 className="text-6xl md:text-7xl lg:text-8xl font-[family-name:var(--font-caveat)] font-bold text-charcoal mb-6">
-            Let's Talk About AI
+            {t.contactPage.title}
           </h1>
           <p className="text-xl md:text-2xl font-sans text-mid leading-relaxed">
-            Whether you're just starting your AI journey or looking to scale existing
-            solutions, we're here to help. Tell us about your project and we'll get back
-            to you within 24 hours.
+            {t.contactPage.subtitle}
           </p>
         </motion.div>
       </Section>
 
-      {/* Contact Form Section with staggered entrance */}
       <Section variant="white">
         <motion.div
           initial="initial"

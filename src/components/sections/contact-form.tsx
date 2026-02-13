@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
 import { validateEmail } from "@/lib/utils";
+import { useLocale } from "@/lib/i18n";
 
 interface FormData {
   name: string;
@@ -22,6 +23,7 @@ interface FormErrors {
 }
 
 export function ContactForm() {
+  const { t } = useLocale();
   const [formData, setFormData] = React.useState<FormData>({
     name: "",
     email: "",
@@ -38,11 +40,9 @@ export function ContactForm() {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error for this field when user starts typing
     if (errors[name as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
-    // Clear submit error
     if (submitError) {
       setSubmitError(null);
     }
@@ -52,17 +52,17 @@ export function ContactForm() {
     const newErrors: FormErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
+      newErrors.name = t.contactForm.nameRequired;
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
+      newErrors.email = t.contactForm.emailRequired;
     } else if (!validateEmail(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
+      newErrors.email = t.contactForm.emailInvalid;
     }
 
     if (!formData.message.trim()) {
-      newErrors.message = "Message is required";
+      newErrors.message = t.contactForm.messageRequired;
     }
 
     setErrors(newErrors);
@@ -97,9 +97,7 @@ export function ContactForm() {
       setIsSuccess(true);
     } catch (error) {
       console.error("Form submission error:", error);
-      setSubmitError(
-        "Something went wrong. Please try again or email us directly."
-      );
+      setSubmitError(t.contactForm.submitError);
     } finally {
       setIsSubmitting(false);
     }
@@ -139,13 +137,13 @@ export function ContactForm() {
             </div>
           </div>
           <h2 className="text-3xl font-sans font-semibold text-charcoal mb-4">
-            Thank You!
+            {t.contactForm.thankYou}
           </h2>
           <p className="text-lg font-sans text-mid mb-8">
-            We've received your message and will get back to you within 24 hours.
+            {t.contactForm.successMessage}
           </p>
           <Button onClick={handleReset} variant="outline">
-            Send Another Message
+            {t.contactForm.sendAnother}
           </Button>
         </CardContent>
       </Card>
@@ -155,46 +153,46 @@ export function ContactForm() {
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Get in Touch</CardTitle>
+        <CardTitle>{t.contactForm.heading}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <Input
-            label="Name"
+            label={t.contactForm.nameLabel}
             name="name"
             value={formData.name}
             onChange={handleChange}
             error={errors.name}
-            placeholder="Your name"
+            placeholder={t.contactForm.namePlaceholder}
             required
           />
 
           <Input
-            label="Email"
+            label={t.contactForm.emailLabel}
             name="email"
             type="email"
             value={formData.email}
             onChange={handleChange}
             error={errors.email}
-            placeholder="you@company.com"
+            placeholder={t.contactForm.emailPlaceholder}
             required
           />
 
           <Input
-            label="Company"
+            label={t.contactForm.companyLabel}
             name="company"
             value={formData.company}
             onChange={handleChange}
-            placeholder="Your company (optional)"
+            placeholder={t.contactForm.companyPlaceholder}
           />
 
           <Textarea
-            label="Message"
+            label={t.contactForm.messageLabel}
             name="message"
             value={formData.message}
             onChange={handleChange}
             error={errors.message}
-            placeholder="Tell us about your project or question..."
+            placeholder={t.contactForm.messagePlaceholder}
             rows={6}
             required
           />
@@ -206,7 +204,7 @@ export function ContactForm() {
           )}
 
           <Button type="submit" loading={isSubmitting} className="w-full">
-            Send Message
+            {t.contactForm.sendMessage}
           </Button>
         </form>
       </CardContent>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { inter, caveat } from "@/lib/fonts";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
+import { LocaleProvider } from "@/lib/i18n";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -31,11 +32,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${caveat.variable}`}>
+    <html lang="it" className={`${inter.variable} ${caveat.variable}`}>
       <body>
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+        <LocaleProvider>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+        </LocaleProvider>
       </body>
     </html>
   );

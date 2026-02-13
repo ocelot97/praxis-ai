@@ -12,36 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/section";
-
-const solutions = [
-  {
-    title: "AI Customer Agents",
-    description: "24/7 intelligent chatbots that understand context and learn from every interaction.",
-    features: [
-      "Multi-language support",
-      "CRM integration",
-      "Self-learning capabilities",
-    ],
-  },
-  {
-    title: "Document Intelligence",
-    description: "Automated extraction and processing of data from documents with industry-leading accuracy.",
-    features: [
-      "95%+ accuracy rate",
-      "Multiple format support",
-      "API access",
-    ],
-  },
-  {
-    title: "Workflow Automation",
-    description: "No-code AI-powered process automation that adapts to your business needs.",
-    features: [
-      "Visual workflow builder",
-      "Pre-built templates",
-      "Easy integration",
-    ],
-  },
-];
+import { useLocale } from "@/lib/i18n";
 
 const container = {
   hidden: { opacity: 0 },
@@ -59,11 +30,13 @@ const item = {
 };
 
 export function SolutionsShowcase() {
+  const { t } = useLocale();
+
   return (
     <Section variant="white">
       <div className="text-center mb-12">
         <h2 className="text-3xl md:text-4xl lg:text-5xl font-sans font-bold text-charcoal">
-          Featured Solutions
+          {t.solutionsShowcase.heading}
         </h2>
       </div>
 
@@ -74,8 +47,8 @@ export function SolutionsShowcase() {
         viewport={{ once: true, margin: "-100px" }}
         className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
       >
-        {solutions.map((solution) => (
-          <motion.div key={solution.title} variants={item}>
+        {t.solutionsShowcase.items.map((solution, index) => (
+          <motion.div key={index} variants={item}>
             <Card className="h-full hover:shadow-soft-lg transition-shadow duration-300">
               <CardHeader>
                 <CardTitle>{solution.title}</CardTitle>
@@ -83,8 +56,8 @@ export function SolutionsShowcase() {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-3">
-                  {solution.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3">
+                  {solution.features.map((feature, fIdx) => (
+                    <li key={fIdx} className="flex items-start gap-3">
                       <svg
                         className="w-5 h-5 text-terracotta flex-shrink-0 mt-0.5"
                         fill="currentColor"
@@ -111,7 +84,7 @@ export function SolutionsShowcase() {
       <div className="text-center">
         <Link href="/solutions">
           <Button variant="outline" size="lg">
-            View All Solutions
+            {t.solutionsShowcase.viewAll}
           </Button>
         </Link>
       </div>
