@@ -29,11 +29,12 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Protect /demo routes (except /demo/login)
+  // Protect /demo routes (except /demo/login and /demo/previews static assets)
   if (
     !user &&
     request.nextUrl.pathname.startsWith("/demo") &&
-    !request.nextUrl.pathname.startsWith("/demo/login")
+    !request.nextUrl.pathname.startsWith("/demo/login") &&
+    !request.nextUrl.pathname.startsWith("/demo/previews")
   ) {
     const url = request.nextUrl.clone();
     url.pathname = "/demo/login";
