@@ -1,0 +1,3 @@
+[submodule "remotion-video"]
+	path = remotion-video
+	url = https://github.com/ocelot97/praxis-ai-remotion.git

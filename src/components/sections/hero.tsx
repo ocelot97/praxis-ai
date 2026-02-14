@@ -11,6 +11,7 @@ import {
   animate,
 } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { VideoBackground } from "@/components/ui/video-background";
 import { useLocale } from "@/lib/i18n";
 
 function CountUp({ target, suffix = "" }: { target: number; suffix?: string }) {
@@ -151,8 +152,15 @@ export function Hero() {
       ref={sectionRef}
       className="relative overflow-hidden bg-gradient-to-b from-cream via-cream-light to-white min-h-[90vh] flex items-center"
     >
-      <div className="absolute top-20 left-10 w-96 h-96 bg-terracotta/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 right-10 w-80 h-80 bg-terracotta-light/5 rounded-full blur-3xl" />
+      <VideoBackground
+        webm="/videos/hero-ambient.webm"
+        mp4="/videos/hero-ambient.mp4"
+        poster="/videos/hero-ambient-poster.jpeg"
+        className="z-0"
+      />
+
+      <div className="absolute top-20 left-10 w-96 h-96 bg-terracotta/5 rounded-full blur-3xl z-[1]" />
+      <div className="absolute bottom-20 right-10 w-80 h-80 bg-terracotta-light/5 rounded-full blur-3xl z-[1]" />
 
       <HeroIllustration parallaxY={illustrationY} />
 

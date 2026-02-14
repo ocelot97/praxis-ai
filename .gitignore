@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# rendered video artifacts
+public/videos/*.mp4
+public/videos/*.webm

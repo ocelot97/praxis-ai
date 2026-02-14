@@ -3,6 +3,7 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import { Section } from "@/components/ui/section";
+import { VideoBackground } from "@/components/ui/video-background";
 import { useLocale } from "@/lib/i18n";
 
 const stepNumbers = ["01", "02", "03"];
@@ -46,8 +47,15 @@ export function Process() {
   const { t } = useLocale();
 
   return (
-    <Section variant="cream">
-      <div className="text-center mb-16">
+    <Section variant="cream" className="relative overflow-hidden">
+      <VideoBackground
+        webm="/videos/process-weave.webm"
+        mp4="/videos/process-weave.mp4"
+        poster="/videos/process-weave-poster.jpeg"
+        overlay="bg-cream/40"
+        className="z-0"
+      />
+      <div className="relative z-10 text-center mb-16">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -59,7 +67,7 @@ export function Process() {
         </motion.h2>
       </div>
 
-      <div className="max-w-4xl mx-auto relative">
+      <div className="max-w-4xl mx-auto relative z-10">
         <TimelineCurve />
 
         {t.process.steps.map((step, index) => (
