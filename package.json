@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "demo": "npx serve public/demo -l 4000"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",

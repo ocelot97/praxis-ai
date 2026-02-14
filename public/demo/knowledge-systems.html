@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Praxis AI — Knowledge Systems Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --terracotta: #C15F3C;
+  --terracotta-light: rgba(193, 95, 60, 0.10);
+  --terracotta-mid: rgba(193, 95, 60, 0.25);
+  --cream: #F4F3EE;
+  --charcoal: #141413;
+  --mid: #b0aea5;
+  --border: #e8e6dc;
+  --white: #ffffff;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 3px rgba(20,20,19,0.04), 0 1px 2px rgba(20,20,19,0.06);
+  --shadow-md: 0 4px 12px rgba(20,20,19,0.06), 0 2px 4px rgba(20,20,19,0.04);
+  --shadow-lg: 0 12px 40px rgba(20,20,19,0.08), 0 4px 12px rgba(20,20,19,0.04);
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--charcoal);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Header ─── */
+.header {
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  background: var(--cream);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo {
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  font-size: 28px;
+  color: var(--charcoal);
+  letter-spacing: -0.5px;
+}
+
+.logo span {
+  color: var(--terracotta);
+}
+
+.header-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+}
+
+.header-subtitle {
+  font-size: 14px;
+  color: var(--mid);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.header-badge {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--terracotta);
+  background: var(--terracotta-light);
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--terracotta-mid);
+}
+
+/* ─── Main Layout ─── */
+.main-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px;
+  transition: max-width var(--transition), padding var(--transition);
+}
+
+.main-container.with-sidebar {
+  max-width: 1200px;
+}
+
+.content-wrapper {
+  display: flex;
+  gap: 32px;
+}
+
+.content-main {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── Search Section ─── */
+.search-section {
+  padding-top: 80px;
+  padding-bottom: 40px;
+  text-align: center;
+  transition: padding-top var(--transition);
+}
+
+.search-section.compact {
+  padding-top: 32px;
+  padding-bottom: 24px;
+}
+
+.search-headline {
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  font-size: 42px;
+  color: var(--charcoal);
+  margin-bottom: 8px;
+  transition: font-size var(--transition);
+}
+
+.search-section.compact .search-headline {
+  font-size: 28px;
+}
+
+.search-tagline {
+  font-size: 16px;
+  color: var(--mid);
+  margin-bottom: 32px;
+  transition: margin-bottom var(--transition), font-size var(--transition);
+}
+
+.search-section.compact .search-tagline {
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+/* ─── Search Bar ─── */
+.search-bar-container {
+  position: relative;
+  max-width: 680px;
+  margin: 0 auto 24px;
+}
+
+.search-bar {
+  width: 100%;
+  padding: 18px 56px 18px 52px;
+  font-size: 17px;
+  font-family: inherit;
+  color: var(--charcoal);
+  background: var(--white);
+  border: 2px solid var(--border);
+  border-radius: 60px;
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.search-bar::placeholder {
+  color: var(--mid);
+}
+
+.search-bar:focus {
+  border-color: var(--terracotta);
+  box-shadow: 0 0 0 4px var(--terracotta-light);
+}
+
+.search-icon {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--mid);
+  pointer-events: none;
+  transition: color var(--transition);
+}
+
+.search-bar:focus ~ .search-icon {
+  color: var(--terracotta);
+}
+
+.search-clear {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--mid);
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: background var(--transition), color var(--transition);
+}
+
+.search-clear.visible {
+  display: flex;
+}
+
+.search-clear:hover {
+  background: var(--terracotta-light);
+  color: var(--terracotta);
+}
+
+.powered-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--mid);
+  margin-top: 12px;
+  font-weight: 500;
+}
+
+.powered-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--terracotta);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+/* ─── Suggestions ─── */
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  max-width: 680px;
+  margin: 0 auto;
+  transition: opacity var(--transition);
+}
+
+.suggestions.hidden {
+  display: none;
+}
+
+.suggestion-chip {
+  padding: 9px 18px;
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 500;
+  color: var(--charcoal);
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 40px;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.suggestion-chip:hover {
+  border-color: var(--terracotta);
+  color: var(--terracotta);
+  background: var(--terracotta-light);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ─── Loading State ─── */
+.loading-container {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 0 32px;
+  animation: fadeIn 0.3s ease;
+}
+
+.loading-container.visible {
+  display: flex;
+}
+
+.loading-text {
+  font-size: 15px;
+  color: var(--mid);
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.loading-text span {
+  color: var(--charcoal);
+  font-weight: 600;
+}
+
+.progress-bar-track {
+  width: 320px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--terracotta), #d4845e);
+  border-radius: 4px;
+  transition: width 0.15s linear;
+}
+
+.loading-sources {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.loading-source-tag {
+  font-size: 11px;
+  color: var(--mid);
+  background: var(--white);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  opacity: 0;
+  animation: fadeInUp 0.3s ease forwards;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Results ─── */
+.results-container {
+  display: none;
+  padding-bottom: 60px;
+}
+
+.results-container.visible {
+  display: block;
+}
+
+/* AI Answer Card */
+.ai-answer-card {
+  position: relative;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 28px 28px 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(12px);
+  animation: slideUp 0.5s ease forwards;
+}
+
+.ai-answer-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--terracotta), #d4845e, var(--terracotta));
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.ai-answer-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--terracotta);
+  margin-bottom: 14px;
+}
+
+.ai-answer-label svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ai-answer-text {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--charcoal);
+  margin-bottom: 18px;
+}
+
+.ai-answer-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ai-sources-used {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ai-sources-label {
+  font-size: 12px;
+  color: var(--mid);
+  font-weight: 500;
+}
+
+.ai-source-badge {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--charcoal);
+  background: var(--cream);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+}
+
+.confidence-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #3d8b5e;
+}
+
+.confidence-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #3d8b5e;
+}
+
+/* Source Cards */
+.source-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.source-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  cursor: pointer;
+  transition: all var(--transition);
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.source-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.source-card:hover {
+  border-color: var(--terracotta-mid);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.source-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.source-card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.source-type-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.source-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.source-card-system {
+  font-size: 12px;
+  color: var(--mid);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.relevance-score {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--terracotta);
+  background: var(--terracotta-light);
+  padding: 4px 10px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+.source-excerpt {
+  font-size: 14px;
+  color: #555550;
+  line-height: 1.65;
+  margin-bottom: 10px;
+}
+
+.source-excerpt mark {
+  background: var(--terracotta-light);
+  color: var(--terracotta);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+.source-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.source-date {
+  font-size: 12px;
+  color: var(--mid);
+}
+
+.source-expand-btn {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--terracotta);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+  font-family: inherit;
+  transition: opacity var(--transition);
+}
+
+.source-expand-btn:hover {
+  opacity: 0.7;
+}
+
+/* Expanded excerpt */
+.source-expanded {
+  display: none;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 14px;
+  color: #555550;
+  line-height: 1.7;
+  animation: fadeIn 0.3s ease;
+}
+
+.source-expanded.visible {
+  display: block;
+}
+
+.source-expanded mark {
+  background: var(--terracotta-light);
+  color: var(--terracotta);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+/* ─── Sidebar ─── */
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  padding-top: 32px;
+  display: none;
+  opacity: 0;
+  animation: fadeIn 0.5s ease 0.6s forwards;
+}
+
+.sidebar.visible {
+  display: block;
+}
+
+.sidebar-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  position: sticky;
+  top: 100px;
+}
+
+.sidebar-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--mid);
+  margin-bottom: 18px;
+}
+
+.sidebar-stat {
+  margin-bottom: 18px;
+}
+
+.sidebar-stat:last-child {
+  margin-bottom: 0;
+}
+
+.sidebar-stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--charcoal);
+  line-height: 1.2;
+}
+
+.sidebar-stat-label {
+  font-size: 12px;
+  color: var(--mid);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 18px 0;
+}
+
+.sidebar-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.sidebar-source-tag {
+  font-size: 11px;
+  color: var(--charcoal);
+  background: var(--cream);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+}
+
+/* ─── Animations ─── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .header {
+    padding: 16px 20px;
+  }
+  .header-badge {
+    display: none;
+  }
+  .main-container {
+    padding: 0 16px;
+  }
+  .search-section {
+    padding-top: 48px;
+  }
+  .search-headline {
+    font-size: 32px;
+  }
+  .search-bar {
+    padding: 14px 48px 14px 44px;
+    font-size: 15px;
+  }
+  .suggestions {
+    gap: 8px;
+  }
+  .suggestion-chip {
+    font-size: 12px;
+    padding: 7px 14px;
+  }
+  .sidebar {
+    display: none !important;
+  }
+  .content-wrapper {
+    gap: 0;
+  }
+  .ai-answer-card {
+    padding: 20px;
+  }
+  .ai-answer-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .source-card {
+    padding: 16px;
+  }
+  .source-card-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-left">
+    <div class="logo">Praxis <span>AI</span></div>
+    <div class="header-divider"></div>
+    <div class="header-subtitle">Knowledge Systems &mdash; Demo</div>
+  </div>
+  <div class="header-badge">Interactive Demo</div>
+</header>
+
+<!-- Main Content -->
+<div class="main-container" id="mainContainer">
+  <div class="content-wrapper">
+    <div class="content-main">
+
+      <!-- Search Section -->
+      <div class="search-section" id="searchSection">
+        <h1 class="search-headline">Find anything, instantly.</h1>
+        <p class="search-tagline">AI-powered search across every document, wiki, and conversation in your company.</p>
+
+        <div class="search-bar-container">
+          <input
+            type="text"
+            class="search-bar"
+            id="searchInput"
+            placeholder="Ask anything about your company..."
+            autocomplete="off"
+            spellcheck="false"
+          >
+          <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <button class="search-clear" id="clearBtn" title="Clear search">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+          <div class="powered-badge">
+            <span class="powered-dot"></span>
+            Powered by AI
+          </div>
+        </div>
+
+        <!-- Suggestions -->
+        <div class="suggestions" id="suggestions">
+          <button class="suggestion-chip" data-query="What is our refund policy?">What is our refund policy?</button>
+          <button class="suggestion-chip" data-query="How do I onboard a new employee?">How do I onboard a new employee?</button>
+          <button class="suggestion-chip" data-query="What are the Q4 revenue targets?">What are the Q4 revenue targets?</button>
+          <button class="suggestion-chip" data-query="Where is the brand guidelines document?">Where is the brand guidelines document?</button>
+          <button class="suggestion-chip" data-query="What benefits do we offer?">What benefits do we offer?</button>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-container" id="loadingContainer">
+        <div class="loading-text">Searching across <span>12,847 documents</span>...</div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+        <div class="loading-sources" id="loadingSources"></div>
+      </div>
+
+      <!-- Results -->
+      <div class="results-container" id="resultsContainer"></div>
+
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-title">Knowledge Base</div>
+
+        <div class="sidebar-stat">
+          <div class="sidebar-stat-value">12,847</div>
+          <div class="sidebar-stat-label">Documents indexed</div>
+        </div>
+
+        <div class="sidebar-stat">
+          <div class="sidebar-stat-value">8</div>
+          <div class="sidebar-stat-label">Sources connected</div>
+        </div>
+
+        <div class="sidebar-sources">
+          <span class="sidebar-source-tag">Confluence</span>
+          <span class="sidebar-source-tag">Google Drive</span>
+          <span class="sidebar-source-tag">Slack</span>
+          <span class="sidebar-source-tag">Notion</span>
+          <span class="sidebar-source-tag">SharePoint</span>
+          <span class="sidebar-source-tag">Jira</span>
+          <span class="sidebar-source-tag">GitHub</span>
+          <span class="sidebar-source-tag">Email</span>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-stat">
+          <div class="sidebar-stat-value">0.8s</div>
+          <div class="sidebar-stat-label">Avg. response time</div>
+        </div>
+
+        <div class="sidebar-stat">
+          <div class="sidebar-stat-value">3,241</div>
+          <div class="sidebar-stat-label">Queries this month</div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<script>
+// ─── Data ───
+const responses = {
+  "What is our refund policy?": {
+    answer: "Our standard refund policy allows returns within 30 days of purchase for a full refund. Digital products can be refunded within 14 days if less than 10% of content has been accessed. Enterprise contracts follow custom terms outlined in the service agreement.",
+    confidence: "High confidence \u2014 3 sources agree",
+    sourceBadges: ["Refund Policy v3.2", "Customer Service Handbook", "Enterprise Terms"],
+    sources: [
+      {
+        title: "Refund Policy v3.2.pdf",
+        icon: "\ud83d\udcc4",
+        system: "Google Drive",
+        score: "99%",
+        excerpt: "All customers are entitled to a <mark>full refund within 30 days of purchase</mark>, provided the product is returned in its original condition. For digital goods, refunds are honored within <mark>14 days if less than 10% of content has been accessed</mark>.",
+        expanded: "Section 2.1 \u2014 Standard Returns: All customers are entitled to a <mark>full refund within 30 days of purchase</mark>, provided the product is returned in its original condition. Proof of purchase is required. Section 2.2 \u2014 Digital Products: Digital products and subscriptions may be refunded within <mark>14 days if less than 10% of content has been accessed</mark>. Usage is tracked via our platform analytics. Section 3.1 \u2014 Enterprise: Enterprise agreements are governed by the specific terms in each contract. Standard refund windows do not apply unless explicitly included.",
+        date: "Updated Nov 12, 2024"
+      },
+      {
+        title: "Customer Service Handbook",
+        icon: "\ud83d\udcdd",
+        system: "Confluence",
+        score: "94%",
+        excerpt: "When processing refund requests, agents should verify the <mark>30-day return window</mark> and check order status. Escalate enterprise refunds to the Account Management team following the <mark>custom terms in the service agreement</mark>.",
+        expanded: "Chapter 7 \u2014 Refunds & Returns: When processing refund requests, agents should verify the <mark>30-day return window</mark> and check order status in the CRM. All standard refunds are auto-approved if within the window. For digital products, check the usage percentage in the analytics dashboard. Escalate enterprise refunds to the Account Management team following the <mark>custom terms in the service agreement</mark>. Response SLA for refund inquiries: 4 business hours.",
+        date: "Updated Oct 28, 2024"
+      },
+      {
+        title: "Enterprise Terms Template",
+        icon: "\ud83d\udcc4",
+        system: "SharePoint",
+        score: "87%",
+        excerpt: "Enterprise contracts may include <mark>custom refund and termination clauses</mark>. See Exhibit B for the specific terms negotiated with each client. Standard consumer policies do not apply to enterprise agreements.",
+        expanded: "Section 8 \u2014 Termination & Refunds: Enterprise contracts may include <mark>custom refund and termination clauses</mark> as negotiated during the sales process. See Exhibit B for the specific terms negotiated with each client. Standard consumer policies do not apply to enterprise agreements. Early termination fees may range from 25\u201350% of remaining contract value depending on the tier.",
+        date: "Updated Sep 5, 2024"
+      },
+      {
+        title: "FAQ \u2014 Returns & Refunds",
+        icon: "\ud83d\udcdd",
+        system: "Notion",
+        score: "82%",
+        excerpt: "Q: How long do I have to return a product? A: You have <mark>30 days from the date of purchase</mark> to request a return. Q: Can I get a refund on a digital purchase? A: Yes, within <mark>14 days if usage is under 10%</mark>.",
+        expanded: "Frequently Asked Questions \u2014 Returns & Refunds\n\nQ: How long do I have to return a product?\nA: You have <mark>30 days from the date of purchase</mark> to request a return. The product must be unused and in original packaging.\n\nQ: Can I get a refund on a digital purchase?\nA: Yes, within <mark>14 days if usage is under 10%</mark>. Contact support with your order number.\n\nQ: How long does a refund take to process?\nA: Refunds are processed within 5\u20137 business days after approval.",
+        date: "Updated Dec 1, 2024"
+      }
+    ]
+  },
+  "How do I onboard a new employee?": {
+    answer: "New employee onboarding follows a 5-step process: 1) Submit the Hiring Form in BambooHR, 2) IT provisions equipment and accounts within 48h, 3) Manager assigns onboarding buddy, 4) Complete compliance training in LMS within first week, 5) 30-day check-in with HR.",
+    confidence: "High confidence \u2014 4 sources agree",
+    sourceBadges: ["Onboarding Checklist", "HR Procedures Wiki", "IT Setup Guide"],
+    sources: [
+      {
+        title: "Onboarding Checklist 2024",
+        icon: "\ud83d\udcc4",
+        system: "Google Drive",
+        score: "98%",
+        excerpt: "Step 1: <mark>Submit the Hiring Form in BambooHR</mark> with start date, role, and department. Step 2: IT will <mark>provision equipment and accounts within 48 hours</mark> of form submission. Step 3: Direct manager <mark>assigns an onboarding buddy</mark>.",
+        expanded: "New Employee Onboarding Checklist (2024 Edition)\n\nPre-arrival (Week before start):\nStep 1: <mark>Submit the Hiring Form in BambooHR</mark> with start date, role, department, and reporting structure.\nStep 2: IT will <mark>provision equipment and accounts within 48 hours</mark> of form submission. This includes laptop, email, Slack, and relevant tool access.\nStep 3: Direct manager <mark>assigns an onboarding buddy</mark> from the same team.\n\nFirst Week:\nStep 4: New hire completes <mark>compliance training in LMS</mark> (security awareness, code of conduct, harassment prevention).\nStep 5: Schedule <mark>30-day check-in with HR</mark> to review progress and address concerns.",
+        date: "Updated Jan 15, 2025"
+      },
+      {
+        title: "HR Procedures Wiki",
+        icon: "\ud83d\udcdd",
+        system: "Confluence",
+        score: "95%",
+        excerpt: "The onboarding process is a structured <mark>5-step workflow</mark> designed to get new hires productive within their first month. HR is responsible for initiating the process in <mark>BambooHR</mark> and scheduling the 30-day review.",
+        expanded: "HR Procedures \u2014 Employee Onboarding\n\nThe onboarding process is a structured <mark>5-step workflow</mark> designed to get new hires productive within their first month. HR is responsible for initiating the process in <mark>BambooHR</mark> and scheduling the 30-day review.\n\nKey responsibilities:\n\u2022 HR: Form submission, compliance tracking, 30-day check-in\n\u2022 IT: Equipment and account provisioning (48h SLA)\n\u2022 Manager: Buddy assignment, role-specific training plan\n\u2022 New Hire: Complete compliance training, attend orientation sessions",
+        date: "Updated Dec 20, 2024"
+      },
+      {
+        title: "IT Setup Guide",
+        icon: "\ud83d\udcdd",
+        system: "Notion",
+        score: "91%",
+        excerpt: "Upon receiving the BambooHR notification, IT will <mark>provision the following within 48 hours</mark>: MacBook Pro or ThinkPad (per preference), Google Workspace account, Slack workspace access, VPN credentials, and role-specific tool licenses.",
+        expanded: "IT New Hire Setup Guide\n\nUpon receiving the BambooHR notification, IT will <mark>provision the following within 48 hours</mark>:\n\u2022 MacBook Pro or ThinkPad (per preference noted in hiring form)\n\u2022 Google Workspace account with company email\n\u2022 Slack workspace access with default channel subscriptions\n\u2022 VPN credentials and security token\n\u2022 Role-specific tool licenses (e.g., Figma for design, GitHub for engineering)\n\nEquipment is shipped to remote employees via overnight delivery.",
+        date: "Updated Nov 8, 2024"
+      },
+      {
+        title: "New Hire Welcome Pack",
+        icon: "\ud83d\udcc4",
+        system: "SharePoint",
+        score: "88%",
+        excerpt: "Welcome to the team! Your first week includes meeting your <mark>onboarding buddy</mark>, completing required <mark>compliance training in the LMS</mark>, and attending a company orientation session every Tuesday at 10am.",
+        expanded: "New Hire Welcome Pack\n\nWelcome to the team! Here\u2019s what to expect in your first week:\n\n\u2022 Day 1: Meet your <mark>onboarding buddy</mark> and get a team tour\n\u2022 Days 1\u20135: Complete required <mark>compliance training in the LMS</mark> (approximately 4 hours total)\n\u2022 Tuesday 10am: Company orientation session (culture, values, org structure)\n\u2022 Day 30: HR check-in to review your onboarding experience\n\nYour buddy will be your go-to resource for questions during your first month.",
+        date: "Updated Oct 15, 2024"
+      }
+    ]
+  },
+  "What are the Q4 revenue targets?": {
+    answer: "Q4 2024 consolidated revenue target is $4.2M, representing 18% YoY growth. The breakdown is: SaaS subscriptions $2.8M, Professional services $0.9M, and Enterprise contracts $0.5M. The board approved these targets in the September strategy meeting.",
+    confidence: "High confidence \u2014 3 sources agree",
+    sourceBadges: ["Q4 Budget Presentation", "Board Minutes", "Revenue Forecast"],
+    sources: [
+      {
+        title: "Q4 Budget Presentation.pptx",
+        icon: "\ud83d\udcc4",
+        system: "Google Drive",
+        score: "97%",
+        excerpt: "Q4 2024 Revenue Targets \u2014 <mark>Consolidated target: $4.2M (+18% YoY)</mark>. Breakdown: SaaS subscriptions <mark>$2.8M</mark>, Professional services <mark>$0.9M</mark>, Enterprise contracts <mark>$0.5M</mark>.",
+        expanded: "Q4 2024 Budget Presentation \u2014 Revenue Targets\n\nSlide 12: Revenue Overview\n<mark>Consolidated target: $4.2M (+18% YoY)</mark>\n\nBreakdown by segment:\n\u2022 SaaS subscriptions: <mark>$2.8M</mark> (67% of total, driven by 340 new seats)\n\u2022 Professional services: <mark>$0.9M</mark> (21% of total, 3 implementation projects)\n\u2022 Enterprise contracts: <mark>$0.5M</mark> (12% of total, 2 renewals + 1 new logo)\n\nKey assumptions: 5% monthly churn, 92% renewal rate on enterprise.",
+        date: "Updated Sep 22, 2024"
+      },
+      {
+        title: "Board Meeting Minutes \u2014 Sep 2024",
+        icon: "\ud83d\udcc4",
+        system: "Confluence",
+        score: "93%",
+        excerpt: "Motion 4: The board <mark>approved the Q4 revenue target of $4.2M</mark>, representing <mark>18% year-over-year growth</mark>. CFO presented the breakdown across three revenue streams. Motion passed unanimously.",
+        expanded: "Board Meeting Minutes \u2014 September 15, 2024\n\nAttendees: [Board members listed]\n\nMotion 4 \u2014 Q4 Revenue Targets:\nThe board <mark>approved the Q4 revenue target of $4.2M</mark>, representing <mark>18% year-over-year growth</mark>. CFO presented the breakdown across three revenue streams. The target reflects conservative estimates given current pipeline and renewal schedule.\n\nDiscussion: Board member J. Smith requested monthly tracking reports. CEO confirmed dashboards would be shared bi-weekly.\n\nMotion passed unanimously.",
+        date: "Updated Sep 16, 2024"
+      },
+      {
+        title: "Revenue Forecast Model",
+        icon: "\ud83d\udcc4",
+        system: "Google Drive",
+        score: "90%",
+        excerpt: "The forecast model projects Q4 revenue between <mark>$3.9M (bear) and $4.6M (bull)</mark>, with the base case at <mark>$4.2M</mark>. SaaS ARR growth is the primary driver at <mark>$2.8M</mark>.",
+        expanded: "Revenue Forecast Model \u2014 Q4 2024\n\nScenario Analysis:\n\u2022 Bear case: $3.9M (assumes 7% churn, delayed enterprise deal)\n\u2022 Base case: <mark>$4.2M</mark> (approved target)\n\u2022 Bull case: $4.6M (assumes early enterprise close, reduced churn)\n\nSaaS ARR growth is the primary driver at <mark>$2.8M</mark>. Pipeline coverage for professional services is 2.3x, providing confidence in the $0.9M target.",
+        date: "Updated Sep 20, 2024"
+      },
+      {
+        title: "Annual Planning Doc",
+        icon: "\ud83d\udcdd",
+        system: "Notion",
+        score: "85%",
+        excerpt: "FY2024 annual revenue plan targets <mark>$14.8M total</mark>, with Q4 representing the largest quarter at <mark>$4.2M</mark> due to seasonal enterprise buying patterns and year-end renewals.",
+        expanded: "FY2024 Annual Planning Document\n\nRevenue Plan by Quarter:\n\u2022 Q1: $3.2M (actual: $3.4M \u2714\ufe0f)\n\u2022 Q2: $3.5M (actual: $3.6M \u2714\ufe0f)\n\u2022 Q3: $3.9M (actual: pending)\n\u2022 Q4: <mark>$4.2M</mark> (target)\n\nFY2024 total: <mark>$14.8M</mark>\n\nQ4 is historically the strongest quarter due to seasonal enterprise buying patterns and year-end budget flush.",
+        date: "Updated Jan 10, 2024"
+      }
+    ]
+  },
+  "Where is the brand guidelines document?": {
+    answer: "The current brand guidelines (v2.1, updated August 2024) are stored in the Design team's Confluence space. The document covers logo usage, color palette, typography, tone of voice, and social media templates.",
+    confidence: "High confidence \u2014 2 sources agree",
+    sourceBadges: ["Brand Guidelines v2.1", "Design System Docs", "Marketing Playbook"],
+    sources: [
+      {
+        title: "Brand Guidelines v2.1",
+        icon: "\ud83d\udcdd",
+        system: "Confluence",
+        score: "99%",
+        excerpt: "<mark>Brand Guidelines v2.1 (Updated August 2024)</mark> \u2014 This document is the single source of truth for all brand-related decisions. Covers <mark>logo usage, color palette, typography, tone of voice, and social media templates</mark>.",
+        expanded: "<mark>Brand Guidelines v2.1 (Updated August 2024)</mark>\n\nThis document is the single source of truth for all brand-related decisions. Covers <mark>logo usage, color palette, typography, tone of voice, and social media templates</mark>.\n\nTable of Contents:\n1. Logo \u2014 Primary, secondary, monochrome variants, clear space rules\n2. Color Palette \u2014 Primary, secondary, accent colors with hex/RGB/CMYK values\n3. Typography \u2014 Headings (Inter Bold), body (Inter Regular), code (JetBrains Mono)\n4. Tone of Voice \u2014 Professional, approachable, concise\n5. Social Media \u2014 Templates for LinkedIn, Twitter, Instagram\n\nLocation: Design Team Space > Brand Assets > Guidelines",
+        date: "Updated Aug 14, 2024"
+      },
+      {
+        title: "Design System Documentation",
+        icon: "\ud83d\udcdd",
+        system: "Notion",
+        score: "92%",
+        excerpt: "The design system extends the <mark>brand guidelines</mark> into reusable components. For foundational brand decisions (logo, colors, type), refer to the <mark>Brand Guidelines v2.1 in the Design Confluence space</mark>.",
+        expanded: "Design System Documentation\n\nThe design system extends the <mark>brand guidelines</mark> into reusable components for web and mobile applications. For foundational brand decisions (logo, colors, type), refer to the <mark>Brand Guidelines v2.1 in the Design Confluence space</mark>.\n\nThis document covers:\n\u2022 Component library (buttons, forms, cards, navigation)\n\u2022 Spacing and layout grid (8px base unit)\n\u2022 Iconography standards\n\u2022 Accessibility requirements (WCAG 2.1 AA)",
+        date: "Updated Oct 3, 2024"
+      },
+      {
+        title: "Marketing Playbook",
+        icon: "\ud83d\udcc4",
+        system: "Google Drive",
+        score: "86%",
+        excerpt: "All marketing materials must comply with the <mark>Brand Guidelines v2.1</mark>. Download approved assets from the shared Brand Assets folder. For questions, contact the Design team lead.",
+        expanded: "Marketing Playbook 2024\n\nChapter 2 \u2014 Brand Compliance:\nAll marketing materials must comply with the <mark>Brand Guidelines v2.1</mark>. Download approved assets from the shared Brand Assets folder in Google Drive.\n\nKey rules:\n\u2022 Never alter the logo proportions or colors\n\u2022 Use only approved fonts (Inter family)\n\u2022 Maintain minimum logo clear space (2x the height of the logomark)\n\u2022 For questions, contact the Design team lead.",
+        date: "Updated Jul 22, 2024"
+      },
+      {
+        title: "Social Media Style Guide",
+        icon: "\ud83d\udce7",
+        system: "Email",
+        score: "81%",
+        excerpt: "Hi team, I\u2019ve updated the social media section of the <mark>brand guidelines</mark>. New templates for LinkedIn carousel posts and Instagram stories are now available in the <mark>Confluence Design space</mark>.",
+        expanded: "From: Sarah (Design Lead)\nTo: Marketing Team\nSubject: Updated Social Media Templates\n\nHi team,\n\nI\u2019ve updated the social media section of the <mark>brand guidelines</mark>. New templates for LinkedIn carousel posts and Instagram stories are now available in the <mark>Confluence Design space</mark>.\n\nChanges:\n\u2022 New LinkedIn carousel template (16:9 and 1:1)\n\u2022 Updated Instagram story template with new CTA button styles\n\u2022 Twitter/X header dimensions updated for 2024 specs\n\nPlease use these going forward. Old templates have been archived.",
+        date: "Updated Aug 20, 2024"
+      }
+    ]
+  },
+  "What benefits do we offer?": {
+    answer: "Full-time employees receive: comprehensive health/dental/vision insurance (company covers 90%), 401(k) with 4% match, unlimited PTO, $2,000 annual learning budget, remote work flexibility, and quarterly wellness stipend of $250.",
+    confidence: "High confidence \u2014 4 sources agree",
+    sourceBadges: ["Benefits Overview 2024", "HR Policy Handbook", "Open Enrollment Guide"],
+    sources: [
+      {
+        title: "Employee Benefits Overview 2024",
+        icon: "\ud83d\udcc4",
+        system: "Google Drive",
+        score: "98%",
+        excerpt: "Full-time employee benefits include: <mark>health, dental, and vision insurance (company covers 90% of premiums)</mark>, <mark>401(k) with 4% employer match</mark>, <mark>unlimited PTO</mark>, and a <mark>$2,000 annual learning budget</mark>.",
+        expanded: "Employee Benefits Overview \u2014 2024\n\nHealth & Wellness:\n\u2022 <mark>Health, dental, and vision insurance (company covers 90% of premiums)</mark>\n\u2022 <mark>Quarterly wellness stipend of $250</mark> (gym, mental health apps, ergonomic equipment)\n\u2022 Employee Assistance Program (EAP) \u2014 confidential counseling\n\nFinancial:\n\u2022 <mark>401(k) with 4% employer match</mark> (vesting after 1 year)\n\u2022 Equity participation for senior roles\n\nTime Off:\n\u2022 <mark>Unlimited PTO</mark> (minimum 15 days encouraged)\n\u2022 12 paid holidays + birthday off\n\u2022 Parental leave: 16 weeks paid\n\nGrowth:\n\u2022 <mark>$2,000 annual learning budget</mark> (conferences, courses, books)\n\u2022 <mark>Remote work flexibility</mark> (fully remote or hybrid options)",
+        date: "Updated Jan 5, 2025"
+      },
+      {
+        title: "HR Policy Handbook",
+        icon: "\ud83d\udcdd",
+        system: "Confluence",
+        score: "96%",
+        excerpt: "Chapter 4 \u2014 Compensation & Benefits: The company provides a comprehensive benefits package to all <mark>full-time employees</mark>. Key highlights include <mark>90% employer-covered health insurance</mark> and <mark>unlimited paid time off</mark>.",
+        expanded: "HR Policy Handbook \u2014 Chapter 4: Compensation & Benefits\n\nThe company provides a comprehensive benefits package to all <mark>full-time employees</mark> (30+ hours/week). Part-time employees receive prorated benefits for health insurance only.\n\nKey highlights:\n\u2022 <mark>90% employer-covered health insurance</mark> (medical, dental, vision)\n\u2022 <mark>Unlimited paid time off</mark> with manager approval\n\u2022 401(k) retirement plan with company match\n\u2022 Professional development budget\n\u2022 Remote work policy: employees may work from anywhere within approved time zones",
+        date: "Updated Nov 30, 2024"
+      },
+      {
+        title: "Open Enrollment Guide",
+        icon: "\ud83d\udcc4",
+        system: "SharePoint",
+        score: "93%",
+        excerpt: "Open enrollment for 2025 benefits is November 1\u201330. Current plans will auto-renew if no changes are made. The company continues to cover <mark>90% of insurance premiums</mark>. New this year: <mark>wellness stipend increased to $250/quarter</mark>.",
+        expanded: "Open Enrollment Guide \u2014 2025 Benefits Year\n\nEnrollment period: November 1\u201330, 2024\n\nWhat\u2019s new for 2025:\n\u2022 <mark>Wellness stipend increased to $250/quarter</mark> (up from $200)\n\u2022 Added mental health app subscription (Headspace) at no cost\n\u2022 Learning budget remains at $2,000/year\n\nThe company continues to cover <mark>90% of insurance premiums</mark> across all plan tiers (individual, employee+spouse, family).\n\nAction required: Review and confirm your elections by November 30. Current plans will auto-renew if no changes are made.",
+        date: "Updated Oct 25, 2024"
+      },
+      {
+        title: "Compensation & Benefits FAQ",
+        icon: "\ud83d\udce7",
+        system: "Slack",
+        score: "89%",
+        excerpt: "Q: What\u2019s the 401(k) match? A: <mark>4% employer match</mark>, vested after 12 months. Q: Is PTO really unlimited? A: Yes, with a <mark>minimum 15 days encouraged</mark>. Q: Can I use the learning budget for conferences? A: Absolutely, <mark>$2,000/year covers conferences, courses, and books</mark>.",
+        expanded: "Pinned message in #ask-hr:\n\nCompensation & Benefits FAQ\n\nQ: What\u2019s the 401(k) match?\nA: <mark>4% employer match</mark>, vested after 12 months of employment.\n\nQ: Is PTO really unlimited?\nA: Yes, with a <mark>minimum 15 days encouraged</mark>. We trust employees to manage their time. Just coordinate with your manager.\n\nQ: Can I use the learning budget for conferences?\nA: Absolutely, <mark>$2,000/year covers conferences, courses, and books</mark>. Submit receipts through Expensify.\n\nQ: What does the wellness stipend cover?\nA: Gym memberships, fitness classes, mental health apps, ergonomic equipment \u2014 $250 per quarter.",
+        date: "Updated Dec 12, 2024"
+      }
+    ]
+  }
+};
+
+// ─── Fallback response for freeform queries ───
+function generateFallbackResponse(query) {
+  return {
+    answer: "Based on a semantic search across your knowledge base, I found several documents that may be relevant to your query. The most relevant results are shown below. For more precise answers, try refining your search or asking a more specific question.",
+    confidence: "Medium confidence \u2014 partial matches found",
+    sourceBadges: ["Internal Wiki", "Knowledge Base", "Team Docs"],
+    sources: [
+      {
+        title: "Internal Knowledge Base",
+        icon: "\ud83d\udcdd",
+        system: "Confluence",
+        score: "74%",
+        excerpt: "This page contains information that may relate to your query about <mark>" + escapeHtml(query) + "</mark>. Browse the full document for detailed context.",
+        expanded: "This is a partial match from the Internal Knowledge Base. The document contains references that are semantically related to <mark>" + escapeHtml(query) + "</mark>. For the most accurate results, consider browsing the source directly or refining your search terms.",
+        date: "Updated Jan 20, 2025"
+      },
+      {
+        title: "Company Policies & Procedures",
+        icon: "\ud83d\udcc4",
+        system: "Google Drive",
+        score: "68%",
+        excerpt: "The policies and procedures documentation may contain relevant information. Search results are <mark>ranked by semantic similarity</mark> to your query.",
+        expanded: "Company Policies & Procedures is a broad document covering operational guidelines, HR policies, IT standards, and compliance requirements. Results are <mark>ranked by semantic similarity</mark> to your query using our AI-powered search engine.",
+        date: "Updated Dec 5, 2024"
+      },
+      {
+        title: "Team Discussion Archive",
+        icon: "\ud83d\udcac",
+        system: "Slack",
+        score: "61%",
+        excerpt: "Archived Slack conversations may contain <mark>discussions relevant to your search</mark>. These results are sourced from public channels across the organization.",
+        expanded: "This result is sourced from archived Slack conversations in public channels. The AI identified <mark>discussions relevant to your search</mark> based on topic similarity and keyword matching. For private channel results, contact your workspace admin.",
+        date: "Updated Feb 1, 2025"
+      }
+    ]
+  };
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// ─── DOM refs ───
+const searchInput = document.getElementById('searchInput');
+const clearBtn = document.getElementById('clearBtn');
+const suggestions = document.getElementById('suggestions');
+const loadingContainer = document.getElementById('loadingContainer');
+const loadingSources = document.getElementById('loadingSources');
+const progressBar = document.getElementById('progressBar');
+const resultsContainer = document.getElementById('resultsContainer');
+const searchSection = document.getElementById('searchSection');
+const sidebar = document.getElementById('sidebar');
+const mainContainer = document.getElementById('mainContainer');
+
+// ─── Event Listeners ───
+searchInput.addEventListener('input', () => {
+  clearBtn.classList.toggle('visible', searchInput.value.length > 0);
+});
+
+clearBtn.addEventListener('click', () => {
+  searchInput.value = '';
+  clearBtn.classList.remove('visible');
+  resetToInitial();
+  searchInput.focus();
+});
+
+searchInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && searchInput.value.trim()) {
+    performSearch(searchInput.value.trim());
+  }
+});
+
+document.querySelectorAll('.suggestion-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const query = chip.dataset.query;
+    searchInput.value = query;
+    clearBtn.classList.add('visible');
+    performSearch(query);
+  });
+});
+
+// ─── Reset ───
+function resetToInitial() {
+  searchSection.classList.remove('compact');
+  suggestions.classList.remove('hidden');
+  loadingContainer.classList.remove('visible');
+  resultsContainer.classList.remove('visible');
+  resultsContainer.innerHTML = '';
+  sidebar.classList.remove('visible');
+  mainContainer.classList.remove('with-sidebar');
+}
+
+// ─── Search Flow ───
+function performSearch(query) {
+  // Compact the search section
+  searchSection.classList.add('compact');
+  suggestions.classList.add('hidden');
+  resultsContainer.classList.remove('visible');
+  resultsContainer.innerHTML = '';
+  sidebar.classList.remove('visible');
+  mainContainer.classList.remove('with-sidebar');
+
+  // Show loading
+  loadingContainer.classList.add('visible');
+  progressBar.style.width = '0%';
+  loadingSources.innerHTML = '';
+
+  // Animate progress bar
+  const sourceSystems = ['Confluence', 'Google Drive', 'Slack', 'Notion', 'SharePoint', 'Jira', 'GitHub', 'Email'];
+  let progress = 0;
+  let sourceIndex = 0;
+
+  const progressInterval = setInterval(() => {
+    progress += Math.random() * 18 + 6;
+    if (progress > 95) progress = 95;
+    progressBar.style.width = progress + '%';
+
+    // Add source tags progressively
+    if (sourceIndex < sourceSystems.length && Math.random() > 0.3) {
+      const tag = document.createElement('span');
+      tag.className = 'loading-source-tag';
+      tag.textContent = sourceSystems[sourceIndex];
+      tag.style.animationDelay = '0s';
+      loadingSources.appendChild(tag);
+      sourceIndex++;
+    }
+  }, 120);
+
+  // Complete after delay
+  setTimeout(() => {
+    clearInterval(progressInterval);
+    progressBar.style.width = '100%';
+
+    setTimeout(() => {
+      loadingContainer.classList.remove('visible');
+      showResults(query);
+    }, 300);
+  }, 1200);
+}
+
+// ─── Render Results ───
+function showResults(query) {
+  const data = responses[query] || generateFallbackResponse(query);
+
+  // Build AI answer card
+  let html = `
+    <div class="ai-answer-card">
+      <div class="ai-answer-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a4 4 0 0 1 4 4v1a3 3 0 0 1 3 3v1a2 2 0 0 1-2 2h-1v3l-3-2h-2l-3 2v-3H7a2 2 0 0 1-2-2v-1a3 3 0 0 1 3-3V6a4 4 0 0 1 4-4z"/>
+          <circle cx="9" cy="10" r="1"/><circle cx="15" cy="10" r="1"/>
+        </svg>
+        AI-Generated Answer
+      </div>
+      <div class="ai-answer-text">${data.answer}</div>
+      <div class="ai-answer-footer">
+        <div class="ai-sources-used">
+          <span class="ai-sources-label">Sources used:</span>
+          ${data.sourceBadges.map(s => `<span class="ai-source-badge">${s}</span>`).join('')}
+        </div>
+        <div class="confidence-indicator">
+          <span class="confidence-dot"></span>
+          ${data.confidence}
+        </div>
+      </div>
+    </div>
+
+    <div class="source-cards">
+  `;
+
+  data.sources.forEach((source, i) => {
+    html += `
+      <div class="source-card" style="animation: slideUp 0.4s ease ${0.15 + i * 0.1}s forwards;" id="sourceCard${i}">
+        <div class="source-card-header">
+          <div>
+            <div class="source-card-title-row">
+              <span class="source-type-icon">${source.icon}</span>
+              <span class="source-card-title">${source.title}</span>
+            </div>
+            <div class="source-card-system">${source.system}</div>
+          </div>
+          <span class="relevance-score">${source.score} match</span>
+        </div>
+        <div class="source-excerpt">${source.excerpt}</div>
+        <div class="source-card-footer">
+          <span class="source-date">${source.date}</span>
+          <button class="source-expand-btn" onclick="toggleExpand(${i})">View full excerpt &rarr;</button>
+        </div>
+        <div class="source-expanded" id="expanded${i}">${source.expanded}</div>
+      </div>
+    `;
+  });
+
+  html += '</div>';
+  resultsContainer.innerHTML = html;
+  resultsContainer.classList.add('visible');
+
+  // Stagger source card animations
+  data.sources.forEach((_, i) => {
+    setTimeout(() => {
+      const card = document.getElementById('sourceCard' + i);
+      if (card) card.classList.add('visible');
+    }, 200 + i * 120);
+  });
+
+  // Show sidebar
+  setTimeout(() => {
+    sidebar.classList.add('visible');
+    mainContainer.classList.add('with-sidebar');
+  }, 400);
+}
+
+function toggleExpand(index) {
+  const expanded = document.getElementById('expanded' + index);
+  const btn = expanded.previousElementSibling.querySelector('.source-expand-btn');
+  if (expanded.classList.contains('visible')) {
+    expanded.classList.remove('visible');
+    btn.innerHTML = 'View full excerpt &rarr;';
+  } else {
+    expanded.classList.add('visible');
+    btn.innerHTML = 'Collapse &larr;';
+  }
+}
+</script>
+</body>
+</html>

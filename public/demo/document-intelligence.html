@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document Intelligence Demo — Praxis AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --terracotta: #C15F3C;
+    --cream: #F4F3EE;
+    --charcoal: #141413;
+    --mid: #b0aea5;
+    --border: #e8e6dc;
+    --highlight: rgba(193, 95, 60, 0.15);
+    --highlight-active: rgba(193, 95, 60, 0.30);
+    --green: #22863a;
+    --yellow: #b08800;
+    --red: #cb2431;
+    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-display: 'Caveat', cursive;
+  }
+
+  html { font-size: 16px; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--cream);
+    color: var(--charcoal);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Header ─────────────────────────────────── */
+  header {
+    background: var(--charcoal);
+    color: var(--cream);
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .header-logo {
+    width: 36px;
+    height: 36px;
+    background: var(--terracotta);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    color: #fff;
+  }
+
+  .header-name {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .header-title {
+    font-size: 14px;
+    color: var(--mid);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .header-badge {
+    display: inline-block;
+    background: var(--terracotta);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-left: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+
+  /* ── Main Layout ────────────────────────────── */
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 40px;
+    gap: 28px;
+    max-width: 1440px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* ── Section Titles ─────────────────────────── */
+  .section-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--mid);
+    margin-bottom: 12px;
+  }
+
+  /* ── Document Selector ──────────────────────── */
+  .doc-selector {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .doc-card {
+    flex: 1;
+    min-width: 220px;
+    background: #fff;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 20px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .doc-card:hover {
+    border-color: var(--terracotta);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(193, 95, 60, 0.10);
+  }
+
+  .doc-card.active {
+    border-color: var(--terracotta);
+    background: var(--highlight);
+    box-shadow: 0 4px 20px rgba(193, 95, 60, 0.12);
+  }
+
+  .doc-card-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--cream);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px;
+  }
+
+  .doc-card.active .doc-card-icon {
+    background: var(--terracotta);
+    color: #fff;
+  }
+
+  .doc-card-info h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .doc-card-info p {
+    font-size: 13px;
+    color: var(--mid);
+    line-height: 1.4;
+  }
+
+  /* ── Split Panel ────────────────────────────── */
+  .split-panel {
+    display: flex;
+    gap: 24px;
+    flex: 1;
+    min-height: 520px;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: all 0.4s ease;
+    pointer-events: none;
+  }
+
+  .split-panel.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .panel {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .panel-left {
+    flex: 1.1;
+    position: relative;
+  }
+
+  .panel-right {
+    flex: 0.9;
+  }
+
+  .panel-header {
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .panel-header h2 {
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .panel-header-tag {
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--cream);
+    color: var(--mid);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  .panel-body {
+    flex: 1;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  /* ── Scanner Animation ──────────────────────── */
+  .scanner-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--terracotta), transparent);
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 0 16px rgba(193, 95, 60, 0.4);
+  }
+
+  .scanner-line.scanning {
+    opacity: 1;
+    animation: scanDown 2.5s ease-in-out forwards;
+  }
+
+  @keyframes scanDown {
+    0% { top: 0; }
+    100% { top: 100%; }
+  }
+
+  /* ── Document Preview ───────────────────────── */
+  .doc-preview {
+    padding: 32px 36px;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #333;
+    min-height: 100%;
+    background: #fff;
+  }
+
+  .doc-preview .doc-header-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #222;
+  }
+
+  .doc-preview .doc-company-logo {
+    width: 48px;
+    height: 48px;
+    background: var(--charcoal);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .doc-preview .doc-company-name {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--charcoal);
+  }
+
+  .doc-preview .doc-company-address {
+    font-size: 11px;
+    color: #777;
+    line-height: 1.5;
+    font-family: var(--font-body);
+  }
+
+  .doc-preview .doc-type-title {
+    font-family: var(--font-body);
+    font-size: 24px;
+    font-weight: 700;
+    text-align: right;
+    color: var(--charcoal);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .doc-preview .doc-meta-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  .doc-preview .doc-meta-group {
+    font-family: var(--font-body);
+    font-size: 12px;
+  }
+
+  .doc-preview .doc-meta-group label {
+    display: block;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    margin-bottom: 2px;
+  }
+
+  .doc-preview .doc-meta-group span {
+    color: var(--charcoal);
+    font-weight: 500;
+  }
+
+  /* Highlight on extract */
+  .doc-preview [data-field] {
+    position: relative;
+    transition: background 0.3s ease;
+    border-radius: 2px;
+    padding: 0 2px;
+    margin: 0 -2px;
+  }
+
+  .doc-preview [data-field].highlighted {
+    background: rgba(255, 200, 50, 0.35);
+  }
+
+  .doc-preview [data-field].highlighted::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border: 1.5px solid rgba(193, 95, 60, 0.5);
+    border-radius: 3px;
+    pointer-events: none;
+  }
+
+  /* Table in invoice */
+  .doc-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-family: var(--font-body);
+    font-size: 12px;
+  }
+
+  .doc-table th {
+    background: #f5f5f0;
+    text-align: left;
+    padding: 10px 12px;
+    font-weight: 600;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #777;
+    border-bottom: 2px solid #ddd;
+  }
+
+  .doc-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+  }
+
+  .doc-table .text-right {
+    text-align: right;
+  }
+
+  .doc-totals {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    margin-top: 16px;
+    font-family: var(--font-body);
+    font-size: 13px;
+  }
+
+  .doc-totals .total-row {
+    display: flex;
+    gap: 40px;
+    min-width: 220px;
+    justify-content: space-between;
+  }
+
+  .doc-totals .total-row.grand {
+    font-weight: 700;
+    font-size: 15px;
+    border-top: 2px solid #222;
+    padding-top: 8px;
+    margin-top: 4px;
+  }
+
+  .doc-totals .total-label {
+    color: #777;
+  }
+
+  /* Contract style */
+  .doc-preview .contract-title {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .doc-preview .contract-section {
+    margin-bottom: 18px;
+  }
+
+  .doc-preview .contract-section-title {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    color: #555;
+  }
+
+  .doc-preview .contract-text {
+    font-size: 12.5px;
+    line-height: 1.7;
+    text-align: justify;
+  }
+
+  /* Claim form style */
+  .doc-preview .form-field {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    padding: 8px 0;
+    font-family: var(--font-body);
+    font-size: 12px;
+  }
+
+  .doc-preview .form-label {
+    width: 180px;
+    font-weight: 600;
+    color: #555;
+    flex-shrink: 0;
+  }
+
+  .doc-preview .form-value {
+    flex: 1;
+    color: var(--charcoal);
+  }
+
+  .doc-preview .form-section-title {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 13px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid #ccc;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #444;
+  }
+
+  /* ── Right Panel: Extracted Data ─────────────── */
+  .extraction-progress {
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--mid);
+    margin-bottom: 8px;
+  }
+
+  .progress-bar-track {
+    width: 100%;
+    height: 6px;
+    background: var(--cream);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--terracotta);
+    border-radius: 6px;
+    transition: width 0.3s ease;
+  }
+
+  .extracted-list {
+    padding: 12px 22px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .extracted-item {
+    display: flex;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--border);
+    opacity: 0;
+    transform: translateX(16px);
+    transition: all 0.35s ease;
+  }
+
+  .extracted-item.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .extracted-item:last-child {
+    border-bottom: none;
+  }
+
+  .extracted-field-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--mid);
+    width: 120px;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .extracted-field-value {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--charcoal);
+    padding: 0 12px;
+  }
+
+  .extracted-confidence {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    flex-shrink: 0;
+    min-width: 52px;
+    text-align: center;
+  }
+
+  .confidence-high {
+    background: #e6f4ea;
+    color: var(--green);
+  }
+
+  .confidence-medium {
+    background: #fff8e1;
+    color: var(--yellow);
+  }
+
+  .confidence-low {
+    background: #fce8e6;
+    color: var(--red);
+  }
+
+  /* ── Stats Bar ──────────────────────────────── */
+  .stats-bar {
+    background: var(--charcoal);
+    border-radius: 12px;
+    padding: 16px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.4s ease 0.2s;
+    flex-shrink: 0;
+  }
+
+  .stats-bar.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--cream);
+  }
+
+  .stat-icon {
+    width: 34px;
+    height: 34px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--mid);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .stat-value {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .stat-badge {
+    background: var(--terracotta);
+    color: #fff;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  /* ── Placeholder ────────────────────────────── */
+  .placeholder-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 40px;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .placeholder-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--cream);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    margin-bottom: 20px;
+  }
+
+  .placeholder-state h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .placeholder-state p {
+    font-size: 14px;
+    color: var(--mid);
+    max-width: 320px;
+    line-height: 1.5;
+  }
+
+  /* ── Processing Timer ───────────────────────── */
+  .processing-time {
+    padding: 12px 22px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--mid);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .processing-time.visible {
+    opacity: 1;
+  }
+
+  .processing-time strong {
+    color: var(--terracotta);
+    font-weight: 700;
+  }
+
+  /* ── Responsive ─────────────────────────────── */
+  @media (max-width: 900px) {
+    main { padding: 20px; }
+    header { padding: 16px 20px; }
+    .split-panel { flex-direction: column; min-height: auto; }
+    .panel-left, .panel-right { flex: none; }
+    .panel-left { min-height: 400px; }
+    .doc-selector { flex-direction: column; }
+    .doc-card { min-width: auto; }
+    .stats-bar { padding: 14px 20px; }
+    .doc-preview { padding: 24px 20px; }
+  }
+
+  /* ── Scrollbar ──────────────────────────────── */
+  .panel-body::-webkit-scrollbar { width: 5px; }
+  .panel-body::-webkit-scrollbar-track { background: transparent; }
+  .panel-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .panel-body::-webkit-scrollbar-thumb:hover { background: var(--mid); }
+</style>
+</head>
+<body>
+
+<!-- ═══ Header ═══ -->
+<header>
+  <div class="header-brand">
+    <div class="header-logo">P</div>
+    <span class="header-name">Praxis AI</span>
+  </div>
+  <div>
+    <span class="header-title">Document Intelligence</span>
+    <span class="header-badge">Demo</span>
+  </div>
+</header>
+
+<!-- ═══ Main ═══ -->
+<main>
+
+  <!-- Document Selector -->
+  <div>
+    <div class="section-label">Select a Document</div>
+    <div class="doc-selector">
+      <div class="doc-card" data-doc="invoice" onclick="selectDocument('invoice')">
+        <div class="doc-card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <div class="doc-card-info">
+          <h3>Invoice #INV-2024-0847</h3>
+          <p>Vendor invoice with line items, tax, and payment terms</p>
+        </div>
+      </div>
+      <div class="doc-card" data-doc="contract" onclick="selectDocument('contract')">
+        <div class="doc-card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+        </div>
+        <div class="doc-card-info">
+          <h3>Employment Contract</h3>
+          <p>Full employment agreement with compensation and terms</p>
+        </div>
+      </div>
+      <div class="doc-card" data-doc="claim" onclick="selectDocument('claim')">
+        <div class="doc-card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="M9 15l3 3 3-3"/></svg>
+        </div>
+        <div class="doc-card-info">
+          <h3>Insurance Claim Form</h3>
+          <p>Auto collision claim with damage assessment details</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Placeholder -->
+  <div id="placeholder" class="placeholder-state">
+    <div class="placeholder-icon">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--mid)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    </div>
+    <h3>Select a document to begin</h3>
+    <p>Choose one of the sample documents above to see AI-powered data extraction in action.</p>
+  </div>
+
+  <!-- Split Panel -->
+  <div id="splitPanel" class="split-panel">
+    <!-- Left: Document Preview -->
+    <div class="panel panel-left">
+      <div class="panel-header">
+        <h2>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          Document Preview
+        </h2>
+        <span class="panel-header-tag" id="docTypeTag">PDF</span>
+      </div>
+      <div class="panel-body" id="docPreviewBody">
+        <div class="scanner-line" id="scannerLine"></div>
+        <div class="doc-preview" id="docPreview"></div>
+      </div>
+    </div>
+
+    <!-- Right: Extracted Data -->
+    <div class="panel panel-right">
+      <div class="panel-header">
+        <h2>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Extracted Data
+        </h2>
+        <span class="panel-header-tag" id="fieldCountTag">0 fields</span>
+      </div>
+      <div class="extraction-progress" id="progressSection">
+        <div class="progress-label">
+          <span id="progressLabel">Analyzing document...</span>
+          <span id="progressPercent">0%</span>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="extracted-list" id="extractedList"></div>
+      </div>
+      <div class="processing-time" id="processingTime">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Processed in <strong id="timeValue">0.0s</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar" id="statsBar">
+    <div class="stat-item">
+      <div class="stat-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      </div>
+      <div>
+        <div class="stat-label">Fields Extracted</div>
+        <div class="stat-value" id="statFields">--</div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+      <div>
+        <div class="stat-label">Avg. Confidence</div>
+        <div class="stat-value" id="statConfidence">--</div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div>
+        <div class="stat-label">Processing Time</div>
+        <div class="stat-value" id="statTime">--</div>
+      </div>
+    </div>
+    <div class="stat-badge">95%+ Accuracy</div>
+  </div>
+
+</main>
+
+<script>
+// ═══════════════════════════════════════════════
+//  Document Data
+// ═══════════════════════════════════════════════
+
+const documents = {
+  invoice: {
+    type: 'PDF',
+    time: '1.2s',
+    fields: [
+      { name: 'Vendor', value: 'TechSupply Co.', confidence: 98 },
+      { name: 'Invoice No.', value: 'INV-2024-0847', confidence: 99 },
+      { name: 'Date', value: 'January 15, 2024', confidence: 97 },
+      { name: 'Due Date', value: 'February 15, 2024', confidence: 96 },
+      { name: 'Item 1', value: 'Cloud Server License x2 @ $1,200', confidence: 97 },
+      { name: 'Item 2', value: 'API Gateway Setup x1 @ $850', confidence: 96 },
+      { name: 'Item 3', value: 'Support Plan (Annual) x1 @ $1,000', confidence: 95 },
+      { name: 'Subtotal', value: '$4,250.00', confidence: 99 },
+      { name: 'Tax (9%)', value: '$382.50', confidence: 98 },
+      { name: 'Total', value: '$4,632.50', confidence: 99 },
+    ],
+    preview: `
+      <div class="doc-header-block">
+        <div>
+          <div class="doc-company-logo">TS</div>
+          <div class="doc-company-name" data-field="vendor">TechSupply Co.</div>
+          <div class="doc-company-address">
+            2847 Innovation Drive, Suite 300<br>
+            San Francisco, CA 94105<br>
+            billing@techsupply.co
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="doc-type-title">Invoice</div>
+        </div>
+      </div>
+
+      <div class="doc-meta-row">
+        <div class="doc-meta-group">
+          <label>Invoice Number</label>
+          <span data-field="invoice_no">INV-2024-0847</span>
+        </div>
+        <div class="doc-meta-group">
+          <label>Date Issued</label>
+          <span data-field="date">January 15, 2024</span>
+        </div>
+        <div class="doc-meta-group">
+          <label>Due Date</label>
+          <span data-field="due_date">February 15, 2024</span>
+        </div>
+        <div class="doc-meta-group">
+          <label>Payment Terms</label>
+          <span>Net 30</span>
+        </div>
+      </div>
+
+      <div class="doc-meta-row" style="margin-bottom:8px">
+        <div class="doc-meta-group">
+          <label>Bill To</label>
+          <span>Meridian Dynamics Inc.<br>
+          <span style="color:#777;font-size:11px">1200 Park Avenue, New York, NY 10128</span></span>
+        </div>
+      </div>
+
+      <table class="doc-table">
+        <thead>
+          <tr>
+            <th style="width:45%">Description</th>
+            <th style="width:10%">Qty</th>
+            <th class="text-right" style="width:20%">Unit Price</th>
+            <th class="text-right" style="width:25%">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-field="item1">
+            <td>Cloud Server License (Enterprise)</td>
+            <td>2</td>
+            <td class="text-right">$1,200.00</td>
+            <td class="text-right">$2,400.00</td>
+          </tr>
+          <tr data-field="item2">
+            <td>API Gateway Setup & Configuration</td>
+            <td>1</td>
+            <td class="text-right">$850.00</td>
+            <td class="text-right">$850.00</td>
+          </tr>
+          <tr data-field="item3">
+            <td>Premium Support Plan (Annual)</td>
+            <td>1</td>
+            <td class="text-right">$1,000.00</td>
+            <td class="text-right">$1,000.00</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="doc-totals">
+        <div class="total-row" data-field="subtotal">
+          <span class="total-label">Subtotal</span>
+          <span>$4,250.00</span>
+        </div>
+        <div class="total-row" data-field="tax">
+          <span class="total-label">Sales Tax (9%)</span>
+          <span>$382.50</span>
+        </div>
+        <div class="total-row grand" data-field="total">
+          <span class="total-label">Total Due</span>
+          <span>$4,632.50</span>
+        </div>
+      </div>
+
+      <div style="margin-top:32px;padding-top:16px;border-top:1px solid #eee;font-family:var(--font-body);font-size:11px;color:#999;line-height:1.5">
+        Payment is due within 30 days of invoice date. Please include invoice number on all correspondence.
+        Wire transfers accepted. Late payments subject to 1.5% monthly interest.
+      </div>
+    `
+  },
+
+  contract: {
+    type: 'DOCX',
+    time: '1.8s',
+    fields: [
+      { name: 'Party A', value: 'Acme Corp', confidence: 97 },
+      { name: 'Party B', value: 'Jane Smith', confidence: 96 },
+      { name: 'Effective Date', value: 'March 1, 2024', confidence: 98 },
+      { name: 'Position', value: 'Senior Developer', confidence: 99 },
+      { name: 'Salary', value: '$145,000/year', confidence: 97 },
+      { name: 'Duration', value: '24 months', confidence: 95 },
+      { name: 'Notice Period', value: '30 days', confidence: 94 },
+      { name: 'Non-Compete', value: '12 months, 50mi radius', confidence: 91 },
+    ],
+    preview: `
+      <div style="text-align:center;margin-bottom:12px">
+        <div style="font-family:var(--font-body);font-size:11px;color:#999;letter-spacing:1px;text-transform:uppercase">Confidential</div>
+      </div>
+      <div class="contract-title">Employment Agreement</div>
+
+      <div style="text-align:center;margin-bottom:28px;font-family:var(--font-body);font-size:12px;color:#777">
+        Effective Date: <span data-field="effective_date" style="color:#333;font-weight:600">March 1, 2024</span>
+      </div>
+
+      <div class="contract-section">
+        <div class="contract-section-title">1. Parties</div>
+        <div class="contract-text">
+          This Employment Agreement ("Agreement") is entered into between
+          <span data-field="party_a" style="font-weight:700">Acme Corp</span>, a Delaware corporation
+          with principal offices at 500 Market Street, San Francisco, CA 94105 ("Employer"),
+          and <span data-field="party_b" style="font-weight:700">Jane Smith</span>,
+          an individual residing at 742 Evergreen Terrace, Springfield, IL 62704 ("Employee").
+        </div>
+      </div>
+
+      <div class="contract-section">
+        <div class="contract-section-title">2. Position & Duties</div>
+        <div class="contract-text">
+          Employee shall serve in the role of <span data-field="position" style="font-weight:700">Senior Developer</span>
+          and shall report directly to the VP of Engineering. Employee agrees to devote full-time
+          professional efforts to the duties and responsibilities assigned by the Employer.
+        </div>
+      </div>
+
+      <div class="contract-section">
+        <div class="contract-section-title">3. Compensation</div>
+        <div class="contract-text">
+          Employer agrees to pay Employee a base annual salary of
+          <span data-field="salary" style="font-weight:700">$145,000/year</span>,
+          payable in accordance with Employer's standard payroll schedule. Employee shall
+          also be eligible for an annual performance bonus of up to 15% of base salary,
+          subject to meeting performance objectives established by management.
+        </div>
+      </div>
+
+      <div class="contract-section">
+        <div class="contract-section-title">4. Term</div>
+        <div class="contract-text">
+          This Agreement shall be effective for a period of
+          <span data-field="duration" style="font-weight:700">24 months</span>
+          from the Effective Date, subject to earlier termination as provided herein.
+          Either party may terminate this Agreement with
+          <span data-field="notice_period" style="font-weight:700">30 days</span>
+          prior written notice to the other party.
+        </div>
+      </div>
+
+      <div class="contract-section">
+        <div class="contract-section-title">5. Non-Competition</div>
+        <div class="contract-text">
+          Upon termination, Employee agrees not to engage in competing business activities for a period of
+          <span data-field="non_compete" style="font-weight:700">12 months</span> within a
+          <span style="font-weight:700">50-mile radius</span> of any Employer office location.
+          This restriction applies to direct employment, consulting, and advisory roles
+          with competitors in the same market segment.
+        </div>
+      </div>
+
+      <div style="margin-top:32px;display:flex;justify-content:space-between;font-family:var(--font-body);font-size:12px">
+        <div>
+          <div style="border-top:1px solid #333;width:200px;padding-top:8px;margin-top:40px">
+            <strong>Acme Corp</strong><br>
+            <span style="color:#999">Authorized Signatory</span>
+          </div>
+        </div>
+        <div>
+          <div style="border-top:1px solid #333;width:200px;padding-top:8px;margin-top:40px">
+            <strong>Jane Smith</strong><br>
+            <span style="color:#999">Employee</span>
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  claim: {
+    type: 'PDF',
+    time: '1.4s',
+    fields: [
+      { name: 'Claim No.', value: 'CLM-2024-12847', confidence: 99 },
+      { name: 'Policy Holder', value: 'Robert Johnson', confidence: 97 },
+      { name: 'Policy No.', value: 'POL-889234', confidence: 98 },
+      { name: 'Incident Date', value: 'December 3, 2023', confidence: 96 },
+      { name: 'Claim Type', value: 'Auto - Collision', confidence: 98 },
+      { name: 'Est. Damage', value: '$8,750.00', confidence: 94 },
+      { name: 'Deductible', value: '$500.00', confidence: 99 },
+    ],
+    preview: `
+      <div class="doc-header-block">
+        <div>
+          <div class="doc-company-logo" style="background:#1a5276;border-radius:50%">SI</div>
+          <div class="doc-company-name">SafeGuard Insurance</div>
+          <div class="doc-company-address">
+            Insurance Claim Division<br>
+            P.O. Box 44820, Hartford, CT 06144<br>
+            claims@safeguardins.com | 1-800-555-0199
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="doc-type-title" style="font-size:18px;letter-spacing:1px">Claim Form</div>
+          <div style="font-family:var(--font-body);font-size:11px;color:#999;margin-top:4px">Form CL-200 Rev. 2023</div>
+        </div>
+      </div>
+
+      <div class="form-section-title">Claim Information</div>
+      <div class="form-field">
+        <div class="form-label">Claim Number</div>
+        <div class="form-value" data-field="claim_no">CLM-2024-12847</div>
+      </div>
+      <div class="form-field">
+        <div class="form-label">Date Filed</div>
+        <div class="form-value">December 5, 2023</div>
+      </div>
+      <div class="form-field">
+        <div class="form-label">Claim Type</div>
+        <div class="form-value" data-field="claim_type">Auto - Collision</div>
+      </div>
+
+      <div class="form-section-title">Policyholder Details</div>
+      <div class="form-field">
+        <div class="form-label">Full Name</div>
+        <div class="form-value" data-field="policy_holder">Robert Johnson</div>
+      </div>
+      <div class="form-field">
+        <div class="form-label">Policy Number</div>
+        <div class="form-value" data-field="policy_no">POL-889234</div>
+      </div>
+      <div class="form-field">
+        <div class="form-label">Address</div>
+        <div class="form-value">385 Oak Street, Apt 12B, Boston, MA 02116</div>
+      </div>
+      <div class="form-field">
+        <div class="form-label">Phone</div>
+        <div class="form-value">(617) 555-0342</div>
+      </div>
+
+      <div class="form-section-title">Incident Details</div>
+      <div class="form-field">
+        <div class="form-label">Date of Incident</div>
+        <div class="form-value" data-field="incident_date">December 3, 2023</div>
+      </div>
+      <div class="form-field">
+        <div class="form-label">Location</div>
+        <div class="form-value">Intersection of Main St & 5th Ave, Boston, MA</div>
+      </div>
+      <div class="form-field">
+        <div class="form-label">Description</div>
+        <div class="form-value" style="font-size:11.5px;line-height:1.5">
+          Vehicle was struck on the rear passenger side by another vehicle that ran a red light
+          at the intersection. Police report filed (#BPD-2023-44291). Other driver cited for
+          failure to obey traffic signal.
+        </div>
+      </div>
+
+      <div class="form-section-title">Financial Summary</div>
+      <div class="form-field">
+        <div class="form-label">Estimated Damage</div>
+        <div class="form-value" data-field="est_damage" style="font-weight:700">$8,750.00</div>
+      </div>
+      <div class="form-field">
+        <div class="form-label">Deductible</div>
+        <div class="form-value" data-field="deductible">$500.00</div>
+      </div>
+      <div class="form-field" style="border-bottom:2px solid #333">
+        <div class="form-label" style="font-weight:700">Net Claim Amount</div>
+        <div class="form-value" style="font-weight:700">$8,250.00</div>
+      </div>
+
+      <div style="margin-top:24px;font-family:var(--font-body);font-size:11px;color:#999;line-height:1.5">
+        By signing below, I certify that the information provided is true and accurate to the best of my knowledge.
+        I understand that any false statements may result in denial of my claim.
+      </div>
+      <div style="margin-top:20px;border-top:1px solid #333;width:200px;padding-top:8px;font-family:var(--font-body);font-size:12px">
+        <strong>Robert Johnson</strong><br>
+        <span style="color:#999">Policyholder Signature</span>
+      </div>
+    `
+  }
+};
+
+// Field-to-data-field mapping for highlights
+const fieldMapping = {
+  invoice: {
+    0: 'vendor',
+    1: 'invoice_no',
+    2: 'date',
+    3: 'due_date',
+    4: 'item1',
+    5: 'item2',
+    6: 'item3',
+    7: 'subtotal',
+    8: 'tax',
+    9: 'total',
+  },
+  contract: {
+    0: 'party_a',
+    1: 'party_b',
+    2: 'effective_date',
+    3: 'position',
+    4: 'salary',
+    5: 'duration',
+    6: 'notice_period',
+    7: 'non_compete',
+  },
+  claim: {
+    0: 'claim_no',
+    1: 'policy_holder',
+    2: 'policy_no',
+    3: 'incident_date',
+    4: 'claim_type',
+    5: 'est_damage',
+    6: 'deductible',
+  }
+};
+
+// ═══════════════════════════════════════════════
+//  State
+// ═══════════════════════════════════════════════
+let currentDoc = null;
+let animationTimer = null;
+let fieldTimers = [];
+
+// ═══════════════════════════════════════════════
+//  Select Document
+// ═══════════════════════════════════════════════
+function selectDocument(docKey) {
+  // Prevent re-selecting the same doc while animating
+  if (currentDoc === docKey) return;
+  currentDoc = docKey;
+
+  // Clear previous animations
+  if (animationTimer) clearTimeout(animationTimer);
+  fieldTimers.forEach(t => clearTimeout(t));
+  fieldTimers = [];
+
+  const doc = documents[docKey];
+
+  // Update card active states
+  document.querySelectorAll('.doc-card').forEach(card => {
+    card.classList.toggle('active', card.dataset.doc === docKey);
+  });
+
+  // Hide placeholder, show split panel
+  document.getElementById('placeholder').style.display = 'none';
+  const splitPanel = document.getElementById('splitPanel');
+  splitPanel.classList.add('visible');
+
+  // Set doc type tag
+  document.getElementById('docTypeTag').textContent = doc.type;
+
+  // Render document preview
+  document.getElementById('docPreview').innerHTML = doc.preview;
+
+  // Reset right panel
+  document.getElementById('extractedList').innerHTML = '';
+  document.getElementById('progressBar').style.width = '0%';
+  document.getElementById('progressPercent').textContent = '0%';
+  document.getElementById('progressLabel').textContent = 'Analyzing document...';
+  document.getElementById('fieldCountTag').textContent = '0 fields';
+  document.getElementById('processingTime').classList.remove('visible');
+  document.getElementById('statsBar').classList.remove('visible');
+
+  // Remove old scanner class and force reflow
+  const scannerLine = document.getElementById('scannerLine');
+  scannerLine.classList.remove('scanning');
+  void scannerLine.offsetWidth; // force reflow
+
+  // Start scanning animation
+  setTimeout(() => {
+    scannerLine.classList.add('scanning');
+  }, 100);
+
+  // Start field extraction after short delay
+  animationTimer = setTimeout(() => {
+    startExtraction(docKey, doc);
+  }, 600);
+}
+
+// ═══════════════════════════════════════════════
+//  Extraction Animation
+// ═══════════════════════════════════════════════
+function startExtraction(docKey, doc) {
+  const fields = doc.fields;
+  const totalFields = fields.length;
+  const mapping = fieldMapping[docKey];
+  const intervalBase = 180;
+  const extractedList = document.getElementById('extractedList');
+
+  // Build all items (hidden)
+  fields.forEach((field, i) => {
+    const confClass = field.confidence >= 95 ? 'confidence-high'
+                    : field.confidence >= 85 ? 'confidence-medium'
+                    : 'confidence-low';
+
+    const item = document.createElement('div');
+    item.className = 'extracted-item';
+    item.id = `field-${i}`;
+    item.innerHTML = `
+      <div class="extracted-field-name">${field.name}</div>
+      <div class="extracted-field-value">${field.value}</div>
+      <div class="extracted-confidence ${confClass}">${field.confidence}%</div>
+    `;
+    extractedList.appendChild(item);
+  });
+
+  // Reveal fields one by one
+  fields.forEach((field, i) => {
+    const delay = i * intervalBase + Math.random() * 80;
+    const timer = setTimeout(() => {
+      // Show extracted item
+      const item = document.getElementById(`field-${i}`);
+      if (item) item.classList.add('visible');
+
+      // Highlight on document
+      const dataField = mapping[i];
+      if (dataField) {
+        const el = document.querySelector(`[data-field="${dataField}"]`);
+        if (el) el.classList.add('highlighted');
+      }
+
+      // Update progress
+      const progress = Math.round(((i + 1) / totalFields) * 100);
+      document.getElementById('progressBar').style.width = progress + '%';
+      document.getElementById('progressPercent').textContent = progress + '%';
+      document.getElementById('fieldCountTag').textContent = (i + 1) + ' field' + (i + 1 > 1 ? 's' : '');
+
+      if (i === totalFields - 1) {
+        // Extraction complete
+        setTimeout(() => {
+          document.getElementById('progressLabel').textContent = 'Extraction complete';
+          showStats(doc);
+        }, 200);
+      }
+    }, delay);
+    fieldTimers.push(timer);
+  });
+}
+
+// ═══════════════════════════════════════════════
+//  Show Stats
+// ═══════════════════════════════════════════════
+function showStats(doc) {
+  const fields = doc.fields;
+  const avgConf = Math.round(fields.reduce((sum, f) => sum + f.confidence, 0) / fields.length);
+
+  document.getElementById('processingTime').classList.add('visible');
+  document.getElementById('timeValue').textContent = doc.time;
+
+  document.getElementById('statFields').textContent = fields.length + '/' + fields.length;
+  document.getElementById('statConfidence').textContent = avgConf + '%';
+  document.getElementById('statTime').textContent = doc.time;
+
+  document.getElementById('statsBar').classList.add('visible');
+}
+</script>
+
+</body>
+</html>

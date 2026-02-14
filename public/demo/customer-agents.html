@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Praxis AI — Customer Agents Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --terracotta: #C15F3C;
+    --terracotta-light: #d4795a;
+    --terracotta-dark: #a8502f;
+    --cream: #F4F3EE;
+    --charcoal: #141413;
+    --mid: #b0aea5;
+    --border: #e8e6dc;
+    --white: #ffffff;
+    --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-display: 'Caveat', cursive;
+    --shadow-sm: 0 1px 3px rgba(20,20,19,0.06);
+    --shadow-md: 0 4px 12px rgba(20,20,19,0.08);
+    --shadow-lg: 0 8px 30px rgba(20,20,19,0.12);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+  }
+
+  html { font-size: 16px; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--cream);
+    color: var(--charcoal);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo {
+    width: 36px;
+    height: 36px;
+    background: var(--terracotta);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-weight: 700;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .brand-name {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--charcoal);
+    line-height: 1;
+  }
+
+  .header-title {
+    font-size: 14px;
+    color: var(--mid);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .header-title .badge {
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Layout ── */
+  .layout {
+    display: flex;
+    flex: 1;
+    max-width: 1200px;
+    width: 100%;
+    margin: 24px auto;
+    padding: 0 24px;
+    gap: 24px;
+    min-height: 0;
+  }
+
+  /* ── Chat Panel ── */
+  .chat-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    min-height: 560px;
+    max-height: calc(100vh - 180px);
+  }
+
+  .chat-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--white);
+  }
+
+  .chat-avatar {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--terracotta), var(--terracotta-light));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .chat-header-info h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--charcoal);
+  }
+
+  .chat-header-info .status {
+    font-size: 12px;
+    color: #2e7d32;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    background: #4caf50;
+    border-radius: 50%;
+    display: inline-block;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ── Messages Area ── */
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    scroll-behavior: smooth;
+  }
+
+  .messages::-webkit-scrollbar { width: 5px; }
+  .messages::-webkit-scrollbar-track { background: transparent; }
+  .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+  .message {
+    display: flex;
+    gap: 10px;
+    max-width: 80%;
+    animation: msg-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes msg-in {
+    from { opacity: 0; transform: translateY(12px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .message.bot { align-self: flex-start; }
+  .message.user { align-self: flex-end; flex-direction: row-reverse; }
+
+  .msg-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .message.bot .msg-avatar {
+    background: linear-gradient(135deg, var(--terracotta), var(--terracotta-light));
+    color: var(--white);
+  }
+
+  .message.user .msg-avatar {
+    background: var(--charcoal);
+    color: var(--white);
+    font-size: 13px;
+  }
+
+  .msg-bubble {
+    padding: 12px 16px;
+    line-height: 1.55;
+    font-size: 14px;
+    border-radius: var(--radius-lg);
+    position: relative;
+  }
+
+  .message.bot .msg-bubble {
+    background: var(--white);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+    color: var(--charcoal);
+    border-bottom-left-radius: 4px;
+  }
+
+  .message.user .msg-bubble {
+    background: var(--terracotta);
+    color: var(--white);
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 2px 8px rgba(193,95,60,0.25);
+  }
+
+  .msg-time {
+    font-size: 11px;
+    color: var(--mid);
+    margin-top: 4px;
+    padding: 0 4px;
+  }
+
+  .message.user .msg-time { text-align: right; }
+
+  /* ── Typing Indicator ── */
+  .typing-indicator {
+    display: none;
+    align-self: flex-start;
+    gap: 10px;
+    max-width: 80%;
+    animation: msg-in 0.3s ease;
+  }
+
+  .typing-indicator.visible { display: flex; }
+
+  .typing-bubble {
+    background: var(--white);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+    border-radius: var(--radius-lg);
+    border-bottom-left-radius: 4px;
+    padding: 14px 20px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+
+  .typing-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--mid);
+    border-radius: 50%;
+    animation: bounce-dot 1.4s ease-in-out infinite;
+  }
+
+  .typing-dot:nth-child(2) { animation-delay: 0.16s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.32s; }
+
+  @keyframes bounce-dot {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-8px); opacity: 1; }
+  }
+
+  /* ── Input Bar ── */
+  .input-bar {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    background: var(--white);
+  }
+
+  .input-bar input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-family: var(--font-body);
+    color: var(--charcoal);
+    background: var(--cream);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .input-bar input::placeholder { color: var(--mid); }
+
+  .input-bar input:focus {
+    border-color: var(--terracotta);
+    box-shadow: 0 0 0 3px rgba(193,95,60,0.1);
+  }
+
+  .send-btn {
+    width: 44px;
+    height: 44px;
+    background: var(--terracotta);
+    border: none;
+    border-radius: var(--radius-md);
+    color: var(--white);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, transform 0.15s;
+    flex-shrink: 0;
+  }
+
+  .send-btn:hover { background: var(--terracotta-dark); }
+  .send-btn:active { transform: scale(0.93); }
+
+  .send-btn svg { width: 20px; height: 20px; }
+
+  /* ── Quick Actions ── */
+  .quick-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 0 20px 16px;
+    background: var(--white);
+  }
+
+  .quick-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    background: var(--cream);
+    color: var(--charcoal);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .quick-btn:hover {
+    border-color: var(--terracotta);
+    color: var(--terracotta);
+    background: rgba(193,95,60,0.05);
+  }
+
+  .quick-btn:active { transform: scale(0.96); }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .sidebar-card h4 {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--mid);
+    margin-bottom: 14px;
+  }
+
+  .metric-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .metric-row:last-child { border-bottom: none; }
+
+  .metric-label {
+    color: var(--mid);
+    font-weight: 500;
+  }
+
+  .metric-value {
+    font-weight: 600;
+    color: var(--charcoal);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .sentiment-emoji {
+    font-size: 20px;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+
+  .sentiment-emoji.changed {
+    animation: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes pop {
+    0% { transform: scale(0.5); }
+    100% { transform: scale(1); }
+  }
+
+  .response-badge {
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 12px;
+  }
+
+  .topics-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 28px;
+  }
+
+  .topic-tag {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    color: var(--charcoal);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 14px;
+    animation: tag-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes tag-in {
+    from { opacity: 0; transform: scale(0.7); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .empty-topics {
+    font-size: 12px;
+    color: var(--mid);
+    font-style: italic;
+  }
+
+  /* ── Stats Card ── */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .stat-item {
+    text-align: center;
+    padding: 10px 8px;
+    background: var(--cream);
+    border-radius: var(--radius-sm);
+  }
+
+  .stat-number {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--terracotta);
+    line-height: 1.2;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--mid);
+    margin-top: 2px;
+  }
+
+  /* ── Powered By ── */
+  .powered-by {
+    text-align: center;
+    font-size: 12px;
+    color: var(--mid);
+    padding: 10px;
+  }
+
+  .powered-by strong {
+    color: var(--terracotta);
+    font-family: var(--font-display);
+    font-size: 16px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .layout {
+      flex-direction: column;
+      padding: 0 12px;
+      margin: 12px auto;
+      gap: 16px;
+    }
+
+    .sidebar {
+      width: 100%;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .sidebar-card { flex: 1; min-width: 200px; }
+
+    .chat-panel {
+      min-height: 480px;
+      max-height: 65vh;
+    }
+
+    .header {
+      padding: 12px 16px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .message { max-width: 90%; }
+
+    .quick-actions { padding: 0 12px 12px; }
+  }
+
+  @media (max-width: 480px) {
+    .sidebar { flex-direction: column; }
+    .sidebar-card { min-width: auto; }
+    .brand-name { font-size: 22px; }
+    .header-title { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-left">
+    <div class="logo">P</div>
+    <span class="brand-name">Praxis AI</span>
+  </div>
+  <div class="header-title">
+    AI Customer Agents &mdash; Demo
+    <span class="badge">Live</span>
+  </div>
+</header>
+
+<!-- Main Layout -->
+<div class="layout">
+
+  <!-- Chat Panel -->
+  <div class="chat-panel">
+    <div class="chat-header">
+      <div class="chat-avatar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M12 8V4H8"/><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="6" y="14" width="12" height="8" rx="2"/><path d="M12 10v4"/><path d="M2 6h2"/><path d="M20 6h2"/></svg>
+      </div>
+      <div class="chat-header-info">
+        <h3>Praxis Customer Agent</h3>
+        <div class="status"><span class="status-dot"></span> Online &mdash; Ready to help</div>
+      </div>
+    </div>
+
+    <div class="messages" id="messages">
+      <!-- Messages injected via JS -->
+    </div>
+
+    <!-- Typing Indicator -->
+    <div class="typing-indicator" id="typingIndicator">
+      <div class="msg-avatar" style="background:linear-gradient(135deg,var(--terracotta),var(--terracotta-light));color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M12 8V4H8"/><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="6" y="14" width="12" height="8" rx="2"/><path d="M12 10v4"/></svg>
+      </div>
+      <div class="typing-bubble">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <button class="quick-btn" onclick="sendQuick('I need to track my order')">Track Order</button>
+      <button class="quick-btn" onclick="sendQuick('I\'d like to book an appointment')">Book Appointment</button>
+      <button class="quick-btn" onclick="sendQuick('What are your pricing plans?')">Pricing Info</button>
+      <button class="quick-btn" onclick="sendQuick('I\'d like to speak with a human agent')">Talk to Human</button>
+    </div>
+
+    <div class="input-bar">
+      <input type="text" id="chatInput" placeholder="Type your message..." autocomplete="off">
+      <button class="send-btn" onclick="sendMessage()" aria-label="Send message">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+
+    <div class="sidebar-card">
+      <h4>Live Analysis</h4>
+      <div class="metric-row">
+        <span class="metric-label">Language</span>
+        <span class="metric-value" id="langValue">
+          <span style="font-size:16px">&#127468;&#127463;</span> English
+        </span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">Sentiment</span>
+        <span class="metric-value">
+          <span class="sentiment-emoji" id="sentimentEmoji">&#128578;</span>
+          <span id="sentimentLabel">Neutral</span>
+        </span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">Response time</span>
+        <span class="metric-value"><span class="response-badge">&lt; 1s</span></span>
+      </div>
+      <div class="metric-row" style="border-bottom:none;flex-direction:column;align-items:flex-start;gap:8px;">
+        <span class="metric-label">Topics detected</span>
+        <div class="topics-container" id="topicsContainer">
+          <span class="empty-topics">No topics yet...</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <h4>Session Stats</h4>
+      <div class="stat-grid">
+        <div class="stat-item">
+          <div class="stat-number" id="msgCount">1</div>
+          <div class="stat-label">Messages</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="avgResponse">0.8s</div>
+          <div class="stat-label">Avg Response</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="resolvedCount">0</div>
+          <div class="stat-label">Resolved</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="satisfactionScore">--</div>
+          <div class="stat-label">CSAT</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="powered-by">
+      Powered by <strong>Praxis AI</strong>
+    </div>
+
+  </aside>
+</div>
+
+<script>
+(function() {
+  // ── State ──
+  const state = {
+    messages: [],
+    topics: new Set(),
+    totalMessages: 1,
+    botResponses: 0,
+    totalResponseTime: 0,
+    resolved: 0
+  };
+
+  const messagesEl = document.getElementById('messages');
+  const inputEl = document.getElementById('chatInput');
+  const typingEl = document.getElementById('typingIndicator');
+
+  // ── Time helper ──
+  function timeNow() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  // ── Add message to DOM ──
+  function addMessage(text, sender) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'message ' + sender;
+
+    const avatar = document.createElement('div');
+    avatar.className = 'msg-avatar';
+
+    if (sender === 'bot') {
+      avatar.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M12 8V4H8"/><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="6" y="14" width="12" height="8" rx="2"/><path d="M12 10v4"/></svg>';
+    } else {
+      avatar.textContent = 'You';
+    }
+
+    const content = document.createElement('div');
+
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bubble';
+    bubble.innerHTML = text;
+
+    const time = document.createElement('div');
+    time.className = 'msg-time';
+    time.textContent = timeNow();
+
+    content.appendChild(bubble);
+    content.appendChild(time);
+
+    wrapper.appendChild(avatar);
+    wrapper.appendChild(content);
+    messagesEl.appendChild(wrapper);
+
+    state.totalMessages++;
+    document.getElementById('msgCount').textContent = state.totalMessages;
+
+    scrollToBottom();
+  }
+
+  function scrollToBottom() {
+    requestAnimationFrame(function() {
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    });
+  }
+
+  function showTyping() {
+    typingEl.classList.add('visible');
+    scrollToBottom();
+  }
+
+  function hideTyping() {
+    typingEl.classList.remove('visible');
+  }
+
+  // ── Sentiment Analysis ──
+  function analyzeSentiment(text) {
+    var lower = text.toLowerCase();
+    var negWords = ['angry','upset','terrible','awful','worst','hate','frustrated','annoyed','disappointed','broken','wrong','bad','horrible','useless','ridiculous','unacceptable','complaint','disgusted','furious'];
+    var posWords = ['thanks','thank','great','awesome','perfect','love','excellent','amazing','wonderful','happy','pleased','good','helpful','nice','appreciate','fantastic','brilliant'];
+
+    var negCount = 0, posCount = 0;
+    negWords.forEach(function(w) { if (lower.includes(w)) negCount++; });
+    posWords.forEach(function(w) { if (lower.includes(w)) posCount++; });
+
+    if (negCount > posCount) return { emoji: '\uD83D\uDE1F', label: 'Negative' };
+    if (posCount > negCount) return { emoji: '\uD83D\uDE0A', label: 'Positive' };
+    return { emoji: '\uD83D\uDE10', label: 'Neutral' };
+  }
+
+  function updateSentiment(text) {
+    var s = analyzeSentiment(text);
+    var emojiEl = document.getElementById('sentimentEmoji');
+    var labelEl = document.getElementById('sentimentLabel');
+
+    if (emojiEl.textContent !== s.emoji) {
+      emojiEl.textContent = s.emoji;
+      labelEl.textContent = s.label;
+      emojiEl.classList.remove('changed');
+      void emojiEl.offsetWidth; // force reflow
+      emojiEl.classList.add('changed');
+    }
+  }
+
+  // ── Topic Detection ──
+  function detectTopics(text) {
+    var lower = text.toLowerCase();
+    var topicMap = {
+      'Order Tracking': ['order','tracking','delivery','shipped','package','shipment'],
+      'Returns & Refunds': ['refund','return','money back','exchange'],
+      'Pricing': ['pricing','plan','cost','price','subscription','billing','payment'],
+      'Appointments': ['appointment','schedule','book','booking','available','slot'],
+      'Business Hours': ['hours','open','close','closing','opening','when'],
+      'Greeting': ['hello','hi','hey','good morning','good afternoon'],
+      'Account': ['account','login','password','sign in','profile'],
+      'Support': ['help','support','issue','problem','question'],
+      'Human Agent': ['human','agent','person','real person','someone','speak with','talk to']
+    };
+
+    var found = [];
+    Object.keys(topicMap).forEach(function(topic) {
+      topicMap[topic].forEach(function(kw) {
+        if (lower.includes(kw) && !state.topics.has(topic)) {
+          state.topics.add(topic);
+          found.push(topic);
+        }
+      });
+    });
+
+    if (found.length > 0) {
+      var container = document.getElementById('topicsContainer');
+      var emptyMsg = container.querySelector('.empty-topics');
+      if (emptyMsg) emptyMsg.remove();
+
+      found.forEach(function(topic) {
+        var tag = document.createElement('span');
+        tag.className = 'topic-tag';
+        tag.textContent = topic;
+        container.appendChild(tag);
+      });
+    }
+  }
+
+  // ── Response Generation ──
+  function generateResponse(text) {
+    var lower = text.toLowerCase();
+
+    // Greetings
+    if (/^(hi|hello|hey|good morning|good afternoon|good evening|howdy|what'?s up)/i.test(lower)) {
+      return "Hello! \uD83D\uDC4B I'm your AI assistant powered by Praxis. I can help you track orders, book appointments, answer pricing questions, process returns, and much more. How can I help you today?";
+    }
+
+    // Order tracking
+    if (lower.includes('order') || lower.includes('tracking') || lower.includes('delivery') || lower.includes('shipped') || lower.includes('package')) {
+      state.resolved++;
+      document.getElementById('resolvedCount').textContent = state.resolved;
+      var orderNum = 'PRX-' + (Math.floor(Math.random() * 90000) + 10000);
+      var statuses = ['In Transit', 'Out for Delivery', 'Processing', 'Shipped'];
+      var status = statuses[Math.floor(Math.random() * statuses.length)];
+      var days = Math.floor(Math.random() * 3) + 1;
+      return '<strong>Order Found</strong><br><br>' +
+        '\uD83D\uDCE6 <strong>Order:</strong> ' + orderNum + '<br>' +
+        '\uD83D\uDCCD <strong>Status:</strong> ' + status + '<br>' +
+        '\uD83D\uDE9A <strong>ETA:</strong> ' + days + ' business day' + (days > 1 ? 's' : '') + '<br>' +
+        '\uD83D\uDCDE <strong>Carrier:</strong> Express Logistics<br><br>' +
+        'Would you like me to set up delivery notifications or make any changes to this order?';
+    }
+
+    // Refund / return
+    if (lower.includes('refund') || lower.includes('return') || lower.includes('money back') || lower.includes('exchange')) {
+      state.resolved++;
+      document.getElementById('resolvedCount').textContent = state.resolved;
+      return '<strong>Return & Refund Process</strong><br><br>' +
+        'I can help you with that! Here\'s how it works:<br><br>' +
+        '<strong>1.</strong> Verify your order details<br>' +
+        '<strong>2.</strong> Select the item(s) to return<br>' +
+        '<strong>3.</strong> Choose: refund or exchange<br>' +
+        '<strong>4.</strong> Print your prepaid return label<br>' +
+        '<strong>5.</strong> Drop off at any carrier location<br><br>' +
+        '\u2705 Refunds are processed within <strong>3-5 business days</strong> after we receive the item.<br><br>' +
+        'Shall I start the return process? I\'ll just need your order number.';
+    }
+
+    // Pricing
+    if (lower.includes('pricing') || lower.includes('plan') || lower.includes('cost') || lower.includes('price') || lower.includes('subscription')) {
+      state.resolved++;
+      document.getElementById('resolvedCount').textContent = state.resolved;
+      return '<strong>Our Plans</strong><br><br>' +
+        '<strong>Starter</strong> &mdash; $49/mo<br>' +
+        '&bull; 1,000 conversations/mo<br>' +
+        '&bull; Basic analytics<br>' +
+        '&bull; Email support<br><br>' +
+        '<strong>Professional</strong> &mdash; $149/mo<br>' +
+        '&bull; 10,000 conversations/mo<br>' +
+        '&bull; Advanced analytics & sentiment<br>' +
+        '&bull; Priority support<br>' +
+        '&bull; Custom branding<br><br>' +
+        '<strong>Enterprise</strong> &mdash; Custom<br>' +
+        '&bull; Unlimited conversations<br>' +
+        '&bull; Dedicated account manager<br>' +
+        '&bull; SLA guarantees<br>' +
+        '&bull; On-premise option<br><br>' +
+        'All plans include a <strong>14-day free trial</strong>. Would you like to start one?';
+    }
+
+    // Appointment / booking
+    if (lower.includes('appointment') || lower.includes('schedule') || lower.includes('book') || lower.includes('slot')) {
+      state.resolved++;
+      document.getElementById('resolvedCount').textContent = state.resolved;
+      var today = new Date();
+      var slots = [];
+      for (var i = 1; i <= 3; i++) {
+        var d = new Date(today);
+        d.setDate(d.getDate() + i);
+        var dayName = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        var times = ['9:00 AM', '11:30 AM', '2:00 PM', '4:30 PM'];
+        var avail = times.slice(0, Math.floor(Math.random() * 2) + 2);
+        slots.push('<strong>' + dayName + ':</strong> ' + avail.join(', '));
+      }
+      return '<strong>Available Appointments</strong><br><br>' +
+        'Here are the next available slots:<br><br>' +
+        slots.join('<br>') + '<br><br>' +
+        'Each session is <strong>30 minutes</strong>. Which time works best for you?';
+    }
+
+    // Business hours
+    if (lower.includes('hours') || lower.includes('open') || lower.includes('close') || lower.includes('closing') || lower.includes('when')) {
+      state.resolved++;
+      document.getElementById('resolvedCount').textContent = state.resolved;
+      return '<strong>Business Hours</strong><br><br>' +
+        '\uD83D\uDCC5 <strong>Monday - Friday:</strong> 8:00 AM - 8:00 PM EST<br>' +
+        '\uD83D\uDCC5 <strong>Saturday:</strong> 9:00 AM - 5:00 PM EST<br>' +
+        '\uD83D\uDCC5 <strong>Sunday:</strong> Closed<br><br>' +
+        '\uD83E\uDD16 <strong>AI Support:</strong> Available <strong>24/7</strong><br><br>' +
+        'I\'m always here to help, even outside business hours! Is there anything specific you need assistance with?';
+    }
+
+    // Human agent request
+    if (lower.includes('human') || lower.includes('agent') || lower.includes('person') || lower.includes('real person') || lower.includes('speak with') || lower.includes('talk to')) {
+      return 'Of course! I\'ll connect you with a human agent right away.<br><br>' +
+        '\uD83D\uDCDE <strong>Estimated wait time:</strong> ~2 minutes<br>' +
+        '\uD83D\uDCCB <strong>Queue position:</strong> 3<br><br>' +
+        'While you wait, I\'ve prepared a summary of our conversation so the agent can pick up right where we left off. Is there anything else I can help with in the meantime?';
+    }
+
+    // Thank you / positive
+    if (lower.includes('thank') || lower.includes('thanks') || lower.includes('great') || lower.includes('awesome') || lower.includes('perfect')) {
+      document.getElementById('satisfactionScore').textContent = '4.8';
+      return 'You\'re very welcome! I\'m glad I could help. \uD83D\uDE0A<br><br>If you need anything else in the future, don\'t hesitate to reach out. Have a wonderful day!';
+    }
+
+    // Fallback - smart topic extraction
+    var words = text.replace(/[^\w\s]/g, '').split(/\s+/).filter(function(w) { return w.length > 3; });
+    var topic = words.length > 0 ? words.slice(0, 3).join(' ') : 'that';
+
+    return 'I understand your question about <strong>"' + topic + '"</strong>. Let me look into this for you.<br><br>' +
+      'While I gather the relevant information, I can also connect you with a specialist who can provide more detailed assistance.<br><br>' +
+      'In the meantime, is there anything else I can help with?';
+  }
+
+  // ── Send Message ──
+  window.sendMessage = function() {
+    var text = inputEl.value.trim();
+    if (!text) return;
+
+    inputEl.value = '';
+    addMessage(text, 'user');
+    updateSentiment(text);
+    detectTopics(text);
+
+    // Simulate response delay
+    var delay = 1000 + Math.random() * 1000;
+    showTyping();
+
+    setTimeout(function() {
+      hideTyping();
+      var response = generateResponse(text);
+      addMessage(response, 'bot');
+
+      state.botResponses++;
+      state.totalResponseTime += delay / 1000;
+      var avg = (state.totalResponseTime / state.botResponses).toFixed(1);
+      document.getElementById('avgResponse').textContent = avg + 's';
+    }, delay);
+  };
+
+  // ── Quick Action Buttons ──
+  window.sendQuick = function(text) {
+    inputEl.value = text;
+    sendMessage();
+  };
+
+  // ── Enter Key ──
+  inputEl.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  // ── Welcome Message ──
+  function init() {
+    addMessage(
+      'Welcome! \uD83D\uDC4B I\'m your <strong>Praxis AI</strong> customer agent, available 24/7 to assist you.<br><br>' +
+      'I can help with:<br>' +
+      '&bull; <strong>Order tracking</strong> &amp; delivery updates<br>' +
+      '&bull; <strong>Returns</strong> &amp; refund processing<br>' +
+      '&bull; <strong>Appointment</strong> scheduling<br>' +
+      '&bull; <strong>Pricing</strong> &amp; plan information<br>' +
+      '&bull; General questions<br><br>' +
+      'How can I help you today?',
+      'bot'
+    );
+    // Reset count since the welcome message auto-incremented
+    state.totalMessages = 1;
+    document.getElementById('msgCount').textContent = '1';
+  }
+
+  init();
+  inputEl.focus();
+})();
+</script>
+</body>
+</html>
