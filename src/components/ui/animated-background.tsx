@@ -3,15 +3,6 @@
 import * as React from "react";
 
 const TAU = Math.PI * 2;
-const FPS = 30;
-const FRAME_MS = 1000 / FPS;
-
-const COLORS = {
-  terracotta: "#C15F3C",
-  cream: "#F4F3EE",
-  creamDark: "#E8E6DF",
-  charcoal: "#141413",
-} as const;
 
 function clamp(v: number, min: number, max: number) {
   return v < min ? min : v > max ? max : v;
@@ -22,31 +13,8 @@ function lerp(x: number, inMin: number, inMax: number, outMin: number, outMax: n
   return outMin + t * (outMax - outMin);
 }
 
-// ═══════════════════════════════════════════════════════════════
-// useLoopFrame — provides a frame counter at 30fps via rAF
-// ═══════════════════════════════════════════════════════════════
-function useLoopFrame(duration: number) {
-  const frameRef = React.useRef(0);
-  const [, forceRender] = React.useReducer((x: number) => x + 1, 0);
-  const lastTimeRef = React.useRef(0);
-  const reducedMotion = useReducedMotion();
-
-  React.useEffect(() => {
-    if (reducedMotion) return;
-    let raf: number;
-    const tick = (now: number) => {
-      if (now - lastTimeRef.current >= FRAME_MS) {
-        lastTimeRef.current = now - ((now - lastTimeRef.current) % FRAME_MS);
-        frameRef.current = (frameRef.current + 1) % duration;
-        forceRender();
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [duration, reducedMotion]);
-
-  return frameRef.current;
+function rgba(r: number, g: number, b: number, a: number): string {
+  return `rgba(${r},${g},${b},${a})`;
 }
 
 function useReducedMotion() {
@@ -73,9 +41,59 @@ function useMobile() {
   return mobile;
 }
 
-// ═══════════════════════════════════════════════════════════════
-// Wrapper — handles reduced motion / mobile fallback
-// ═══════════════════════════════════════════════════════════════
+type DrawFn = (ctx: CanvasRenderingContext2D, w: number, h: number, frame: number) => void;
+
+function useCanvasAnimation(
+  canvasRef: React.RefObject<HTMLCanvasElement | null>,
+  draw: DrawFn,
+  duration: number
+) {
+  const reduced = useReducedMotion();
+  const mobile = useMobile();
+  const frameRef = React.useRef(0);
+  const lastRef = React.useRef(0);
+
+  React.useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || reduced || mobile) return;
+    const ctx = canvas.getContext("2d", { alpha: true });
+    if (!ctx) return;
+
+    let raf: number;
+    let cw = 0;
+    let ch = 0;
+
+    const resize = () => {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      cw = rect.width;
+      ch = rect.height;
+      canvas.width = cw * dpr;
+      canvas.height = ch * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
+
+    const tick = (now: number) => {
+      if (now - lastRef.current >= 33.33) {
+        lastRef.current = now;
+        frameRef.current = (frameRef.current + 1) % duration;
+        ctx.clearRect(0, 0, cw, ch);
+        draw(ctx, cw, ch, frameRef.current);
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+    };
+  }, [canvasRef, draw, duration, reduced, mobile]);
+}
+
 function AnimatedBg({
   children,
   overlay,
@@ -85,69 +103,78 @@ function AnimatedBg({
   overlay?: string;
   className?: string;
 }) {
-  const reduced = useReducedMotion();
-  const mobile = useMobile();
-
   return (
-    <div className={`absolute inset-0 overflow-hidden ${className}`} aria-hidden="true">
-      {!reduced && !mobile ? children : (
-        <div className="absolute inset-0 bg-cream" />
-      )}
+    <div
+      className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}
+      aria-hidden="true"
+    >
+      {children}
       {overlay && <div className={`absolute inset-0 ${overlay}`} />}
     </div>
   );
 }
 
 // ═══════════════════════════════════════════════════════════════
-// 1. HeroAmbient — drifting blurred orbs
+// 1. HeroAmbient — soft drifting orbs via radial gradients
 // ═══════════════════════════════════════════════════════════════
 
+const HERO_DUR = 600;
+
 interface Orb {
-  cx: number; cy: number; r: number; color: string; opacity: number; blur: number;
-  xPeriod: number; yPeriod: number; xAmp: number; yAmp: number;
-  phase: number; breatheAmp: number; breathePeriod: number;
+  cx: number;
+  cy: number;
+  r: number;
+  rgb: readonly [number, number, number];
+  opacity: number;
+  xPeriod: number;
+  yPeriod: number;
+  xAmp: number;
+  yAmp: number;
+  phase: number;
+  breatheAmp: number;
+  breathePeriod: number;
 }
 
+const TC = [193, 95, 60] as const;
+
 const heroOrbs: Orb[] = [
-  { cx: 18, cy: 25, r: 250, color: COLORS.creamDark, opacity: 0.6, blur: 50, xPeriod: 600, yPeriod: 300, xAmp: 100, yAmp: 70, phase: 0, breatheAmp: 0.08, breathePeriod: 200 },
-  { cx: 75, cy: 70, r: 280, color: COLORS.creamDark, opacity: 0.55, blur: 55, xPeriod: 300, yPeriod: 600, xAmp: 80, yAmp: 90, phase: 0.25, breatheAmp: 0.06, breathePeriod: 150 },
-  { cx: 50, cy: 12, r: 220, color: COLORS.creamDark, opacity: 0.5, blur: 45, xPeriod: 200, yPeriod: 150, xAmp: 70, yAmp: 55, phase: 0.5, breatheAmp: 0.07, breathePeriod: 300 },
-  { cx: 88, cy: 35, r: 200, color: COLORS.creamDark, opacity: 0.45, blur: 40, xPeriod: 150, yPeriod: 200, xAmp: 60, yAmp: 75, phase: 0.7, breatheAmp: 0.05, breathePeriod: 200 },
-  { cx: 30, cy: 55, r: 180, color: COLORS.terracotta, opacity: 0.18, blur: 45, xPeriod: 150, yPeriod: 200, xAmp: 120, yAmp: 80, phase: 0.1, breatheAmp: 0.05, breathePeriod: 150 },
-  { cx: 65, cy: 22, r: 160, color: COLORS.terracotta, opacity: 0.2, blur: 40, xPeriod: 200, yPeriod: 300, xAmp: 90, yAmp: 65, phase: 0.4, breatheAmp: 0.06, breathePeriod: 200 },
-  { cx: 82, cy: 60, r: 200, color: COLORS.terracotta, opacity: 0.15, blur: 50, xPeriod: 300, yPeriod: 150, xAmp: 70, yAmp: 95, phase: 0.6, breatheAmp: 0.04, breathePeriod: 300 },
-  { cx: 42, cy: 82, r: 150, color: COLORS.terracotta, opacity: 0.17, blur: 35, xPeriod: 200, yPeriod: 600, xAmp: 95, yAmp: 55, phase: 0.85, breatheAmp: 0.05, breathePeriod: 150 },
-  { cx: 8, cy: 72, r: 120, color: COLORS.creamDark, opacity: 0.4, blur: 30, xPeriod: 150, yPeriod: 300, xAmp: 55, yAmp: 70, phase: 0.3, breatheAmp: 0.08, breathePeriod: 200 },
-  { cx: 55, cy: 45, r: 100, color: COLORS.terracotta, opacity: 0.12, blur: 28, xPeriod: 300, yPeriod: 200, xAmp: 65, yAmp: 60, phase: 0.15, breatheAmp: 0.04, breathePeriod: 150 },
-  { cx: 92, cy: 88, r: 140, color: COLORS.creamDark, opacity: 0.35, blur: 32, xPeriod: 200, yPeriod: 150, xAmp: 50, yAmp: 65, phase: 0.55, breatheAmp: 0.06, breathePeriod: 300 },
+  { cx: 0.18, cy: 0.25, r: 0.22, rgb: [200, 195, 180], opacity: 0.28, xPeriod: 600, yPeriod: 300, xAmp: 0.05, yAmp: 0.04, phase: 0, breatheAmp: 0.04, breathePeriod: 200 },
+  { cx: 0.75, cy: 0.70, r: 0.24, rgb: [205, 200, 188], opacity: 0.22, xPeriod: 300, yPeriod: 600, xAmp: 0.04, yAmp: 0.05, phase: 0.25, breatheAmp: 0.03, breathePeriod: 150 },
+  { cx: 0.50, cy: 0.12, r: 0.20, rgb: [195, 190, 175], opacity: 0.25, xPeriod: 200, yPeriod: 150, xAmp: 0.04, yAmp: 0.03, phase: 0.5, breatheAmp: 0.04, breathePeriod: 300 },
+  { cx: 0.88, cy: 0.35, r: 0.18, rgb: [208, 203, 193], opacity: 0.20, xPeriod: 150, yPeriod: 200, xAmp: 0.03, yAmp: 0.04, phase: 0.7, breatheAmp: 0.03, breathePeriod: 200 },
+  { cx: 0.30, cy: 0.55, r: 0.15, rgb: TC, opacity: 0.12, xPeriod: 150, yPeriod: 200, xAmp: 0.06, yAmp: 0.04, phase: 0.1, breatheAmp: 0.03, breathePeriod: 150 },
+  { cx: 0.65, cy: 0.22, r: 0.13, rgb: TC, opacity: 0.10, xPeriod: 200, yPeriod: 300, xAmp: 0.05, yAmp: 0.03, phase: 0.4, breatheAmp: 0.03, breathePeriod: 200 },
+  { cx: 0.82, cy: 0.60, r: 0.16, rgb: TC, opacity: 0.09, xPeriod: 300, yPeriod: 150, xAmp: 0.04, yAmp: 0.05, phase: 0.6, breatheAmp: 0.02, breathePeriod: 300 },
+  { cx: 0.42, cy: 0.82, r: 0.12, rgb: TC, opacity: 0.11, xPeriod: 200, yPeriod: 600, xAmp: 0.05, yAmp: 0.03, phase: 0.85, breatheAmp: 0.03, breathePeriod: 150 },
+  { cx: 0.08, cy: 0.72, r: 0.11, rgb: [210, 205, 195], opacity: 0.22, xPeriod: 150, yPeriod: 300, xAmp: 0.03, yAmp: 0.04, phase: 0.3, breatheAmp: 0.04, breathePeriod: 200 },
+  { cx: 0.55, cy: 0.45, r: 0.09, rgb: TC, opacity: 0.08, xPeriod: 300, yPeriod: 200, xAmp: 0.03, yAmp: 0.03, phase: 0.15, breatheAmp: 0.02, breathePeriod: 150 },
+  { cx: 0.92, cy: 0.88, r: 0.12, rgb: [215, 210, 200], opacity: 0.18, xPeriod: 200, yPeriod: 150, xAmp: 0.03, yAmp: 0.03, phase: 0.55, breatheAmp: 0.03, breathePeriod: 300 },
 ];
 
-function HeroAmbientCanvas() {
-  const frame = useLoopFrame(600);
+const drawHero: DrawFn = (ctx, w, h, frame) => {
+  const dim = Math.min(w, h);
+  for (const o of heroOrbs) {
+    const t = frame + o.phase * o.xPeriod;
+    const x = o.cx * w + o.xAmp * w * Math.sin((t * TAU) / o.xPeriod);
+    const y = o.cy * h + o.yAmp * h * Math.cos((t * TAU) / o.yPeriod);
+    const breathe = o.breatheAmp * Math.sin((frame * TAU) / o.breathePeriod);
+    const scale = 1 + 0.06 * Math.sin((frame * TAU) / (o.breathePeriod * 1.5));
+    const op = clamp(o.opacity + breathe, 0, 1);
+    const r = o.r * dim * scale;
 
-  return (
-    <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
-      <rect width="1920" height="1080" fill={COLORS.cream} />
-      <defs>
-        {heroOrbs.map((orb, i) => (
-          <filter key={i} id={`ha-blur-${i}`} x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation={orb.blur} />
-          </filter>
-        ))}
-      </defs>
-      {heroOrbs.map((orb, i) => {
-        const t = frame + orb.phase * orb.xPeriod;
-        const x = (orb.cx / 100) * 1920 + orb.xAmp * Math.sin((t * TAU) / orb.xPeriod);
-        const y = (orb.cy / 100) * 1080 + orb.yAmp * Math.cos((t * TAU) / orb.yPeriod);
-        const breathe = orb.breatheAmp * Math.sin((frame * TAU) / orb.breathePeriod);
-        const opacity = clamp(orb.opacity + breathe, 0, 1);
-        const scale = 1 + 0.06 * Math.sin((frame * TAU) / (orb.breathePeriod * 1.5));
-        return (
-          <circle key={i} cx={x} cy={y} r={orb.r * scale} fill={orb.color} opacity={opacity} filter={`url(#ha-blur-${i})`} />
-        );
-      })}
-    </svg>
-  );
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, rgba(o.rgb[0], o.rgb[1], o.rgb[2], op));
+    g.addColorStop(0.4, rgba(o.rgb[0], o.rgb[1], o.rgb[2], op * 0.6));
+    g.addColorStop(1, rgba(o.rgb[0], o.rgb[1], o.rgb[2], 0));
+    ctx.fillStyle = g;
+    ctx.fillRect(x - r, y - r, r * 2, r * 2);
+  }
+};
+
+function HeroAmbientCanvas() {
+  const ref = React.useRef<HTMLCanvasElement>(null);
+  useCanvasAnimation(ref, drawHero, HERO_DUR);
+  return <canvas ref={ref} className="absolute inset-0 w-full h-full" />;
 }
 
 export function HeroAmbientBg({ overlay, className }: { overlay?: string; className?: string }) {
@@ -159,121 +186,152 @@ export function HeroAmbientBg({ overlay, className }: { overlay?: string; classN
 }
 
 // ═══════════════════════════════════════════════════════════════
-// 2. ProcessWeave — tracing bezier curves
+// 2. ProcessWeave — tracing bezier curves with glow
 // ═══════════════════════════════════════════════════════════════
 
-const PROCESS_DURATION = 450;
+const PROCESS_DUR = 450;
 
 interface CurveDef {
-  d: string; width: number; delay: number;
-  drawDuration: number; holdDuration: number; fadeDuration: number; glowWidth: number;
+  pts: [number, number][];
+  width: number;
+  delay: number;
+  drawDur: number;
+  holdDur: number;
+  fadeDur: number;
 }
 
 const weaveCurves: CurveDef[] = [
-  { d: "M -50 850 C 250 650, 500 350, 850 280 S 1300 220, 1600 180 S 1850 140, 1970 120", width: 1.8, delay: 0, drawDuration: 180, holdDuration: 60, fadeDuration: 100, glowWidth: 8 },
-  { d: "M -30 950 C 200 750, 450 550, 750 480 S 1100 380, 1400 320 S 1700 260, 1970 240", width: 1.4, delay: 90, drawDuration: 160, holdDuration: 70, fadeDuration: 90, glowWidth: 6 },
-  { d: "M -20 780 C 300 600, 600 420, 950 370 S 1250 300, 1550 230 S 1800 180, 1970 160", width: 1.2, delay: 190, drawDuration: 170, holdDuration: 50, fadeDuration: 100, glowWidth: 5 },
-  { d: "M -40 1000 C 180 800, 420 600, 700 540 S 1050 440, 1350 380 S 1650 300, 1970 280", width: 1.0, delay: 300, drawDuration: 140, holdDuration: 60, fadeDuration: 90, glowWidth: 4 },
+  { pts: [[-0.03, 0.79], [0.13, 0.60], [0.26, 0.32], [0.44, 0.26], [0.68, 0.20], [0.83, 0.17], [1.03, 0.11]], width: 2, delay: 0, drawDur: 180, holdDur: 60, fadeDur: 100 },
+  { pts: [[-0.02, 0.88], [0.10, 0.69], [0.23, 0.51], [0.39, 0.44], [0.57, 0.35], [0.73, 0.30], [1.03, 0.22]], width: 1.5, delay: 90, drawDur: 160, holdDur: 70, fadeDur: 90 },
+  { pts: [[-0.01, 0.72], [0.16, 0.56], [0.31, 0.39], [0.49, 0.34], [0.65, 0.28], [0.81, 0.21], [1.03, 0.15]], width: 1.2, delay: 190, drawDur: 170, holdDur: 50, fadeDur: 100 },
+  { pts: [[-0.02, 0.93], [0.09, 0.74], [0.22, 0.56], [0.36, 0.50], [0.55, 0.41], [0.70, 0.35], [1.03, 0.26]], width: 1, delay: 300, drawDur: 140, holdDur: 60, fadeDur: 90 },
 ];
 
 const weaveParticles = Array.from({ length: 20 }, (_, i) => {
   const seed = i * 137.5;
   return {
-    baseX: (seed * 7.3) % 1920, baseY: 100 + (seed * 3.7) % 880,
-    r: 1.5 + (i % 4) * 0.8,
-    xPeriod: [150, 225, 450, 300][i % 4], yPeriod: [225, 150, 300, 450][i % 4],
-    xAmp: 12 + (i * 7) % 18, yAmp: 8 + (i * 11) % 15,
-    phase: (i * 0.15) % 1, opacity: 0.06 + (i % 6) * 0.02,
+    bx: (seed * 7.3 % 100) / 100,
+    by: (10 + seed * 3.7 % 80) / 100,
+    r: 1.5 + (i % 4) * 0.6,
+    xP: [150, 225, 450, 300][i % 4],
+    yP: [225, 150, 300, 450][i % 4],
+    xA: (12 + (i * 7) % 18) / 1920,
+    yA: (8 + (i * 11) % 15) / 1080,
+    phase: (i * 0.15) % 1,
+    opacity: 0.10 + (i % 5) * 0.03,
   };
 });
 
-function getCurveProgress(frame: number, curve: CurveDef) {
-  const loopFrame = frame % PROCESS_DURATION;
-  const totalLife = curve.drawDuration + curve.holdDuration + curve.fadeDuration;
-  let effective = loopFrame - curve.delay;
-  if (effective < 0) effective += PROCESS_DURATION;
+function getCurveAlpha(frame: number, c: CurveDef) {
+  const loopFrame = frame % PROCESS_DUR;
+  const life = c.drawDur + c.holdDur + c.fadeDur;
+  let eff = loopFrame - c.delay;
+  if (eff < 0) eff += PROCESS_DUR;
 
-  const pathLength = effective <= curve.drawDuration
-    ? lerp(effective, 0, curve.drawDuration, 0, 1)
-    : effective <= curve.drawDuration + curve.holdDuration
-    ? 1
-    : effective <= totalLife
-    ? 1
-    : 0;
+  const progress = eff <= c.drawDur
+    ? eff / c.drawDur
+    : eff <= c.drawDur + c.holdDur
+      ? 1
+      : eff <= life
+        ? 1
+        : 0;
 
-  const opacity = effective <= 0 ? 0
-    : effective <= 20 ? lerp(effective, 0, 20, 0, 0.25)
-    : effective <= curve.drawDuration ? 0.25
-    : effective <= curve.drawDuration + curve.holdDuration ? 0.2
-    : effective <= totalLife ? lerp(effective, curve.drawDuration + curve.holdDuration, totalLife, 0.2, 0)
-    : 0;
+  const alpha = eff <= 0
+    ? 0
+    : eff <= 20
+      ? lerp(eff, 0, 20, 0, 0.4)
+      : eff <= c.drawDur
+        ? 0.4
+        : eff <= c.drawDur + c.holdDur
+          ? 0.35
+          : eff <= life
+            ? lerp(eff, c.drawDur + c.holdDur, life, 0.35, 0)
+            : 0;
 
-  const glowOpacity = effective <= 0 ? 0
-    : effective <= 20 ? lerp(effective, 0, 20, 0, 0.08)
-    : effective <= curve.drawDuration ? 0.1
-    : effective <= curve.drawDuration + curve.holdDuration ? 0.06
-    : effective <= totalLife ? lerp(effective, curve.drawDuration + curve.holdDuration, totalLife, 0.06, 0)
-    : 0;
-
-  return { pathLength, opacity, glowOpacity };
+  return { progress, alpha };
 }
 
-const curveStarts = [{ x: -50, y: 850 }, { x: -30, y: 950 }, { x: -20, y: 780 }, { x: -40, y: 1000 }];
-const curveEnds = [{ x: 1970, y: 120 }, { x: 1970, y: 240 }, { x: 1970, y: 160 }, { x: 1970, y: 280 }];
+function buildCurvePath(ctx: CanvasRenderingContext2D, pts: [number, number][], w: number, h: number) {
+  const px = pts.map(p => [p[0] * w, p[1] * h] as const);
+  ctx.beginPath();
+  ctx.moveTo(px[0][0], px[0][1]);
+  for (let i = 1; i < px.length - 1; i++) {
+    const xc = (px[i][0] + px[i + 1][0]) / 2;
+    const yc = (px[i][1] + px[i + 1][1]) / 2;
+    ctx.quadraticCurveTo(px[i][0], px[i][1], xc, yc);
+  }
+  ctx.lineTo(px[px.length - 1][0], px[px.length - 1][1]);
+}
+
+function getTip(pts: [number, number][], t: number, w: number, h: number): [number, number] {
+  const n = pts.length - 1;
+  const idx = t * n;
+  const i = Math.min(Math.floor(idx), n - 1);
+  const frac = idx - i;
+  return [
+    (pts[i][0] + (pts[i + 1][0] - pts[i][0]) * frac) * w,
+    (pts[i][1] + (pts[i + 1][1] - pts[i][1]) * frac) * h,
+  ];
+}
+
+const drawProcess: DrawFn = (ctx, w, h, frame) => {
+  const maxLen = w * 1.5;
+
+  for (const curve of weaveCurves) {
+    const { progress, alpha } = getCurveAlpha(frame, curve);
+    if (alpha <= 0 || progress <= 0) continue;
+
+    ctx.lineCap = "round";
+    ctx.setLineDash([maxLen]);
+    ctx.lineDashOffset = maxLen * (1 - progress);
+
+    buildCurvePath(ctx, curve.pts, w, h);
+    ctx.strokeStyle = rgba(TC[0], TC[1], TC[2], alpha * 0.25);
+    ctx.lineWidth = curve.width * 6;
+    ctx.stroke();
+
+    buildCurvePath(ctx, curve.pts, w, h);
+    ctx.strokeStyle = rgba(TC[0], TC[1], TC[2], alpha);
+    ctx.lineWidth = curve.width;
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+
+    if (progress > 0.02) {
+      const [tx, ty] = getTip(curve.pts, progress, w, h);
+      const pulse = 1 + 0.4 * Math.sin((frame * TAU) / 30);
+      const dotR = 3 * pulse;
+
+      const dg = ctx.createRadialGradient(tx, ty, 0, tx, ty, dotR * 4);
+      dg.addColorStop(0, rgba(TC[0], TC[1], TC[2], alpha * 0.35));
+      dg.addColorStop(1, rgba(TC[0], TC[1], TC[2], 0));
+      ctx.fillStyle = dg;
+      ctx.fillRect(tx - dotR * 4, ty - dotR * 4, dotR * 8, dotR * 8);
+
+      ctx.beginPath();
+      ctx.arc(tx, ty, dotR, 0, TAU);
+      ctx.fillStyle = rgba(TC[0], TC[1], TC[2], alpha * 0.8);
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < weaveParticles.length; i++) {
+    const p = weaveParticles[i];
+    const t = frame + p.phase * p.xP;
+    const px = p.bx * w + p.xA * w * Math.sin((t * TAU) / p.xP);
+    const py = p.by * h + p.yA * h * Math.cos((t * TAU) / p.yP);
+    const flicker = 0.7 + 0.3 * Math.sin((frame * TAU) / (90 + i * 7));
+    ctx.beginPath();
+    ctx.arc(px, py, p.r, 0, TAU);
+    ctx.fillStyle = rgba(TC[0], TC[1], TC[2], p.opacity * flicker);
+    ctx.fill();
+  }
+};
 
 function ProcessWeaveCanvas() {
-  const frame = useLoopFrame(PROCESS_DURATION);
-
-  return (
-    <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
-      <rect width="1920" height="1080" fill={COLORS.cream} />
-      <defs>
-        <filter id="pw-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="12" /></filter>
-        <filter id="pw-dot" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="4" /></filter>
-      </defs>
-
-      {weaveCurves.map((curve, i) => {
-        const { pathLength, glowOpacity } = getCurveProgress(frame, curve);
-        return (
-          <path key={`g-${i}`} d={curve.d} stroke={COLORS.terracotta} strokeWidth={curve.glowWidth}
-            strokeLinecap="round" fill="none" opacity={glowOpacity}
-            strokeDasharray="1" strokeDashoffset={1 - pathLength} pathLength={1} filter="url(#pw-glow)" />
-        );
-      })}
-
-      {weaveCurves.map((curve, i) => {
-        const { pathLength, opacity } = getCurveProgress(frame, curve);
-        return (
-          <path key={`c-${i}`} d={curve.d} stroke={COLORS.terracotta} strokeWidth={curve.width}
-            strokeLinecap="round" fill="none" opacity={opacity}
-            strokeDasharray="1" strokeDashoffset={1 - pathLength} pathLength={1} />
-        );
-      })}
-
-      {weaveCurves.map((curve, i) => {
-        const { pathLength, opacity } = getCurveProgress(frame, curve);
-        if (pathLength < 0.02 || opacity < 0.02) return null;
-        const tipX = curveStarts[i].x + (curveEnds[i].x - curveStarts[i].x) * pathLength;
-        const tipY = curveStarts[i].y + (curveEnds[i].y - curveStarts[i].y) * pathLength;
-        const pulse = 1 + 0.4 * Math.sin((frame * TAU) / 30);
-        const dotR = 3 * pulse;
-        return (
-          <g key={`t-${i}`}>
-            <circle cx={tipX} cy={tipY} r={dotR * 3} fill={COLORS.terracotta} opacity={opacity * 0.15} filter="url(#pw-dot)" />
-            <circle cx={tipX} cy={tipY} r={dotR} fill={COLORS.terracotta} opacity={opacity * 0.6} />
-          </g>
-        );
-      })}
-
-      {weaveParticles.map((p, i) => {
-        const t = frame + p.phase * p.xPeriod;
-        const px = p.baseX + p.xAmp * Math.sin((t * TAU) / p.xPeriod);
-        const py = p.baseY + p.yAmp * Math.cos((t * TAU) / p.yPeriod);
-        const flicker = 0.7 + 0.3 * Math.sin((frame * TAU) / (90 + i * 7));
-        return <circle key={`p-${i}`} cx={px} cy={py} r={p.r} fill={COLORS.terracotta} opacity={p.opacity * flicker} />;
-      })}
-    </svg>
-  );
+  const ref = React.useRef<HTMLCanvasElement>(null);
+  useCanvasAnimation(ref, drawProcess, PROCESS_DUR);
+  return <canvas ref={ref} className="absolute inset-0 w-full h-full" />;
 }
 
 export function ProcessWeaveBg({ overlay, className }: { overlay?: string; className?: string }) {
@@ -285,118 +343,146 @@ export function ProcessWeaveBg({ overlay, className }: { overlay?: string; class
 }
 
 // ═══════════════════════════════════════════════════════════════
-// 3. NeuralFlow — orbiting nodes with connections
+// 3. NeuralFlow — orbiting nodes with connections & pulse waves
 // ═══════════════════════════════════════════════════════════════
 
-const NEURAL_DURATION = 600;
-const CONNECTION_DISTANCE = 250;
+const NEURAL_DUR = 600;
+const CONN_FRAC = 0.15;
 
 interface NNode {
-  baseX: number; baseY: number;
-  orbitR: number; orbitPeriod: number; orbitPhase: number;
-  orbit2R: number; orbit2Period: number; orbit2Phase: number;
-  r: number; glowR: number; importance: number;
+  bx: number;
+  by: number;
+  oR: number;
+  oP: number;
+  oPh: number;
+  o2R: number;
+  o2P: number;
+  o2Ph: number;
+  r: number;
+  glowR: number;
+  imp: number;
 }
 
 const neuralNodes: NNode[] = (() => {
   const result: NNode[] = [];
-  const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+  const GA = Math.PI * (3 - Math.sqrt(5));
   for (let i = 0; i < 38; i++) {
-    const rad = Math.sqrt(i / 38) * 480;
-    const theta = i * goldenAngle;
-    const cx = clamp(960 + rad * Math.cos(theta) + ((i * 73) % 80 - 40), 80, 1840);
-    const cy = clamp(540 + rad * Math.sin(theta) + ((i * 47) % 60 - 30), 80, 1000);
-    const distFromCenter = Math.sqrt((cx - 960) ** 2 + (cy - 540) ** 2);
-    const importance = clamp(1 - distFromCenter / 500, 0.3, 1);
+    const rad = Math.sqrt(i / 38) * 0.45;
+    const theta = i * GA;
+    const cx = clamp(0.5 + rad * Math.cos(theta) + ((i * 73) % 80 - 40) / 1920, 0.05, 0.95);
+    const cy = clamp(0.5 + rad * Math.sin(theta) + ((i * 47) % 60 - 30) / 1080, 0.08, 0.92);
+    const distC = Math.sqrt((cx - 0.5) ** 2 + (cy - 0.5) ** 2);
+    const imp = clamp(1 - distC / 0.5, 0.3, 1);
     const periods = [100, 120, 150, 200, 300, 600];
     result.push({
-      baseX: cx, baseY: cy,
-      orbitR: 6 + importance * 16 + (i * 13) % 10,
-      orbitPeriod: periods[i % 6], orbitPhase: (i * 0.137) % 1,
-      orbit2R: 3 + (i * 7) % 8,
-      orbit2Period: periods[(i + 3) % 6], orbit2Phase: (i * 0.293) % 1,
-      r: 2 + importance * 2.5 + (i % 3) * 0.4,
-      glowR: 8 + importance * 14, importance,
+      bx: cx,
+      by: cy,
+      oR: (6 + imp * 16 + (i * 13) % 10) / 960,
+      oP: periods[i % 6],
+      oPh: (i * 0.137) % 1,
+      o2R: (3 + (i * 7) % 8) / 960,
+      o2P: periods[(i + 3) % 6],
+      o2Ph: (i * 0.293) % 1,
+      r: 2 + imp * 2.5 + (i % 3) * 0.4,
+      glowR: 8 + imp * 14,
+      imp,
     });
   }
   return result;
 })();
 
-function getNPos(n: NNode, frame: number) {
-  const a1 = TAU * (frame / n.orbitPeriod + n.orbitPhase);
-  const a2 = TAU * (frame / n.orbit2Period + n.orbit2Phase);
-  return { x: n.baseX + n.orbitR * Math.cos(a1) + n.orbit2R * Math.sin(a2), y: n.baseY + n.orbitR * Math.sin(a1) + n.orbit2R * Math.cos(a2) };
-}
+const drawNeural: DrawFn = (ctx, w, h, frame) => {
+  const scale = Math.min(w, h);
+  const connDist = CONN_FRAC * scale;
 
-function NeuralFlowCanvas() {
-  const frame = useLoopFrame(NEURAL_DURATION);
-  const positions = neuralNodes.map((n) => getNPos(n, frame));
+  const positions = neuralNodes.map((n) => {
+    const a1 = TAU * (frame / n.oP + n.oPh);
+    const a2 = TAU * (frame / n.o2P + n.o2Ph);
+    return {
+      x: n.bx * w + n.oR * scale * Math.cos(a1) + n.o2R * scale * Math.sin(a2),
+      y: n.by * h + n.oR * scale * Math.sin(a1) + n.o2R * scale * Math.cos(a2),
+    };
+  });
 
-  const connections: { i: number; j: number; dist: number }[] = [];
+  const p1f = (frame % (NEURAL_DUR / 2)) / (NEURAL_DUR / 2);
+  const p2f = ((frame + NEURAL_DUR / 4) % (NEURAL_DUR / 2)) / (NEURAL_DUR / 2);
+  const pr1 = p1f * scale * 0.8;
+  const pr2 = p2f * scale * 0.8;
+
+  const boost = (x: number, y: number) => {
+    const d = Math.sqrt((x - w / 2) ** 2 + (y - h / 2) ** 2);
+    const band = scale * 0.12;
+    return (
+      clamp((band - Math.abs(d - pr1)) / band, 0, 1) * 0.25 +
+      clamp((band - Math.abs(d - pr2)) / band, 0, 1) * 0.25
+    );
+  };
+
   for (let i = 0; i < neuralNodes.length; i++) {
     for (let j = i + 1; j < neuralNodes.length; j++) {
       const dx = positions[i].x - positions[j].x;
       const dy = positions[i].y - positions[j].y;
       const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < CONNECTION_DISTANCE) connections.push({ i, j, dist });
+      if (dist < connDist) {
+        const mx = (positions[i].x + positions[j].x) / 2;
+        const my = (positions[i].y + positions[j].y) / 2;
+        const b = boost(mx, my);
+        const alpha = lerp(dist, 0, connDist, 0.2, 0) + b * 0.12;
+        ctx.beginPath();
+        ctx.moveTo(positions[i].x, positions[i].y);
+        ctx.lineTo(positions[j].x, positions[j].y);
+        ctx.strokeStyle = rgba(TC[0], TC[1], TC[2], alpha);
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      }
     }
   }
 
-  const p1 = (frame % (NEURAL_DURATION / 2)) / (NEURAL_DURATION / 2);
-  const p2 = ((frame + NEURAL_DURATION / 4) % (NEURAL_DURATION / 2)) / (NEURAL_DURATION / 2);
-  const pr1 = p1 * 800, pr2 = p2 * 800;
+  for (let i = 0; i < neuralNodes.length; i++) {
+    const n = neuralNodes[i];
+    const p = positions[i];
+    const b = boost(p.x, p.y);
+    const gr = n.glowR + b * 8;
+    const alpha = 0.07 + n.imp * 0.1 + b * 0.15;
 
-  function boost(x: number, y: number) {
-    const d = Math.sqrt((x - 960) ** 2 + (y - 540) ** 2);
-    return clamp((120 - Math.abs(d - pr1)) / 120, 0, 1) * 0.2 + clamp((120 - Math.abs(d - pr2)) / 120, 0, 1) * 0.2;
+    const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, gr);
+    g.addColorStop(0, rgba(TC[0], TC[1], TC[2], alpha));
+    g.addColorStop(1, rgba(TC[0], TC[1], TC[2], 0));
+    ctx.fillStyle = g;
+    ctx.fillRect(p.x - gr, p.y - gr, gr * 2, gr * 2);
   }
 
-  return (
-    <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
-      <rect width="1920" height="1080" fill={COLORS.cream} />
-      <defs>
-        <filter id="nf-ng" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur stdDeviation="6" /></filter>
-        <filter id="nf-lg" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="3" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
-        </filter>
-      </defs>
+  for (let i = 0; i < neuralNodes.length; i++) {
+    const n = neuralNodes[i];
+    const p = positions[i];
+    const b = boost(p.x, p.y);
+    const alpha = 0.25 + n.imp * 0.25 + b * 0.3;
 
-      {connections.map(({ i, j, dist }, idx) => {
-        const op = lerp(dist, 0, CONNECTION_DISTANCE, 0.06, 0);
-        const mx = (positions[i].x + positions[j].x) / 2, my = (positions[i].y + positions[j].y) / 2;
-        const b = boost(mx, my);
-        return <line key={`cg-${idx}`} x1={positions[i].x} y1={positions[i].y} x2={positions[j].x} y2={positions[j].y}
-          stroke={COLORS.terracotta} strokeWidth={2.5} opacity={op + b * 0.04} filter="url(#nf-lg)" />;
-      })}
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, n.r + b * 1.5, 0, TAU);
+    ctx.fillStyle = rgba(TC[0], TC[1], TC[2], alpha);
+    ctx.fill();
+  }
 
-      {connections.map(({ i, j, dist }, idx) => {
-        const op = lerp(dist, 0, CONNECTION_DISTANCE, 0.14, 0);
-        const mx = (positions[i].x + positions[j].x) / 2, my = (positions[i].y + positions[j].y) / 2;
-        const b = boost(mx, my);
-        return <line key={`c-${idx}`} x1={positions[i].x} y1={positions[i].y} x2={positions[j].x} y2={positions[j].y}
-          stroke={COLORS.terracotta} strokeWidth={0.7} opacity={op + b * 0.08} />;
-      })}
+  for (const radius of [pr1, pr2]) {
+    const alpha =
+      radius < scale * 0.2
+        ? lerp(radius, 0, scale * 0.2, 0, 0.06)
+        : lerp(radius, scale * 0.2, scale * 0.8, 0.06, 0);
+    if (alpha > 0.001) {
+      ctx.beginPath();
+      ctx.arc(w / 2, h / 2, radius, 0, TAU);
+      ctx.strokeStyle = rgba(TC[0], TC[1], TC[2], alpha);
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+  }
+};
 
-      {neuralNodes.map((node, i) => {
-        const pos = positions[i];
-        const b = boost(pos.x, pos.y);
-        return <circle key={`ng-${i}`} cx={pos.x} cy={pos.y} r={node.glowR + b * 8}
-          fill={COLORS.terracotta} opacity={0.04 + node.importance * 0.06 + b * 0.1} filter="url(#nf-ng)" />;
-      })}
-
-      {neuralNodes.map((node, i) => {
-        const pos = positions[i];
-        const b = boost(pos.x, pos.y);
-        return <circle key={`n-${i}`} cx={pos.x} cy={pos.y} r={node.r + b * 1.5}
-          fill={COLORS.terracotta} opacity={0.15 + node.importance * 0.15 + b * 0.2} />;
-      })}
-
-      {[pr1, pr2].map((radius, i) => (
-        <circle key={`pr-${i}`} cx={960} cy={540} r={radius} fill="none"
-          stroke={COLORS.terracotta} strokeWidth={1} opacity={radius < 200 ? lerp(radius, 0, 200, 0, 0.04) : lerp(radius, 200, 800, 0.04, 0)} />
-      ))}
-    </svg>
-  );
+function NeuralFlowCanvas() {
+  const ref = React.useRef<HTMLCanvasElement>(null);
+  useCanvasAnimation(ref, drawNeural, NEURAL_DUR);
+  return <canvas ref={ref} className="absolute inset-0 w-full h-full" />;
 }
 
 export function NeuralFlowBg({ overlay, className }: { overlay?: string; className?: string }) {
