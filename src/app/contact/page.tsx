@@ -4,7 +4,7 @@ import * as React from "react";
 import { motion } from "framer-motion";
 import { Section } from "@/components/ui/section";
 import { ContactForm } from "@/components/sections/contact-form";
-import { VideoBackground } from "@/components/ui/video-background";
+import { NeuralFlowBg } from "@/components/ui/animated-background";
 import { useLocale } from "@/lib/i18n";
 
 const fadeInUp = {
@@ -34,14 +34,7 @@ export default function ContactPage() {
     <main>
       <Section
         variant="cream"
-        background={
-          <VideoBackground
-            webm="/videos/neural-flow.webm"
-            mp4="/videos/neural-flow.mp4"
-            poster="/videos/neural-flow-poster.jpeg"
-            overlay="bg-cream/30"
-          />
-        }
+        background={<NeuralFlowBg overlay="bg-cream/30" />}
       >
         <motion.div
           className="text-center max-w-4xl mx-auto"

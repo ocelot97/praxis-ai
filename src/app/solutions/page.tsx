@@ -6,7 +6,7 @@ import { Section } from "@/components/ui/section";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { VideoBackground } from "@/components/ui/video-background";
+import { NeuralFlowBg } from "@/components/ui/animated-background";
 import { useLocale } from "@/lib/i18n";
 
 const customIcons = [
@@ -56,14 +56,7 @@ export default function SolutionsPage() {
     <main>
       <Section
         variant="cream"
-        background={
-          <VideoBackground
-            webm="/videos/neural-flow.webm"
-            mp4="/videos/neural-flow.mp4"
-            poster="/videos/neural-flow-poster.jpeg"
-            overlay="bg-cream/30"
-          />
-        }
+        background={<NeuralFlowBg overlay="bg-cream/30" />}
       >
         <motion.div
           className="text-center max-w-4xl mx-auto"

@@ -3,7 +3,7 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import { Section } from "@/components/ui/section";
-import { VideoBackground } from "@/components/ui/video-background";
+import { ProcessWeaveBg } from "@/components/ui/animated-background";
 import { useLocale } from "@/lib/i18n";
 
 const stepNumbers = ["01", "02", "03"];
@@ -49,14 +49,7 @@ export function Process() {
   return (
     <Section
       variant="cream"
-      background={
-        <VideoBackground
-          webm="/videos/process-weave.webm"
-          mp4="/videos/process-weave.mp4"
-          poster="/videos/process-weave-poster.jpeg"
-          overlay="bg-cream/40"
-        />
-      }
+      background={<ProcessWeaveBg overlay="bg-cream/40" />}
     >
       <div className="text-center mb-16">
         <motion.h2
