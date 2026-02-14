@@ -29,9 +29,6 @@ body{font-family:var(--font-body);background:var(--cream);color:var(--charcoal);
 /* Header */
 .header{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);position:relative;z-index:200;box-shadow:var(--shadow-sm);flex-shrink:0;min-height:50px}
 .header-left{display:flex;align-items:center;gap:14px}
-.back-btn{font-size:13px;font-weight:500;color:var(--mid);text-decoration:none;display:flex;align-items:center;gap:4px;padding:6px 10px;border-radius:var(--radius-sm);transition:all .2s;white-space:nowrap}
-.back-btn:hover{color:var(--charcoal);background:var(--cream)}
-.header-divider{width:1px;height:26px;background:var(--border)}
 .header-brand{display:flex;align-items:baseline;gap:10px}
 .header-brand-name{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--terracotta)}
 .header-brand-sub{font-size:12px;font-weight:500;color:var(--mid);letter-spacing:.02em}
@@ -268,8 +265,6 @@ body{font-family:var(--font-body);background:var(--cream);color:var(--charcoal);
 
 <header class="header">
   <div class="header-left">
-    <a href="/demo" class="back-btn" data-i18n="backBtn"></a>
-    <div class="header-divider"></div>
     <div class="header-brand">
       <span class="header-brand-name">Email Design AI</span>
       <span class="header-brand-sub" data-i18n="headerSub"></span>
@@ -540,7 +535,6 @@ body{font-family:var(--font-body);background:var(--cream);color:var(--charcoal);
 "use strict";
 var LOCALE=(typeof window!=='undefined'&&window.__PRAXIS_LOCALE__)||'it';
 var T={
-  backBtn:{en:'\u2190 Back to Demos',it:'\u2190 Torna alle Demo'},
   headerSub:{en:'AI Ops \u00d7 Drag & Drop Editor',it:'AI Ops \u00d7 Editor Drag & Drop'},
   desktop:{en:'Desktop',it:'Desktop'},mobile:{en:'Mobile',it:'Mobile'},
   validateBtn:{en:'Validate Against Brief',it:'Valida rispetto al Brief'},

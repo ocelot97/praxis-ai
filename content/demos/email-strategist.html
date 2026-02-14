@@ -27,9 +27,6 @@ body{font-family:var(--font-body);background:var(--cream);color:var(--charcoal);
 
 .header{display:flex;align-items:center;justify-content:space-between;padding:20px 40px;border-bottom:1px solid var(--border);background:rgba(244,243,238,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);position:sticky;top:0;z-index:100}
 .header-left{display:flex;align-items:center;gap:20px}
-.back-btn{font-size:14px;font-weight:500;color:var(--mid);text-decoration:none;transition:color .2s;font-family:var(--font-body);white-space:nowrap}
-.back-btn:hover{color:var(--terracotta)}
-.header-divider{width:1px;height:28px;background:var(--border)}
 .header-brand{display:flex;flex-direction:column;gap:2px}
 .header-title{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--charcoal);line-height:1}
 .header-subtitle{font-size:12px;color:var(--mid);font-weight:500;letter-spacing:.02em}
@@ -205,9 +202,8 @@ body{font-family:var(--font-body);background:var(--cream);color:var(--charcoal);
   .event-label{width:110px;font-size:12px}
 }
 @media(max-width:480px){
-  .header-divider{display:none}
   .header-subtitle{display:none}
-  .back-btn{font-size:13px}
+
   .bottom-bar{gap:8px}
   .bottom-stat-label{display:none}
   .donut-container{flex-direction:column}
@@ -218,8 +214,6 @@ body{font-family:var(--font-body);background:var(--cream);color:var(--charcoal);
 
 <header class="header">
   <div class="header-left">
-    <a href="/demo" class="back-btn" data-i18n="backBtn">&larr; Back to Demos</a>
-    <div class="header-divider"></div>
     <div class="header-brand">
       <div class="header-title" data-i18n="headerTitle">Email Strategy AI</div>
       <div class="header-subtitle" data-i18n="headerSubtitle">Klaviyo &times; Shopify Intelligence</div>
@@ -366,7 +360,7 @@ var LOCALE = window.__PRAXIS_LOCALE__ || 'it';
 
 var T_ALL = {
 en: {
-  backBtn:'\u2190 Back to Demos',headerTitle:'Email Strategy AI',headerSubtitle:'Klaviyo \u00D7 Shopify Intelligence',badgeLive:'Connected',
+  headerTitle:'Email Strategy AI',headerSubtitle:'Klaviyo \u00D7 Shopify Intelligence',badgeLive:'Connected',
   step1Label:'Data Sources',step2Label:'Event Analysis',step3Label:'AI Strategy Generation',
   connecting:'Connecting...',connected:'Connected',
   subscribers:'Subscribers',activeFlows:'Active Flows',avgOpenRate:'Avg Open Rate',segments:'Segments',
@@ -423,7 +417,7 @@ en: {
   campaignsGenerated:'Campaigns Generated',totalReach:'Total Reach',projectedRevenue:'Projected Revenue',aiConfidence:'AI Confidence',replayDemo:'Replay Demo'
 },
 it: {
-  backBtn:'\u2190 Torna alle Demo',headerTitle:'Email Strategy AI',headerSubtitle:'Klaviyo \u00D7 Shopify Intelligence',badgeLive:'Connesso',
+  headerTitle:'Email Strategy AI',headerSubtitle:'Klaviyo \u00D7 Shopify Intelligence',badgeLive:'Connesso',
   step1Label:'Fonti Dati',step2Label:'Analisi Eventi',step3Label:'Generazione Strategia AI',
   connecting:'Connessione...',connected:'Connesso',
   subscribers:'Iscritti',activeFlows:'Flow Attivi',avgOpenRate:'Tasso Apertura Medio',segments:'Segmenti',
