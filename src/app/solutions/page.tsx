@@ -54,16 +54,19 @@ export default function SolutionsPage() {
 
   return (
     <main>
-      <Section variant="cream" className="relative overflow-hidden">
-        <VideoBackground
-          webm="/videos/neural-flow.webm"
-          mp4="/videos/neural-flow.mp4"
-          poster="/videos/neural-flow-poster.jpeg"
-          overlay="bg-cream/30"
-          className="z-0"
-        />
+      <Section
+        variant="cream"
+        background={
+          <VideoBackground
+            webm="/videos/neural-flow.webm"
+            mp4="/videos/neural-flow.mp4"
+            poster="/videos/neural-flow-poster.jpeg"
+            overlay="bg-cream/30"
+          />
+        }
+      >
         <motion.div
-          className="relative z-10 text-center max-w-4xl mx-auto"
+          className="text-center max-w-4xl mx-auto"
           initial="initial"
           animate="animate"
           variants={fadeInUp}
