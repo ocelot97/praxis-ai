@@ -122,6 +122,7 @@ export function ContactForm() {
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 rounded-full bg-terracotta flex items-center justify-center">
               <svg
+                aria-hidden="true"
                 className="w-8 h-8 text-white"
                 fill="none"
                 viewBox="0 0 24 24"

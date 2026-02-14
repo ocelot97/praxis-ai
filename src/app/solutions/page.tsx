@@ -91,7 +91,7 @@ export default function SolutionsPage() {
 
           <div className="grid md:grid-cols-2 gap-8">
             {t.solutionsPage.standardized.map((solution) => (
-              <motion.div key={solution.id} variants={fadeInUp} whileHover={{ y: -4 }} transition={{ type: "spring", stiffness: 300 }}>
+              <motion.div key={solution.id} id={solution.id} variants={fadeInUp} whileHover={{ y: -4 }} transition={{ type: "spring", stiffness: 300 }}>
                 <Card className="h-full flex flex-col">
                   <CardHeader>
                     <CardTitle className="mb-2">{solution.title}</CardTitle>
@@ -115,6 +115,7 @@ export default function SolutionsPage() {
                             className="flex items-start gap-2 text-sm font-sans text-mid"
                           >
                             <svg
+                              aria-hidden="true"
                               className="w-5 h-5 text-terracotta flex-shrink-0 mt-0.5"
                               fill="none"
                               viewBox="0 0 24 24"

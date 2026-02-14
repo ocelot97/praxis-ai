@@ -23,6 +23,13 @@ export const metadata: Metadata = {
     description:
       "Expert AI consulting and development services. Transform your business with intelligent automation and custom AI solutions.",
     type: "website",
+    siteName: "Praxis AI",
+  },
+  twitter: {
+    card: "summary",
+    title: "Praxis AI - Transform Your Business with Intelligent AI",
+    description:
+      "Expert AI consulting and development services. Transform your business with intelligent automation and custom AI solutions.",
   },
 };
 
@@ -35,8 +42,11 @@ export default function RootLayout({
     <html lang="it" className={`${inter.variable} ${caveat.variable}`}>
       <body>
         <LocaleProvider>
+          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-white focus:text-charcoal">
+            Skip to content
+          </a>
           <Navbar />
-          <main>{children}</main>
+          <main id="main-content">{children}</main>
           <Footer />
         </LocaleProvider>
       </body>

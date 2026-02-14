@@ -59,6 +59,7 @@ export function SolutionsShowcase() {
                   {solution.features.map((feature, fIdx) => (
                     <li key={fIdx} className="flex items-start gap-3">
                       <svg
+                        aria-hidden="true"
                         className="w-5 h-5 text-terracotta flex-shrink-0 mt-0.5"
                         fill="currentColor"
                         viewBox="0 0 20 20"

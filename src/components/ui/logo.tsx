@@ -100,24 +100,3 @@ export function LogoMark({ className }: LogoProps) {
     </svg>
   );
 }
-
-/**
- * Logo - Full logo with atom mark and "Praxis AI" text
- * "Praxis" uses the Caveat handwriting font for an artisanal feel.
- * "AI" stays in Inter sans-serif for contrast.
- */
-export function Logo({ className }: LogoProps) {
-  return (
-    <div className={cn("flex items-center gap-2.5", className)}>
-      <LogoMark className="text-terracotta" />
-      <span className="text-xl text-charcoal leading-none">
-        <span className="font-[family-name:var(--font-caveat)] text-[1.65rem] font-bold">
-          Praxis
-        </span>{" "}
-        <span className="font-sans text-sm font-medium tracking-[0.2em] uppercase opacity-70">
-          AI
-        </span>
-      </span>
-    </div>
-  );
-}
