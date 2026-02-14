@@ -1,0 +1,2442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Design AI — Praxis AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --terracotta: #C15F3C;
+    --terracotta-light: #d4805f;
+    --terracotta-dark: #a8502f;
+    --terracotta-glow: rgba(193, 95, 60, 0.15);
+    --cream: #F4F3EE;
+    --charcoal: #141413;
+    --mid: #b0aea5;
+    --border: #e8e6dc;
+    --white: #ffffff;
+    --green: #3a9a5c;
+    --green-light: #e6f5ec;
+    --blue: #3b7dd8;
+    --blue-light: #e8f0fc;
+    --canvas-bg: #e9e8e3;
+    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-display: 'Caveat', cursive;
+    --shadow-sm: 0 1px 3px rgba(20,20,19,0.06);
+    --shadow-md: 0 4px 12px rgba(20,20,19,0.08);
+    --shadow-lg: 0 8px 30px rgba(20,20,19,0.12);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --brand-color: #C15F3C;
+    --brand-font: 'Inter', sans-serif;
+    --brand-radius: 8px;
+  }
+
+  html { font-size: 16px; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--cream);
+    color: var(--charcoal);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ── Header ── */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .back-btn {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--mid);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s;
+  }
+
+  .back-btn:hover {
+    color: var(--charcoal);
+    background: var(--cream);
+  }
+
+  .header-divider {
+    width: 1px;
+    height: 28px;
+    background: var(--border);
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .header-logo {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--terracotta);
+    line-height: 1;
+  }
+
+  .header-subtitle {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--mid);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 1.5px solid var(--terracotta);
+    color: var(--terracotta);
+  }
+
+  .btn-outline:hover {
+    background: var(--terracotta-glow);
+  }
+
+  .btn-primary {
+    background: var(--terracotta);
+    color: var(--white);
+  }
+
+  .btn-primary:hover {
+    background: var(--terracotta-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(193,95,60,0.3);
+  }
+
+  /* ── Main Layout ── */
+  .main-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    height: calc(100vh - 57px);
+  }
+
+  /* ── Left Sidebar ── */
+  .sidebar-left {
+    width: 280px;
+    min-width: 280px;
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-section {
+    border-bottom: 1px solid var(--border);
+    padding: 16px;
+  }
+
+  .sidebar-section:last-child {
+    border-bottom: none;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    padding: 4px 0;
+  }
+
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--mid);
+  }
+
+  .section-toggle {
+    font-size: 14px;
+    color: var(--mid);
+    transition: transform 0.2s;
+  }
+
+  .section-toggle.collapsed {
+    transform: rotate(-90deg);
+  }
+
+  .section-body {
+    margin-top: 12px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.2s ease;
+  }
+
+  .section-body.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+  }
+
+  /* ── Campaign Brief ── */
+  .brief-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .brief-label {
+    font-weight: 600;
+    color: var(--charcoal);
+    min-width: 62px;
+    flex-shrink: 0;
+  }
+
+  .brief-value {
+    color: #636259;
+  }
+
+  .brief-tag {
+    display: inline-block;
+    background: var(--cream);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: var(--mid);
+    margin-top: 2px;
+  }
+
+  /* ── Block Palette ── */
+  .palette-block {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--cream);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 6px;
+    cursor: grab;
+    transition: all 0.2s;
+    user-select: none;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .palette-block:active {
+    cursor: grabbing;
+  }
+
+  .palette-block:hover {
+    border-color: var(--terracotta);
+    background: var(--white);
+    transform: translateX(3px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .palette-block .p-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    background: rgba(193,95,60,0.08);
+    flex-shrink: 0;
+  }
+
+  .palette-block .p-label {
+    flex: 1;
+    color: var(--charcoal);
+  }
+
+  .palette-block .p-drag {
+    color: var(--mid);
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .palette-block:hover .p-drag {
+    opacity: 1;
+  }
+
+  /* ── Brand Settings ── */
+  .brand-row {
+    margin-bottom: 14px;
+  }
+
+  .brand-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--charcoal);
+    margin-bottom: 6px;
+  }
+
+  .color-swatches {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .swatch:hover {
+    transform: scale(1.15);
+  }
+
+  .swatch.active {
+    border-color: var(--charcoal);
+    box-shadow: 0 0 0 2px var(--white), 0 0 0 4px var(--charcoal);
+  }
+
+  .brand-select {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: var(--font-body);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+    color: var(--charcoal);
+    cursor: pointer;
+    transition: border-color 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23b0aea5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 28px;
+  }
+
+  .brand-select:focus {
+    outline: none;
+    border-color: var(--terracotta);
+  }
+
+  .brand-logo-preview {
+    padding: 12px;
+    background: var(--cream);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--charcoal);
+  }
+
+  .radius-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .radius-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+  }
+
+  .radius-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    cursor: pointer;
+    border: 2px solid var(--white);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  }
+
+  .radius-value {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--mid);
+    min-width: 32px;
+    text-align: right;
+  }
+
+  /* ── Canvas Area ── */
+  .canvas-area {
+    flex: 1;
+    background: var(--canvas-bg);
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    padding: 30px 20px;
+  }
+
+  .canvas-wrapper {
+    width: 600px;
+    max-width: 600px;
+    min-height: 400px;
+  }
+
+  /* ── Empty State ── */
+  .canvas-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 500px;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-lg);
+    background: rgba(255,255,255,0.5);
+    text-align: center;
+    padding: 40px;
+  }
+
+  .canvas-empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+
+  .canvas-empty-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--charcoal);
+    margin-bottom: 8px;
+  }
+
+  .canvas-empty-sub {
+    font-size: 14px;
+    color: var(--mid);
+    margin-bottom: 24px;
+  }
+
+  .btn-generate {
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px 32px;
+    border-radius: var(--radius-md);
+    background: var(--terracotta);
+    color: var(--white);
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-generate:hover {
+    background: var(--terracotta-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(193,95,60,0.3);
+  }
+
+  /* ── Generation Loading ── */
+  .generation-overlay {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 500px;
+    background: rgba(255,255,255,0.95);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    padding: 60px 40px;
+    text-align: center;
+  }
+
+  .generation-overlay.active {
+    display: flex;
+  }
+
+  .gen-spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--border);
+    border-top-color: var(--terracotta);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 24px;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .gen-steps {
+    list-style: none;
+    text-align: left;
+    width: 260px;
+  }
+
+  .gen-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 14px;
+    color: var(--mid);
+    transition: all 0.3s;
+  }
+
+  .gen-step.active {
+    color: var(--charcoal);
+    font-weight: 500;
+  }
+
+  .gen-step.done {
+    color: var(--green);
+  }
+
+  .gen-step-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    background: var(--cream);
+    transition: all 0.3s;
+  }
+
+  .gen-step.active .gen-step-icon {
+    background: var(--terracotta-glow);
+    color: var(--terracotta);
+  }
+
+  .gen-step.done .gen-step-icon {
+    background: var(--green-light);
+    color: var(--green);
+  }
+
+  /* ── Email Canvas (rendered) ── */
+  .email-canvas {
+    display: none;
+    flex-direction: column;
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+
+  .email-canvas.active {
+    display: flex;
+  }
+
+  .email-block {
+    position: relative;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: 2px solid transparent;
+  }
+
+  .email-block:hover {
+    border-color: rgba(59,125,216,0.4);
+  }
+
+  .email-block.selected {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(59,125,216,0.12);
+  }
+
+  .email-block.drag-over-above {
+    border-top: 3px solid var(--blue);
+  }
+
+  .email-block.drag-over-below {
+    border-bottom: 3px solid var(--blue);
+  }
+
+  .block-drag-handle {
+    position: absolute;
+    left: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 36px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: var(--mid);
+    cursor: grab;
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 10;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .email-block:hover .block-drag-handle {
+    opacity: 1;
+  }
+
+  .block-drag-handle:active {
+    cursor: grabbing;
+  }
+
+  /* ── Email Block Styles ── */
+  .eb-header {
+    padding: 20px 30px;
+    text-align: center;
+    border-bottom: 1px solid #f0efea;
+  }
+
+  .eb-header .header-logo-text {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--charcoal);
+    margin-bottom: 8px;
+  }
+
+  .eb-header .header-nav {
+    font-size: 12px;
+    color: var(--mid);
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .eb-header .header-nav span {
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .eb-header .header-nav span:hover {
+    color: var(--brand-color);
+  }
+
+  .eb-hero {
+    padding: 50px 40px;
+    text-align: center;
+    background: linear-gradient(135deg, var(--brand-color), #e8956e);
+    color: var(--white);
+  }
+
+  .eb-hero h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-family: var(--brand-font);
+  }
+
+  .eb-hero p {
+    font-size: 16px;
+    opacity: 0.9;
+    font-family: var(--brand-font);
+  }
+
+  .eb-products {
+    padding: 30px;
+  }
+
+  .eb-products-title {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--mid);
+    margin-bottom: 16px;
+    text-align: center;
+    font-family: var(--brand-font);
+  }
+
+  .eb-products-grid {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .eb-product-card {
+    flex: 1;
+    max-width: 240px;
+    border: 1px solid var(--border);
+    border-radius: var(--brand-radius);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+
+  .eb-product-card:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  .eb-product-img {
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    background: #f7f6f1;
+  }
+
+  .eb-product-info {
+    padding: 14px;
+  }
+
+  .eb-product-name {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-family: var(--brand-font);
+  }
+
+  .eb-product-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--brand-color);
+    font-family: var(--brand-font);
+  }
+
+  .eb-social-proof {
+    padding: 28px 40px;
+    text-align: center;
+    background: #faf9f6;
+    border-top: 1px solid #f0efea;
+    border-bottom: 1px solid #f0efea;
+  }
+
+  .eb-social-proof .sp-rating {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-family: var(--brand-font);
+  }
+
+  .eb-social-proof .sp-quote {
+    font-size: 14px;
+    color: #636259;
+    font-style: italic;
+    max-width: 400px;
+    margin: 0 auto;
+    line-height: 1.6;
+    font-family: var(--brand-font);
+  }
+
+  .eb-cta {
+    padding: 36px 40px;
+    text-align: center;
+  }
+
+  .eb-cta-button {
+    display: inline-block;
+    padding: 16px 40px;
+    background: var(--brand-color);
+    color: var(--white);
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: var(--brand-radius);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+    font-family: var(--brand-font);
+  }
+
+  .eb-cta-button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  .eb-urgency {
+    padding: 18px 40px;
+    text-align: center;
+    background: #fff8f5;
+    font-size: 14px;
+    color: #a0522d;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: var(--brand-font);
+  }
+
+  .eb-footer {
+    padding: 24px 40px;
+    text-align: center;
+    background: #f5f4ef;
+    border-top: 1px solid #eae9e3;
+  }
+
+  .eb-footer .footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 12px;
+    font-size: 18px;
+  }
+
+  .eb-footer .footer-links {
+    font-size: 11px;
+    color: var(--mid);
+    line-height: 1.8;
+  }
+
+  .eb-footer .footer-links a {
+    color: var(--mid);
+    text-decoration: underline;
+  }
+
+  /* ── Drop Zone Indicator ── */
+  .drop-indicator {
+    height: 3px;
+    background: var(--blue);
+    border-radius: 2px;
+    margin: -2px 0;
+    transition: opacity 0.15s;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .drop-indicator.visible {
+    opacity: 1;
+  }
+
+  /* ── Right Sidebar ── */
+  .sidebar-right {
+    width: 260px;
+    min-width: 260px;
+    background: var(--white);
+    border-left: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 20px 16px;
+  }
+
+  .props-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 16px;
+    color: var(--mid);
+  }
+
+  .props-empty-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+    opacity: 0.4;
+  }
+
+  .props-empty-text {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--charcoal);
+  }
+
+  .props-empty-sub {
+    font-size: 12px;
+    color: var(--mid);
+  }
+
+  .props-panel {
+    display: none;
+  }
+
+  .props-panel.active {
+    display: block;
+  }
+
+  .props-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--charcoal);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .props-type-badge {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--blue-light);
+    color: var(--blue);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .props-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 16px 0;
+  }
+
+  .prop-group {
+    margin-bottom: 16px;
+  }
+
+  .prop-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--mid);
+    margin-bottom: 6px;
+  }
+
+  .prop-input {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: var(--font-body);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+    color: var(--charcoal);
+    transition: border-color 0.2s;
+  }
+
+  .prop-input:focus {
+    outline: none;
+    border-color: var(--terracotta);
+  }
+
+  .prop-textarea {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: var(--font-body);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+    color: var(--charcoal);
+    resize: vertical;
+    min-height: 80px;
+    transition: border-color 0.2s;
+    line-height: 1.5;
+  }
+
+  .prop-textarea:focus {
+    outline: none;
+    border-color: var(--terracotta);
+  }
+
+  .prop-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .prop-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+  }
+
+  .prop-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    cursor: pointer;
+    border: 2px solid var(--white);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+
+  .prop-slider-value {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--mid);
+    min-width: 28px;
+    text-align: right;
+  }
+
+  .align-buttons {
+    display: flex;
+    gap: 4px;
+  }
+
+  .align-btn {
+    flex: 1;
+    padding: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+    color: var(--mid);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--font-body);
+    text-align: center;
+  }
+
+  .align-btn:hover {
+    border-color: var(--mid);
+  }
+
+  .align-btn.active {
+    border-color: var(--terracotta);
+    background: var(--terracotta-glow);
+    color: var(--terracotta);
+  }
+
+  .prop-toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+  }
+
+  .prop-toggle-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--charcoal);
+  }
+
+  .toggle-switch {
+    width: 38px;
+    height: 22px;
+    background: var(--border);
+    border-radius: 11px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .toggle-switch.on {
+    background: var(--terracotta);
+  }
+
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--white);
+    top: 3px;
+    left: 3px;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+
+  .toggle-switch.on::after {
+    transform: translateX(16px);
+  }
+
+  .prop-color-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .prop-color-input {
+    width: 34px;
+    height: 34px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    padding: 2px;
+    cursor: pointer;
+    background: transparent;
+  }
+
+  .prop-color-hex {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--charcoal);
+    font-family: monospace;
+  }
+
+  /* ── Email-level Props ── */
+  .email-props {
+    margin-top: 20px;
+  }
+
+  .email-props-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--mid);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 14px;
+  }
+
+  /* ── Modal Overlay ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(20,20,19,0.5);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  .modal {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    width: 560px;
+    max-width: 90vw;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    animation: modalIn 0.25s ease;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .modal-header {
+    padding: 20px 24px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-title {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .modal-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    background: var(--cream);
+    color: var(--charcoal);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+
+  .modal-close:hover {
+    background: var(--border);
+  }
+
+  .modal-body {
+    padding: 20px 24px 24px;
+  }
+
+  /* ── Validation Modal ── */
+  .validation-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f5f4f0;
+    font-size: 14px;
+  }
+
+  .validation-item:last-child {
+    border-bottom: none;
+  }
+
+  .validation-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--green-light);
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .validation-label {
+    font-weight: 500;
+    color: var(--charcoal);
+    flex: 1;
+  }
+
+  .validation-check {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--green);
+  }
+
+  .validation-score {
+    margin-top: 16px;
+    padding: 16px;
+    background: var(--green-light);
+    border-radius: var(--radius-md);
+    text-align: center;
+  }
+
+  .validation-score-number {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  .validation-score-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2e7d32;
+    margin-top: 4px;
+  }
+
+  /* ── Export Modal ── */
+  .export-code-preview {
+    background: #1e1e2e;
+    border-radius: var(--radius-md);
+    padding: 16px;
+    max-height: 220px;
+    overflow-y: auto;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #cdd6f4;
+    margin-bottom: 16px;
+  }
+
+  .export-code-preview .tag { color: #f38ba8; }
+  .export-code-preview .attr { color: #fab387; }
+  .export-code-preview .val { color: #a6e3a1; }
+  .export-code-preview .comment { color: #6c7086; }
+
+  .export-meta {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .export-badge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .export-badge.size {
+    background: var(--cream);
+    color: var(--charcoal);
+  }
+
+  .export-badge.compat {
+    background: var(--green-light);
+    color: var(--green);
+  }
+
+  .export-buttons {
+    display: flex;
+    gap: 10px;
+  }
+
+  .export-buttons .btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--charcoal);
+    color: var(--white);
+    padding: 14px 24px;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    z-index: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+  }
+
+  .toast.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 1100px) {
+    .sidebar-right {
+      display: none;
+    }
+  }
+
+  @media (max-width: 860px) {
+    .sidebar-left {
+      display: none;
+    }
+    .header-subtitle {
+      display: none;
+    }
+  }
+
+  /* ── Dragging States ── */
+  .email-block.dragging {
+    opacity: 0.4;
+  }
+
+  .palette-block.dragging {
+    opacity: 0.4;
+  }
+
+  /* ── Canvas drag-over state ── */
+  .email-canvas.drag-over {
+    outline: 2px dashed var(--blue);
+    outline-offset: -2px;
+  }
+
+  /* ── Validation animation ── */
+  .validation-item {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+
+  .validation-item.show {
+    opacity: 1;
+    transform: translateX(0);
+    transition: all 0.3s ease;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════ HEADER ══════════════════════════ -->
+<header class="header">
+  <div class="header-left">
+    <a href="/demo" class="back-btn">&#8592; Back to Demos</a>
+    <div class="header-divider"></div>
+    <div class="header-brand">
+      <span class="header-logo">Email Design AI</span>
+      <span class="header-subtitle">AI Ops &times; Drag &amp; Drop Editor</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-outline" id="btnValidate" onclick="openValidation()">Validate Against Brief</button>
+    <button class="btn btn-primary" id="btnExport" onclick="openExport()">Export to Klaviyo</button>
+  </div>
+</header>
+
+<!-- ══════════════════════════ MAIN LAYOUT ══════════════════════════ -->
+<div class="main-layout">
+
+  <!-- ── Left Sidebar ── -->
+  <aside class="sidebar-left">
+
+    <!-- Campaign Brief -->
+    <div class="sidebar-section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-title">Campaign Brief</span>
+        <span class="section-toggle collapsed">&#9662;</span>
+      </div>
+      <div class="section-body collapsed">
+        <div class="brief-row"><span class="brief-label">Campaign</span><span class="brief-value">Cart Recovery &mdash; Email 1</span></div>
+        <div class="brief-row"><span class="brief-label">Segment</span><span class="brief-value">Cart Abandoners (3,800)</span></div>
+        <div class="brief-row"><span class="brief-label">Goal</span><span class="brief-value">Recover 25% of abandoned carts</span></div>
+        <div class="brief-row"><span class="brief-label">Tone</span><span class="brief-value">Friendly reminder, not pushy</span></div>
+        <div class="brief-row"><span class="brief-label">Content</span><span class="brief-value">Cart contents, social proof, urgency</span></div>
+        <div class="brief-row"><span class="brief-label">CTA</span><span class="brief-value">Complete Your Order</span></div>
+        <div class="brief-row"><span class="brief-label">Design</span><span class="brief-value">Clean, product-focused, mobile-first</span></div>
+        <div style="margin-top: 6px;">
+          <span class="brief-tag">From AI Strategist</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Block Palette -->
+    <div class="sidebar-section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-title">Block Palette</span>
+        <span class="section-toggle">&#9662;</span>
+      </div>
+      <div class="section-body">
+        <div class="palette-block" draggable="true" data-block-type="header" ondragstart="paletteDragStart(event, 'header')">
+          <span class="p-icon">&#x1F4E7;</span>
+          <span class="p-label">Header (Logo + Nav)</span>
+          <span class="p-drag">&#x2982;</span>
+        </div>
+        <div class="palette-block" draggable="true" data-block-type="hero" ondragstart="paletteDragStart(event, 'hero')">
+          <span class="p-icon">&#x1F5BC;</span>
+          <span class="p-label">Hero Image</span>
+          <span class="p-drag">&#x2982;</span>
+        </div>
+        <div class="palette-block" draggable="true" data-block-type="text" ondragstart="paletteDragStart(event, 'text')">
+          <span class="p-icon">&#x1F4DD;</span>
+          <span class="p-label">Text Block</span>
+          <span class="p-drag">&#x2982;</span>
+        </div>
+        <div class="palette-block" draggable="true" data-block-type="products" ondragstart="paletteDragStart(event, 'products')">
+          <span class="p-icon">&#x1F6CD;</span>
+          <span class="p-label">Product Grid</span>
+          <span class="p-drag">&#x2982;</span>
+        </div>
+        <div class="palette-block" draggable="true" data-block-type="cta" ondragstart="paletteDragStart(event, 'cta')">
+          <span class="p-icon">&#x1F518;</span>
+          <span class="p-label">CTA Button</span>
+          <span class="p-drag">&#x2982;</span>
+        </div>
+        <div class="palette-block" draggable="true" data-block-type="social-proof" ondragstart="paletteDragStart(event, 'social-proof')">
+          <span class="p-icon">&#x2B50;</span>
+          <span class="p-label">Reviews / Social Proof</span>
+          <span class="p-drag">&#x2982;</span>
+        </div>
+        <div class="palette-block" draggable="true" data-block-type="spacer" ondragstart="paletteDragStart(event, 'spacer')">
+          <span class="p-icon">&#x1F4F1;</span>
+          <span class="p-label">Spacer</span>
+          <span class="p-drag">&#x2982;</span>
+        </div>
+        <div class="palette-block" draggable="true" data-block-type="footer" ondragstart="paletteDragStart(event, 'footer')">
+          <span class="p-icon">&#x1F517;</span>
+          <span class="p-label">Footer (Unsub + Social)</span>
+          <span class="p-drag">&#x2982;</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Brand Settings -->
+    <div class="sidebar-section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-title">Brand Settings</span>
+        <span class="section-toggle">&#9662;</span>
+      </div>
+      <div class="section-body">
+        <!-- Brand Color -->
+        <div class="brand-row">
+          <div class="brand-label">Brand Color</div>
+          <div class="color-swatches">
+            <div class="swatch active" style="background: #C15F3C;" data-color="#C15F3C" onclick="setBrandColor(this)"></div>
+            <div class="swatch" style="background: #2563eb;" data-color="#2563eb" onclick="setBrandColor(this)"></div>
+            <div class="swatch" style="background: #7c3aed;" data-color="#7c3aed" onclick="setBrandColor(this)"></div>
+            <div class="swatch" style="background: #059669;" data-color="#059669" onclick="setBrandColor(this)"></div>
+            <div class="swatch" style="background: #1a1a1a;" data-color="#1a1a1a" onclick="setBrandColor(this)"></div>
+          </div>
+        </div>
+        <!-- Font -->
+        <div class="brand-row">
+          <div class="brand-label">Font Family</div>
+          <select class="brand-select" id="brandFont" onchange="setBrandFont(this.value)">
+            <option value="'Inter', sans-serif">Inter</option>
+            <option value="'Playfair Display', serif">Playfair Display</option>
+            <option value="'Montserrat', sans-serif">Montserrat</option>
+          </select>
+        </div>
+        <!-- Logo -->
+        <div class="brand-row">
+          <div class="brand-label">Logo</div>
+          <div class="brand-logo-preview">BRAND</div>
+        </div>
+        <!-- Corner Radius -->
+        <div class="brand-row">
+          <div class="brand-label">Corner Radius</div>
+          <div class="radius-slider-row">
+            <input type="range" class="radius-slider" id="brandRadius" min="0" max="16" value="8" oninput="setBrandRadius(this.value)">
+            <span class="radius-value" id="radiusVal">8px</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Canvas Area ── -->
+  <main class="canvas-area" id="canvasArea">
+    <div class="canvas-wrapper" id="canvasWrapper">
+
+      <!-- Empty State -->
+      <div class="canvas-empty" id="canvasEmpty">
+        <div class="canvas-empty-icon">&#x2709;</div>
+        <div class="canvas-empty-title">No email yet</div>
+        <div class="canvas-empty-sub">Click "Generate Email" to let AI build your campaign</div>
+        <button class="btn-generate" onclick="generateEmail()">
+          <span>&#x2728;</span> Generate Email
+        </button>
+      </div>
+
+      <!-- Generation Overlay -->
+      <div class="generation-overlay" id="genOverlay">
+        <div class="gen-spinner"></div>
+        <ul class="gen-steps">
+          <li class="gen-step" data-step="0"><span class="gen-step-icon">1</span> Reading briefing...</li>
+          <li class="gen-step" data-step="1"><span class="gen-step-icon">2</span> Generating structure...</li>
+          <li class="gen-step" data-step="2"><span class="gen-step-icon">3</span> Applying branding...</li>
+          <li class="gen-step" data-step="3"><span class="gen-step-icon">4</span> Writing copy...</li>
+          <li class="gen-step" data-step="4"><span class="gen-step-icon">&#x2713;</span> Done!</li>
+        </ul>
+      </div>
+
+      <!-- Email Canvas -->
+      <div class="email-canvas" id="emailCanvas"
+           ondragover="canvasDragOver(event)"
+           ondrop="canvasDrop(event)"
+           ondragleave="canvasDragLeave(event)">
+        <!-- Blocks injected by JS -->
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ── Right Sidebar (Properties) ── -->
+  <aside class="sidebar-right" id="sidebarRight">
+
+    <!-- Empty State -->
+    <div class="props-empty" id="propsEmpty">
+      <div class="props-empty-icon">&#x1F4CB;</div>
+      <div class="props-empty-text">Select a block to edit</div>
+      <div class="props-empty-sub">Click any block in the email canvas to view and edit its properties</div>
+
+      <div class="email-props">
+        <div class="props-divider"></div>
+        <div class="email-props-title">Email Settings</div>
+        <div class="prop-group">
+          <div class="prop-label">Background Color</div>
+          <div class="prop-color-row">
+            <input type="color" class="prop-color-input" value="#ffffff" onchange="setEmailBg(this.value)">
+            <span class="prop-color-hex">#ffffff</span>
+          </div>
+        </div>
+        <div class="prop-group">
+          <div class="prop-label">Content Width</div>
+          <div class="prop-slider-row">
+            <input type="range" class="prop-slider" min="400" max="700" value="600" oninput="setCanvasWidth(this.value)">
+            <span class="prop-slider-value">600px</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header Props -->
+    <div class="props-panel" id="props-header">
+      <div class="props-title">Header Block <span class="props-type-badge">Header</span></div>
+      <div class="props-divider"></div>
+      <div class="prop-group">
+        <div class="prop-label">Logo Alignment</div>
+        <div class="align-buttons">
+          <button class="align-btn" onclick="setHeaderAlign('left', this)">L</button>
+          <button class="align-btn active" onclick="setHeaderAlign('center', this)">C</button>
+          <button class="align-btn" onclick="setHeaderAlign('right', this)">R</button>
+        </div>
+      </div>
+      <div class="prop-group">
+        <div class="prop-label">Background Color</div>
+        <div class="prop-color-row">
+          <input type="color" class="prop-color-input" value="#ffffff" onchange="setHeaderBg(this.value)">
+          <span class="prop-color-hex">#ffffff</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Props -->
+    <div class="props-panel" id="props-hero">
+      <div class="props-title">Hero Block <span class="props-type-badge">Hero</span></div>
+      <div class="props-divider"></div>
+      <div class="prop-group">
+        <div class="prop-label">Headline</div>
+        <input type="text" class="prop-input" id="heroHeadline" value="You left something behind &#x1F440;" oninput="updateHeroText()">
+      </div>
+      <div class="prop-group">
+        <div class="prop-label">Subtext</div>
+        <input type="text" class="prop-input" id="heroSubtext" value="Your cart is waiting for you" oninput="updateHeroText()">
+      </div>
+      <div class="prop-group">
+        <div class="prop-label">Text Alignment</div>
+        <div class="align-buttons">
+          <button class="align-btn" onclick="setHeroAlign('left', this)">L</button>
+          <button class="align-btn active" onclick="setHeroAlign('center', this)">C</button>
+          <button class="align-btn" onclick="setHeroAlign('right', this)">R</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Text Props -->
+    <div class="props-panel" id="props-text">
+      <div class="props-title">Text Block <span class="props-type-badge">Text</span></div>
+      <div class="props-divider"></div>
+      <div class="prop-group">
+        <div class="prop-label">Content</div>
+        <textarea class="prop-textarea" id="textContent" oninput="updateTextBlock()">Custom text block. Edit this content in the properties panel.</textarea>
+      </div>
+      <div class="prop-group">
+        <div class="prop-label">Font Size</div>
+        <div class="prop-slider-row">
+          <input type="range" class="prop-slider" id="textSize" min="12" max="28" value="15" oninput="updateTextBlock()">
+          <span class="prop-slider-value" id="textSizeVal">15px</span>
+        </div>
+      </div>
+      <div class="prop-group">
+        <div class="prop-label">Alignment</div>
+        <div class="align-buttons">
+          <button class="align-btn active" onclick="setTextAlign('left', this)">L</button>
+          <button class="align-btn" onclick="setTextAlign('center', this)">C</button>
+          <button class="align-btn" onclick="setTextAlign('right', this)">R</button>
+        </div>
+      </div>
+      <div class="prop-group">
+        <div class="prop-label">Text Color</div>
+        <div class="prop-color-row">
+          <input type="color" class="prop-color-input" value="#141413" id="textColor" onchange="updateTextBlock()">
+          <span class="prop-color-hex" id="textColorHex">#141413</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA Props -->
+    <div class="props-panel" id="props-cta">
+      <div class="props-title">CTA Button <span class="props-type-badge">CTA</span></div>
+      <div class="props-divider"></div>
+      <div class="prop-group">
+        <div class="prop-label">Button Text</div>
+        <input type="text" class="prop-input" id="ctaText" value="Complete Your Order &#x2192;" oninput="updateCtaBlock()">
+      </div>
+      <div class="prop-group">
+        <div class="prop-label">Button Color</div>
+        <div class="prop-color-row">
+          <input type="color" class="prop-color-input" id="ctaColor" onchange="updateCtaBlock()">
+          <span class="prop-color-hex" id="ctaColorHex"></span>
+        </div>
+      </div>
+      <div class="prop-group">
+        <div class="prop-label">Button URL</div>
+        <input type="text" class="prop-input" id="ctaUrl" value="https://shop.example.com/cart" oninput="updateCtaBlock()">
+      </div>
+      <div class="prop-group">
+        <div class="prop-label">Border Radius</div>
+        <div class="prop-slider-row">
+          <input type="range" class="prop-slider" id="ctaRadius" min="0" max="30" value="8" oninput="updateCtaBlock()">
+          <span class="prop-slider-value" id="ctaRadiusVal">8px</span>
+        </div>
+      </div>
+      <div class="prop-group">
+        <div class="prop-label">Padding</div>
+        <div class="prop-slider-row">
+          <input type="range" class="prop-slider" id="ctaPadding" min="8" max="28" value="16" oninput="updateCtaBlock()">
+          <span class="prop-slider-value" id="ctaPaddingVal">16px</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Props -->
+    <div class="props-panel" id="props-products">
+      <div class="props-title">Product Grid <span class="props-type-badge">Products</span></div>
+      <div class="props-divider"></div>
+      <div class="prop-group">
+        <div class="prop-label">Number of Products</div>
+        <div class="align-buttons">
+          <button class="align-btn" onclick="setProductCount(2, this)">2</button>
+          <button class="align-btn active" onclick="setProductCount(3, this)">3</button>
+          <button class="align-btn" onclick="setProductCount(4, this)">4</button>
+        </div>
+      </div>
+      <div class="prop-group">
+        <div class="prop-toggle-row">
+          <span class="prop-toggle-label">Show Price</span>
+          <div class="toggle-switch on" onclick="toggleSwitch(this); updateProductToggles()"></div>
+        </div>
+        <div class="prop-toggle-row">
+          <span class="prop-toggle-label">Show "Add to Cart"</span>
+          <div class="toggle-switch on" onclick="toggleSwitch(this); updateProductToggles()"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Social Proof Props -->
+    <div class="props-panel" id="props-social-proof">
+      <div class="props-title">Social Proof <span class="props-type-badge">Reviews</span></div>
+      <div class="props-divider"></div>
+      <div class="prop-group">
+        <div class="prop-label">Rating Text</div>
+        <input type="text" class="prop-input" id="spRating" value="4.8/5 from 2,340+ reviews" oninput="updateSocialProof()">
+      </div>
+      <div class="prop-group">
+        <div class="prop-label">Testimonial</div>
+        <textarea class="prop-textarea" id="spQuote" oninput="updateSocialProof()">"Absolutely love the quality! Best purchase I've made this year. Fast shipping too."</textarea>
+      </div>
+    </div>
+
+    <!-- Urgency Props -->
+    <div class="props-panel" id="props-urgency">
+      <div class="props-title">Urgency Block <span class="props-type-badge">Urgency</span></div>
+      <div class="props-divider"></div>
+      <div class="prop-group">
+        <div class="prop-label">Message</div>
+        <input type="text" class="prop-input" id="urgencyText" value="Your cart expires in 48 hours" oninput="updateUrgency()">
+      </div>
+    </div>
+
+    <!-- Footer Props -->
+    <div class="props-panel" id="props-footer">
+      <div class="props-title">Footer Block <span class="props-type-badge">Footer</span></div>
+      <div class="props-divider"></div>
+      <div class="prop-group">
+        <div class="prop-label">Company Name</div>
+        <input type="text" class="prop-input" value="BRAND Inc." oninput="updateFooter(this.value)">
+      </div>
+    </div>
+
+    <!-- Spacer Props -->
+    <div class="props-panel" id="props-spacer">
+      <div class="props-title">Spacer <span class="props-type-badge">Spacer</span></div>
+      <div class="props-divider"></div>
+      <div class="prop-group">
+        <div class="prop-label">Height</div>
+        <div class="prop-slider-row">
+          <input type="range" class="prop-slider" id="spacerHeight" min="10" max="80" value="30" oninput="updateSpacer()">
+          <span class="prop-slider-value" id="spacerHeightVal">30px</span>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- ══════════════════════════ VALIDATION MODAL ══════════════════════════ -->
+<div class="modal-overlay" id="validationModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Brief Validation</span>
+      <button class="modal-close" onclick="closeModal('validationModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div id="validationResults">
+        <div class="validation-item" data-vi="0"><span class="validation-icon">&#x2713;</span><span class="validation-label">Cart contents displayed</span><span class="validation-check">Yes</span></div>
+        <div class="validation-item" data-vi="1"><span class="validation-icon">&#x2713;</span><span class="validation-label">Social proof included</span><span class="validation-check">Yes</span></div>
+        <div class="validation-item" data-vi="2"><span class="validation-icon">&#x2713;</span><span class="validation-label">CTA matches brief</span><span class="validation-check">"Complete Your Order" &#x2713;</span></div>
+        <div class="validation-item" data-vi="3"><span class="validation-icon">&#x2713;</span><span class="validation-label">Tone check</span><span class="validation-check">Friendly, non-pushy &#x2713;</span></div>
+        <div class="validation-item" data-vi="4"><span class="validation-icon">&#x2713;</span><span class="validation-label">Mobile responsive</span><span class="validation-check">Yes</span></div>
+      </div>
+      <div class="validation-score" id="validationScore" style="display:none;">
+        <div class="validation-score-number">98%</div>
+        <div class="validation-score-label">Excellent match to briefing</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ EXPORT MODAL ══════════════════════════ -->
+<div class="modal-overlay" id="exportModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Export to Klaviyo</span>
+      <button class="modal-close" onclick="closeModal('exportModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="export-code-preview" id="exportCode">
+        <span class="comment">&lt;!-- Klaviyo Email Template --&gt;</span><br>
+        <span class="tag">&lt;table</span> <span class="attr">role=</span><span class="val">"presentation"</span> <span class="attr">width=</span><span class="val">"600"</span> <span class="attr">cellpadding=</span><span class="val">"0"</span><span class="tag">&gt;</span><br>
+        &nbsp;&nbsp;<span class="tag">&lt;tr&gt;&lt;td</span> <span class="attr">style=</span><span class="val">"padding:20px 30px"</span><span class="tag">&gt;</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">&lt;h1</span> <span class="attr">style=</span><span class="val">"font-family:Inter,sans-serif; font-size:22px; letter-spacing:3px"</span><span class="tag">&gt;</span>BRAND<span class="tag">&lt;/h1&gt;</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">&lt;p</span> <span class="attr">style=</span><span class="val">"font-size:12px; color:#b0aea5"</span><span class="tag">&gt;</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">&lt;a</span> <span class="attr">href=</span><span class="val">"#"</span><span class="tag">&gt;</span>Shop<span class="tag">&lt;/a&gt;</span> |
+        <span class="tag">&lt;a</span> <span class="attr">href=</span><span class="val">"#"</span><span class="tag">&gt;</span>New In<span class="tag">&lt;/a&gt;</span> |
+        <span class="tag">&lt;a</span> <span class="attr">href=</span><span class="val">"#"</span><span class="tag">&gt;</span>Sale<span class="tag">&lt;/a&gt;</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">&lt;/p&gt;</span><br>
+        &nbsp;&nbsp;<span class="tag">&lt;/td&gt;&lt;/tr&gt;</span><br>
+        &nbsp;&nbsp;<span class="tag">&lt;tr&gt;&lt;td</span> <span class="attr">style=</span><span class="val">"background:linear-gradient(135deg,<span id="exportBrandColor">#C15F3C</span>,#e8956e); padding:50px 40px; text-align:center"</span><span class="tag">&gt;</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">&lt;h2</span> <span class="attr">style=</span><span class="val">"color:#fff; font-size:28px"</span><span class="tag">&gt;</span>You left something behind<span class="tag">&lt;/h2&gt;</span><br>
+        &nbsp;&nbsp;<span class="tag">&lt;/td&gt;&lt;/tr&gt;</span><br>
+        &nbsp;&nbsp;<span class="comment">&lt;!-- Product rows, CTA, footer... --&gt;</span><br>
+        <span class="tag">&lt;/table&gt;</span>
+      </div>
+      <div class="export-meta">
+        <span class="export-badge size">12.4 KB</span>
+        <span class="export-badge compat">Klaviyo-compatible &#x2713;</span>
+      </div>
+      <div class="export-buttons">
+        <button class="btn btn-outline" onclick="copyExportHtml()">Copy HTML</button>
+        <button class="btn btn-primary" onclick="sendToKlaviyo()">Send to Klaviyo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ TOAST ══════════════════════════ -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════ JAVASCRIPT ══════════════════════════ -->
+<script>
+/* ── State ── */
+let emailGenerated = false;
+let selectedBlockId = null;
+let dragSource = null;
+let dragFromPalette = false;
+let brandColor = '#C15F3C';
+let brandFont = "'Inter', sans-serif";
+let brandRadius = 8;
+
+/* ── Block Templates ── */
+const blockTemplates = {
+  header: () => `
+    <div class="eb-header" style="background: #ffffff;">
+      <div class="header-logo-text" style="font-family: ${brandFont};">BRAND</div>
+      <div class="header-nav"><span>Shop</span><span>New In</span><span>Sale</span></div>
+    </div>`,
+  hero: () => `
+    <div class="eb-hero" style="background: linear-gradient(135deg, ${brandColor}, #e8956e);">
+      <h2 style="font-family: ${brandFont};">You left something behind &#x1F440;</h2>
+      <p style="font-family: ${brandFont};">Your cart is waiting for you</p>
+    </div>`,
+  text: () => `
+    <div style="padding: 24px 40px; font-size: 15px; line-height: 1.7; color: #141413; font-family: ${brandFont}; text-align: left;">
+      Custom text block. Edit this content in the properties panel.
+    </div>`,
+  products: () => `
+    <div class="eb-products">
+      <div class="eb-products-title" style="font-family: ${brandFont};">Items in your cart</div>
+      <div class="eb-products-grid" data-count="2">
+        <div class="eb-product-card" style="border-radius: ${brandRadius}px;">
+          <div class="eb-product-img">&#x1F45C;</div>
+          <div class="eb-product-info">
+            <div class="eb-product-name" style="font-family: ${brandFont};">Premium Leather Bag</div>
+            <div class="eb-product-price" style="color: ${brandColor}; font-family: ${brandFont};">&euro;129.00</div>
+          </div>
+        </div>
+        <div class="eb-product-card" style="border-radius: ${brandRadius}px;">
+          <div class="eb-product-img">&#x1F9E3;</div>
+          <div class="eb-product-info">
+            <div class="eb-product-name" style="font-family: ${brandFont};">Silk Scarf Collection</div>
+            <div class="eb-product-price" style="color: ${brandColor}; font-family: ${brandFont};">&euro;59.00</div>
+          </div>
+        </div>
+      </div>
+    </div>`,
+  'social-proof': () => `
+    <div class="eb-social-proof">
+      <div class="sp-rating" style="font-family: ${brandFont};">&#x2B50; 4.8/5 from 2,340+ reviews</div>
+      <div class="sp-quote" style="font-family: ${brandFont};">"Absolutely love the quality! Best purchase I've made this year. Fast shipping too."</div>
+    </div>`,
+  cta: () => `
+    <div class="eb-cta">
+      <a class="eb-cta-button" href="#" style="background: ${brandColor}; border-radius: ${brandRadius}px; font-family: ${brandFont};">Complete Your Order &#x2192;</a>
+    </div>`,
+  urgency: () => `
+    <div class="eb-urgency" style="font-family: ${brandFont};">
+      &#x23F0; Your cart expires in 48 hours
+    </div>`,
+  footer: () => `
+    <div class="eb-footer">
+      <div class="footer-social">
+        <span title="Instagram">&#x1F4F7;</span>
+        <span title="Twitter">&#x1F426;</span>
+        <span title="Facebook">&#x1F310;</span>
+      </div>
+      <div class="footer-links">
+        <a href="#">Unsubscribe</a> &middot; <a href="#">Privacy Policy</a><br>
+        BRAND Inc. &middot; 123 Commerce St &middot; New York, NY 10001
+      </div>
+    </div>`,
+  spacer: () => `<div style="height: 30px;"></div>`
+};
+
+/* ── Section Toggle ── */
+function toggleSection(header) {
+  const toggle = header.querySelector('.section-toggle');
+  const body = header.nextElementSibling;
+  toggle.classList.toggle('collapsed');
+  body.classList.toggle('collapsed');
+}
+
+/* ── Generate Email ── */
+function generateEmail() {
+  const empty = document.getElementById('canvasEmpty');
+  const overlay = document.getElementById('genOverlay');
+  const canvas = document.getElementById('emailCanvas');
+
+  empty.style.display = 'none';
+  overlay.classList.add('active');
+
+  const steps = overlay.querySelectorAll('.gen-step');
+  const delays = [0, 500, 1500, 2300, 3500];
+
+  delays.forEach((delay, i) => {
+    setTimeout(() => {
+      steps.forEach((s, j) => {
+        if (j < i) { s.classList.add('done'); s.classList.remove('active'); }
+        else if (j === i) { s.classList.add('active'); s.classList.remove('done'); }
+        else { s.classList.remove('active', 'done'); }
+      });
+    }, delay);
+  });
+
+  setTimeout(() => {
+    steps[steps.length - 1].classList.add('done');
+  }, 3800);
+
+  setTimeout(() => {
+    overlay.classList.remove('active');
+    buildInitialEmail();
+    canvas.classList.add('active');
+    emailGenerated = true;
+  }, 4200);
+}
+
+/* ── Build Initial Email ── */
+function buildInitialEmail() {
+  const canvas = document.getElementById('emailCanvas');
+  const order = ['header', 'hero', 'products', 'social-proof', 'cta', 'urgency', 'footer'];
+  canvas.innerHTML = '';
+  order.forEach((type, i) => {
+    const block = createBlockElement(type, 'block-' + i);
+    canvas.appendChild(block);
+  });
+}
+
+let blockCounter = 100;
+
+function createBlockElement(type, id) {
+  if (!id) id = 'block-' + (blockCounter++);
+  const div = document.createElement('div');
+  div.className = 'email-block';
+  div.id = id;
+  div.dataset.type = type;
+  div.draggable = true;
+  div.innerHTML = `<div class="block-drag-handle" title="Drag to reorder">&#x2982;</div>` + blockTemplates[type]();
+  div.addEventListener('click', (e) => {
+    e.stopPropagation();
+    selectBlock(id, type);
+  });
+  div.addEventListener('dragstart', (e) => blockDragStart(e, div));
+  div.addEventListener('dragover', (e) => blockDragOver(e, div));
+  div.addEventListener('dragleave', (e) => blockDragLeave(e, div));
+  div.addEventListener('drop', (e) => blockDrop(e, div));
+  div.addEventListener('dragend', blockDragEnd);
+  return div;
+}
+
+/* ── Block Selection ── */
+function selectBlock(id, type) {
+  document.querySelectorAll('.email-block').forEach(b => b.classList.remove('selected'));
+  document.getElementById(id).classList.add('selected');
+  selectedBlockId = id;
+
+  document.getElementById('propsEmpty').style.display = 'none';
+  document.querySelectorAll('.props-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('props-' + type);
+  if (panel) panel.classList.add('active');
+
+  // Sync CTA color
+  if (type === 'cta') {
+    document.getElementById('ctaColor').value = brandColor;
+    document.getElementById('ctaColorHex').textContent = brandColor;
+  }
+}
+
+function deselectAll() {
+  document.querySelectorAll('.email-block').forEach(b => b.classList.remove('selected'));
+  selectedBlockId = null;
+  document.querySelectorAll('.props-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('propsEmpty').style.display = '';
+}
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.email-block') && !e.target.closest('.sidebar-right')) {
+    deselectAll();
+  }
+});
+
+/* ── Drag & Drop: Canvas reorder ── */
+function blockDragStart(e, el) {
+  dragSource = el;
+  dragFromPalette = false;
+  el.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', el.id);
+}
+
+function blockDragOver(e, el) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const rect = el.getBoundingClientRect();
+  const mid = rect.top + rect.height / 2;
+  el.classList.remove('drag-over-above', 'drag-over-below');
+  if (e.clientY < mid) el.classList.add('drag-over-above');
+  else el.classList.add('drag-over-below');
+}
+
+function blockDragLeave(e, el) {
+  el.classList.remove('drag-over-above', 'drag-over-below');
+}
+
+function blockDrop(e, el) {
+  e.preventDefault();
+  e.stopPropagation();
+  el.classList.remove('drag-over-above', 'drag-over-below');
+
+  const canvas = document.getElementById('emailCanvas');
+  const rect = el.getBoundingClientRect();
+  const mid = rect.top + rect.height / 2;
+  const insertBefore = e.clientY < mid;
+
+  if (dragFromPalette) {
+    // Dropping from palette
+    const type = e.dataTransfer.getData('text/plain');
+    const newBlock = createBlockElement(type);
+    if (insertBefore) canvas.insertBefore(newBlock, el);
+    else canvas.insertBefore(newBlock, el.nextSibling);
+    newBlock.style.opacity = '0';
+    newBlock.style.transform = 'translateY(-8px)';
+    requestAnimationFrame(() => {
+      newBlock.style.transition = 'opacity 0.3s, transform 0.3s';
+      newBlock.style.opacity = '1';
+      newBlock.style.transform = 'translateY(0)';
+    });
+  } else if (dragSource && dragSource !== el) {
+    // Reorder within canvas
+    if (insertBefore) canvas.insertBefore(dragSource, el);
+    else canvas.insertBefore(dragSource, el.nextSibling);
+  }
+
+  dragSource = null;
+  dragFromPalette = false;
+  canvas.classList.remove('drag-over');
+}
+
+function blockDragEnd() {
+  document.querySelectorAll('.email-block').forEach(b => {
+    b.classList.remove('dragging', 'drag-over-above', 'drag-over-below');
+  });
+  document.getElementById('emailCanvas').classList.remove('drag-over');
+  dragSource = null;
+}
+
+/* ── Drag & Drop: Palette -> Canvas ── */
+function paletteDragStart(e, type) {
+  dragFromPalette = true;
+  dragSource = null;
+  e.dataTransfer.effectAllowed = 'copy';
+  e.dataTransfer.setData('text/plain', type);
+  e.target.closest('.palette-block').classList.add('dragging');
+}
+
+function canvasDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = dragFromPalette ? 'copy' : 'move';
+  document.getElementById('emailCanvas').classList.add('drag-over');
+}
+
+function canvasDragLeave(e) {
+  if (!e.relatedTarget || !document.getElementById('emailCanvas').contains(e.relatedTarget)) {
+    document.getElementById('emailCanvas').classList.remove('drag-over');
+  }
+}
+
+function canvasDrop(e) {
+  e.preventDefault();
+  document.getElementById('emailCanvas').classList.remove('drag-over');
+  if (!dragFromPalette) return;
+
+  const type = e.dataTransfer.getData('text/plain');
+  const canvas = document.getElementById('emailCanvas');
+  const newBlock = createBlockElement(type);
+  canvas.appendChild(newBlock);
+  newBlock.style.opacity = '0';
+  newBlock.style.transform = 'translateY(-8px)';
+  requestAnimationFrame(() => {
+    newBlock.style.transition = 'opacity 0.3s, transform 0.3s';
+    newBlock.style.opacity = '1';
+    newBlock.style.transform = 'translateY(0)';
+  });
+  dragFromPalette = false;
+}
+
+/* Clean up palette dragging state */
+document.addEventListener('dragend', () => {
+  document.querySelectorAll('.palette-block').forEach(b => b.classList.remove('dragging'));
+});
+
+/* ── Brand Settings ── */
+function setBrandColor(swatch) {
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+  swatch.classList.add('active');
+  brandColor = swatch.dataset.color;
+  document.documentElement.style.setProperty('--brand-color', brandColor);
+  applyBrandToCanvas();
+}
+
+function setBrandFont(font) {
+  brandFont = font;
+  document.documentElement.style.setProperty('--brand-font', font);
+  applyBrandToCanvas();
+}
+
+function setBrandRadius(val) {
+  brandRadius = parseInt(val);
+  document.getElementById('radiusVal').textContent = val + 'px';
+  document.documentElement.style.setProperty('--brand-radius', val + 'px');
+  applyBrandToCanvas();
+}
+
+function applyBrandToCanvas() {
+  // Hero gradient
+  document.querySelectorAll('.eb-hero').forEach(el => {
+    el.style.background = `linear-gradient(135deg, ${brandColor}, #e8956e)`;
+  });
+  // CTA buttons
+  document.querySelectorAll('.eb-cta-button').forEach(el => {
+    el.style.background = brandColor;
+    el.style.borderRadius = brandRadius + 'px';
+    el.style.fontFamily = brandFont;
+  });
+  // Product prices
+  document.querySelectorAll('.eb-product-price').forEach(el => {
+    el.style.color = brandColor;
+    el.style.fontFamily = brandFont;
+  });
+  // Product cards
+  document.querySelectorAll('.eb-product-card').forEach(el => {
+    el.style.borderRadius = brandRadius + 'px';
+  });
+  // Product names
+  document.querySelectorAll('.eb-product-name').forEach(el => {
+    el.style.fontFamily = brandFont;
+  });
+  // Products title
+  document.querySelectorAll('.eb-products-title').forEach(el => {
+    el.style.fontFamily = brandFont;
+  });
+  // Hero text
+  document.querySelectorAll('.eb-hero h2, .eb-hero p').forEach(el => {
+    el.style.fontFamily = brandFont;
+  });
+  // Header logo
+  document.querySelectorAll('.header-logo-text').forEach(el => {
+    el.style.fontFamily = brandFont;
+  });
+  // Social proof
+  document.querySelectorAll('.sp-rating, .sp-quote').forEach(el => {
+    el.style.fontFamily = brandFont;
+  });
+  // Urgency
+  document.querySelectorAll('.eb-urgency').forEach(el => {
+    el.style.fontFamily = brandFont;
+  });
+  // Nav hover links
+  document.querySelectorAll('.header-nav span').forEach(el => {
+    el.onmouseover = () => el.style.color = brandColor;
+    el.onmouseout = () => el.style.color = '';
+  });
+  // Export brand color
+  const expBc = document.getElementById('exportBrandColor');
+  if (expBc) expBc.textContent = brandColor;
+}
+
+/* ── Property Updates ── */
+function setHeaderAlign(align, btn) {
+  activateAlignBtn(btn);
+  const block = document.querySelector('#' + selectedBlockId + ' .eb-header');
+  if (block) block.style.textAlign = align;
+}
+
+function setHeaderBg(color) {
+  const block = document.querySelector('#' + selectedBlockId + ' .eb-header');
+  if (block) block.style.background = color;
+  const hex = block ? block.parentElement.querySelector('.prop-color-hex') : null;
+  if (hex) hex.textContent = color;
+}
+
+function setHeroAlign(align, btn) {
+  activateAlignBtn(btn);
+  const block = document.querySelector('#' + selectedBlockId + ' .eb-hero');
+  if (block) block.style.textAlign = align;
+}
+
+function updateHeroText() {
+  const block = document.querySelector('#' + selectedBlockId + ' .eb-hero');
+  if (!block) return;
+  const h2 = block.querySelector('h2');
+  const p = block.querySelector('p');
+  if (h2) h2.textContent = document.getElementById('heroHeadline').value;
+  if (p) p.textContent = document.getElementById('heroSubtext').value;
+}
+
+function updateTextBlock() {
+  const block = document.getElementById(selectedBlockId);
+  if (!block || block.dataset.type !== 'text') return;
+  const inner = block.querySelector('div:not(.block-drag-handle)');
+  if (!inner) return;
+  const size = document.getElementById('textSize').value;
+  const color = document.getElementById('textColor').value;
+  const content = document.getElementById('textContent').value;
+  inner.textContent = content;
+  inner.style.fontSize = size + 'px';
+  inner.style.color = color;
+  document.getElementById('textSizeVal').textContent = size + 'px';
+  document.getElementById('textColorHex').textContent = color;
+}
+
+function setTextAlign(align, btn) {
+  activateAlignBtn(btn);
+  const block = document.getElementById(selectedBlockId);
+  if (!block) return;
+  const inner = block.querySelector('div:not(.block-drag-handle)');
+  if (inner) inner.style.textAlign = align;
+}
+
+function updateCtaBlock() {
+  const block = document.querySelector('#' + selectedBlockId + ' .eb-cta-button');
+  if (!block) return;
+  block.textContent = document.getElementById('ctaText').value;
+  block.style.background = document.getElementById('ctaColor').value;
+  const r = document.getElementById('ctaRadius').value;
+  const p = document.getElementById('ctaPadding').value;
+  block.style.borderRadius = r + 'px';
+  block.style.padding = p + 'px 40px';
+  document.getElementById('ctaRadiusVal').textContent = r + 'px';
+  document.getElementById('ctaPaddingVal').textContent = p + 'px';
+  document.getElementById('ctaColorHex').textContent = document.getElementById('ctaColor').value;
+}
+
+function setProductCount(n, btn) {
+  activateAlignBtn(btn);
+  const grid = document.querySelector('#' + selectedBlockId + ' .eb-products-grid');
+  if (!grid) return;
+  const products = [
+    { icon: '&#x1F45C;', name: 'Premium Leather Bag', price: '&euro;129.00' },
+    { icon: '&#x1F9E3;', name: 'Silk Scarf Collection', price: '&euro;59.00' },
+    { icon: '&#x1F453;', name: 'Designer Sunglasses', price: '&euro;89.00' },
+    { icon: '&#x1F45F;', name: 'Canvas Sneakers', price: '&euro;79.00' }
+  ];
+  grid.innerHTML = '';
+  for (let i = 0; i < n && i < products.length; i++) {
+    const card = document.createElement('div');
+    card.className = 'eb-product-card';
+    card.style.borderRadius = brandRadius + 'px';
+    card.innerHTML = `
+      <div class="eb-product-img">${products[i].icon}</div>
+      <div class="eb-product-info">
+        <div class="eb-product-name" style="font-family: ${brandFont};">${products[i].name}</div>
+        <div class="eb-product-price" style="color: ${brandColor}; font-family: ${brandFont};">${products[i].price}</div>
+      </div>`;
+    grid.appendChild(card);
+  }
+  grid.dataset.count = n;
+}
+
+function updateProductToggles() {
+  const toggles = document.querySelectorAll('#props-products .toggle-switch');
+  const showPrice = toggles[0].classList.contains('on');
+  const showAdd = toggles[1].classList.contains('on');
+  const block = document.getElementById(selectedBlockId);
+  if (!block) return;
+  block.querySelectorAll('.eb-product-price').forEach(el => el.style.display = showPrice ? '' : 'none');
+  // Add to cart buttons aren't present in initial, so this is for the toggle demo
+}
+
+function updateSocialProof() {
+  const block = document.getElementById(selectedBlockId);
+  if (!block) return;
+  const rating = block.querySelector('.sp-rating');
+  const quote = block.querySelector('.sp-quote');
+  if (rating) rating.innerHTML = '&#x2B50; ' + document.getElementById('spRating').value;
+  if (quote) quote.textContent = document.getElementById('spQuote').value;
+}
+
+function updateUrgency() {
+  const block = document.getElementById(selectedBlockId);
+  if (!block) return;
+  const inner = block.querySelector('.eb-urgency');
+  if (inner) inner.innerHTML = '&#x23F0; ' + document.getElementById('urgencyText').value;
+}
+
+function updateFooter(name) {
+  const block = document.getElementById(selectedBlockId);
+  if (!block) return;
+  const links = block.querySelector('.footer-links');
+  if (links) {
+    links.innerHTML = `<a href="#">Unsubscribe</a> &middot; <a href="#">Privacy Policy</a><br>${name} &middot; 123 Commerce St &middot; New York, NY 10001`;
+  }
+}
+
+function updateSpacer() {
+  const block = document.getElementById(selectedBlockId);
+  if (!block) return;
+  const inner = block.querySelector('div:not(.block-drag-handle)');
+  const val = document.getElementById('spacerHeight').value;
+  if (inner) inner.style.height = val + 'px';
+  document.getElementById('spacerHeightVal').textContent = val + 'px';
+}
+
+function toggleSwitch(el) {
+  el.classList.toggle('on');
+}
+
+function activateAlignBtn(btn) {
+  btn.parentElement.querySelectorAll('.align-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+/* ── Email-level settings ── */
+function setEmailBg(color) {
+  const canvas = document.getElementById('emailCanvas');
+  if (canvas) canvas.style.background = color;
+  const hex = document.querySelector('#propsEmpty .prop-color-hex');
+  if (hex) hex.textContent = color;
+}
+
+function setCanvasWidth(val) {
+  const wrapper = document.getElementById('canvasWrapper');
+  if (wrapper) { wrapper.style.width = val + 'px'; wrapper.style.maxWidth = val + 'px'; }
+  const display = document.querySelector('#propsEmpty .prop-slider-value');
+  if (display) display.textContent = val + 'px';
+}
+
+/* ── Validation Modal ── */
+function openValidation() {
+  if (!emailGenerated) { showToast('Generate an email first'); return; }
+  const modal = document.getElementById('validationModal');
+  modal.classList.add('active');
+
+  // Reset items
+  const items = modal.querySelectorAll('.validation-item');
+  items.forEach(it => it.classList.remove('show'));
+  document.getElementById('validationScore').style.display = 'none';
+
+  // Animate items
+  items.forEach((item, i) => {
+    setTimeout(() => item.classList.add('show'), 300 + i * 350);
+  });
+  setTimeout(() => {
+    document.getElementById('validationScore').style.display = '';
+    document.getElementById('validationScore').style.opacity = '0';
+    document.getElementById('validationScore').style.transform = 'scale(0.95)';
+    requestAnimationFrame(() => {
+      document.getElementById('validationScore').style.transition = 'all 0.4s ease';
+      document.getElementById('validationScore').style.opacity = '1';
+      document.getElementById('validationScore').style.transform = 'scale(1)';
+    });
+  }, 300 + items.length * 350 + 200);
+}
+
+/* ── Export Modal ── */
+function openExport() {
+  if (!emailGenerated) { showToast('Generate an email first'); return; }
+  document.getElementById('exportModal').classList.add('active');
+}
+
+function copyExportHtml() {
+  showToast('HTML copied to clipboard');
+}
+
+function sendToKlaviyo() {
+  closeModal('exportModal');
+  showToast('Email sent to Klaviyo successfully');
+}
+
+/* ── Modal Helpers ── */
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+// Close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.classList.remove('active');
+  });
+});
+
+/* ── Toast ── */
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('visible');
+  setTimeout(() => toast.classList.remove('visible'), 2500);
+}
+
+/* ── Keyboard ── */
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+    deselectAll();
+  }
+  if ((e.key === 'Delete' || e.key === 'Backspace') && selectedBlockId && !e.target.closest('input, textarea, select')) {
+    const block = document.getElementById(selectedBlockId);
+    if (block) {
+      block.style.transition = 'opacity 0.2s, transform 0.2s';
+      block.style.opacity = '0';
+      block.style.transform = 'scale(0.95)';
+      setTimeout(() => block.remove(), 200);
+      deselectAll();
+    }
+  }
+});
+</script>
+</body>
+</html>

@@ -33,6 +33,20 @@ const demos = [
       "Semantic search with AI-generated answers, source ranking, highlighted excerpts, and query analytics.",
     preview: "/demo/previews/knowledge-systems.webm",
   },
+  {
+    slug: "email-strategist",
+    icon: "📊",
+    title: "Email Strategy AI",
+    description:
+      "AI-powered email campaign strategist. Connects to Klaviyo & Shopify data, analyzes segments, and generates campaign strategies with operational briefings.",
+  },
+  {
+    slug: "email-designer",
+    icon: "🎨",
+    title: "Email Design AI",
+    description:
+      "AI Ops email builder with drag-and-drop editor. Transforms campaign briefs into branded, editable emails ready for Klaviyo export.",
+  },
 ];
 
 export function DemoHub({ userEmail }: { userEmail: string }) {

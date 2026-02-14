@@ -9,6 +9,8 @@ const VALID_SLUGS = [
   "document-intelligence",
   "workflow-automation",
   "knowledge-systems",
+  "email-strategist",
+  "email-designer",
 ];
 
 export default async function DemoSlugPage({

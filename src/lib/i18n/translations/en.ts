@@ -117,6 +117,8 @@ export const en = {
       { label: "Document Intelligence", href: "/solutions#document-intelligence" },
       { label: "Workflow Automation", href: "/solutions#workflow-automation" },
       { label: "Knowledge Systems", href: "/solutions#knowledge-systems" },
+      { label: "Email Strategy AI", href: "/solutions#email-strategist" },
+      { label: "Email Design AI", href: "/solutions#email-designer" },
     ],
     companyLinks: [
       { label: "All Solutions", href: "/solutions" },
@@ -247,6 +249,48 @@ export const en = {
           "Policy lookup",
         ],
         pricing: "From $599/month",
+      },
+      {
+        id: "email-strategist",
+        title: "Email Strategy AI",
+        tagline: "AI-powered campaign intelligence",
+        description:
+          "Connect to Klaviyo and Shopify to analyze customer events, segments, and behavior. AI generates data-driven email campaign strategies with operational briefings — humans approve, AI executes.",
+        features: [
+          "Klaviyo & Shopify API integration",
+          "Automated segment analysis",
+          "Campaign strategy generation",
+          "Operational briefing output",
+          "Hallucination-free data validation",
+        ],
+        useCases: [
+          "E-commerce email marketing",
+          "Customer retention",
+          "Revenue optimization",
+          "Automated campaign planning",
+        ],
+        pricing: "Custom pricing",
+      },
+      {
+        id: "email-designer",
+        title: "Email Design AI",
+        tagline: "Brief-to-email automation",
+        description:
+          "Transform strategic briefs into production-ready branded emails. AI generates structure, copy, and design — then refine with a built-in drag-and-drop editor before exporting to Klaviyo as HTML.",
+        features: [
+          "Brief-to-email generation",
+          "Drag-and-drop visual editor",
+          "Brand kit application",
+          "Briefing compliance validation",
+          "One-click Klaviyo HTML export",
+        ],
+        useCases: [
+          "Email production at scale",
+          "Brand consistency",
+          "Design refinement",
+          "Klaviyo integration",
+        ],
+        pricing: "Custom pricing",
       },
     ],
     customHeading: "Custom Solutions",

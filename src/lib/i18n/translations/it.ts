@@ -119,6 +119,8 @@ export const it: Translations = {
       { label: "Intelligenza Documentale", href: "/solutions#document-intelligence" },
       { label: "Automazione dei Flussi", href: "/solutions#workflow-automation" },
       { label: "Sistemi di Conoscenza", href: "/solutions#knowledge-systems" },
+      { label: "Email Strategy AI", href: "/solutions#email-strategist" },
+      { label: "Email Design AI", href: "/solutions#email-designer" },
     ],
     companyLinks: [
       { label: "Tutte le Soluzioni", href: "/solutions" },
@@ -249,6 +251,48 @@ export const it: Translations = {
           "Consultazione policy",
         ],
         pricing: "Da 599\u20ac/mese",
+      },
+      {
+        id: "email-strategist",
+        title: "Email Strategy AI",
+        tagline: "Intelligence per campagne email",
+        description:
+          "Collegati a Klaviyo e Shopify per analizzare eventi, segmenti e comportamenti dei clienti. L'AI genera strategie di campagna email basate sui dati con briefing operativi \u2014 gli umani approvano, l'AI esegue.",
+        features: [
+          "Integrazione API Klaviyo e Shopify",
+          "Analisi automatica dei segmenti",
+          "Generazione strategia campagne",
+          "Output briefing operativo",
+          "Validazione dati senza allucinazioni",
+        ],
+        useCases: [
+          "Email marketing e-commerce",
+          "Fidelizzazione clienti",
+          "Ottimizzazione fatturato",
+          "Pianificazione campagne automatizzata",
+        ],
+        pricing: "Prezzo personalizzato",
+      },
+      {
+        id: "email-designer",
+        title: "Email Design AI",
+        tagline: "Dal briefing all'email automaticamente",
+        description:
+          "Trasforma i briefing strategici in email brandizzate pronte per la produzione. L'AI genera struttura, testi e design \u2014 poi affina con l'editor drag-and-drop integrato prima di esportare su Klaviyo come HTML.",
+        features: [
+          "Generazione email da briefing",
+          "Editor visuale drag-and-drop",
+          "Applicazione brand kit",
+          "Validazione conformit\u00e0 al briefing",
+          "Esportazione HTML per Klaviyo",
+        ],
+        useCases: [
+          "Produzione email su scala",
+          "Coerenza del brand",
+          "Raffinamento design",
+          "Integrazione Klaviyo",
+        ],
+        pricing: "Prezzo personalizzato",
       },
     ],
     customHeading: "Soluzioni Personalizzate",
