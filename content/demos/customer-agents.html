@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Praxis AI — Customer Agents Demo</title>
+<title data-i18n="pageTitle">Praxis AI — Customer Agents Demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
@@ -579,8 +579,8 @@
     <span class="brand-name">Praxis AI</span>
   </div>
   <div class="header-title">
-    AI Customer Agents &mdash; Demo
-    <span class="badge">Live</span>
+    <span data-i18n="headerTitle">AI Customer Agents &mdash; Demo</span>
+    <span class="badge" data-i18n="badgeLive">Live</span>
   </div>
 </header>
 
@@ -594,8 +594,8 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M12 8V4H8"/><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="6" y="14" width="12" height="8" rx="2"/><path d="M12 10v4"/><path d="M2 6h2"/><path d="M20 6h2"/></svg>
       </div>
       <div class="chat-header-info">
-        <h3>Praxis Customer Agent</h3>
-        <div class="status"><span class="status-dot"></span> Online &mdash; Ready to help</div>
+        <h3 data-i18n="chatAgentName">Praxis Customer Agent</h3>
+        <div class="status"><span class="status-dot"></span> <span data-i18n="chatStatus">Online &mdash; Ready to help</span></div>
       </div>
     </div>
 
@@ -615,15 +615,15 @@
       </div>
     </div>
 
-    <div class="quick-actions">
-      <button class="quick-btn" onclick="sendQuick('I need to track my order')">Track Order</button>
-      <button class="quick-btn" onclick="sendQuick('I\'d like to book an appointment')">Book Appointment</button>
-      <button class="quick-btn" onclick="sendQuick('What are your pricing plans?')">Pricing Info</button>
-      <button class="quick-btn" onclick="sendQuick('I\'d like to speak with a human agent')">Talk to Human</button>
+    <div class="quick-actions" id="quickActions">
+      <button class="quick-btn" data-quick="trackOrder">Track Order</button>
+      <button class="quick-btn" data-quick="bookAppointment">Book Appointment</button>
+      <button class="quick-btn" data-quick="pricingInfo">Pricing Info</button>
+      <button class="quick-btn" data-quick="talkToHuman">Talk to Human</button>
     </div>
 
     <div class="input-bar">
-      <input type="text" id="chatInput" placeholder="Type your message..." autocomplete="off">
+      <input type="text" id="chatInput" placeholder="Type your message..." autocomplete="off" data-i18n-placeholder="inputPlaceholder">
       <button class="send-btn" onclick="sendMessage()" aria-label="Send message">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       </button>
@@ -634,55 +634,55 @@
   <aside class="sidebar">
 
     <div class="sidebar-card">
-      <h4>Live Analysis</h4>
+      <h4 data-i18n="liveAnalysis">Live Analysis</h4>
       <div class="metric-row">
-        <span class="metric-label">Language</span>
+        <span class="metric-label" data-i18n="labelLanguage">Language</span>
         <span class="metric-value" id="langValue">
           <span style="font-size:16px">&#127468;&#127463;</span> English
         </span>
       </div>
       <div class="metric-row">
-        <span class="metric-label">Sentiment</span>
+        <span class="metric-label" data-i18n="labelSentiment">Sentiment</span>
         <span class="metric-value">
           <span class="sentiment-emoji" id="sentimentEmoji">&#128578;</span>
           <span id="sentimentLabel">Neutral</span>
         </span>
       </div>
       <div class="metric-row">
-        <span class="metric-label">Response time</span>
+        <span class="metric-label" data-i18n="labelResponseTime">Response time</span>
         <span class="metric-value"><span class="response-badge">&lt; 1s</span></span>
       </div>
       <div class="metric-row" style="border-bottom:none;flex-direction:column;align-items:flex-start;gap:8px;">
-        <span class="metric-label">Topics detected</span>
+        <span class="metric-label" data-i18n="labelTopics">Topics detected</span>
         <div class="topics-container" id="topicsContainer">
-          <span class="empty-topics">No topics yet...</span>
+          <span class="empty-topics" data-i18n="noTopics">No topics yet...</span>
         </div>
       </div>
     </div>
 
     <div class="sidebar-card">
-      <h4>Session Stats</h4>
+      <h4 data-i18n="sessionStats">Session Stats</h4>
       <div class="stat-grid">
         <div class="stat-item">
           <div class="stat-number" id="msgCount">1</div>
-          <div class="stat-label">Messages</div>
+          <div class="stat-label" data-i18n="statMessages">Messages</div>
         </div>
         <div class="stat-item">
           <div class="stat-number" id="avgResponse">0.8s</div>
-          <div class="stat-label">Avg Response</div>
+          <div class="stat-label" data-i18n="statAvgResponse">Avg Response</div>
         </div>
         <div class="stat-item">
           <div class="stat-number" id="resolvedCount">0</div>
-          <div class="stat-label">Resolved</div>
+          <div class="stat-label" data-i18n="statResolved">Resolved</div>
         </div>
         <div class="stat-item">
           <div class="stat-number" id="satisfactionScore">--</div>
-          <div class="stat-label">CSAT</div>
+          <div class="stat-label" data-i18n="statCSAT">CSAT</div>
         </div>
       </div>
     </div>
 
-    <div class="powered-by">
+    <div class="powered-by" data-i18n-html="poweredBy">
       Powered by <strong>Praxis AI</strong>
     </div>
 
@@ -691,6 +691,293 @@
 
 <script>
 (function() {
+  // --- i18n ---
+  const LOCALE = window.__PRAXIS_LOCALE__ || 'it';
+  const T = {
+    en: {
+      pageTitle: 'Praxis AI — Customer Agents Demo',
+      headerTitle: 'AI Customer Agents — Demo',
+      badgeLive: 'Live',
+      chatAgentName: 'Praxis Customer Agent',
+      chatStatus: 'Online — Ready to help',
+      inputPlaceholder: 'Type your message...',
+      // Quick actions
+      quickTrackOrder: 'Track Order',
+      quickBookAppointment: 'Book Appointment',
+      quickPricingInfo: 'Pricing Info',
+      quickTalkToHuman: 'Talk to Human',
+      quickTrackOrderMsg: 'I need to track my order',
+      quickBookAppointmentMsg: "I'd like to book an appointment",
+      quickPricingInfoMsg: 'What are your pricing plans?',
+      quickTalkToHumanMsg: "I'd like to speak with a human agent",
+      // Sidebar - Live Analysis
+      liveAnalysis: 'Live Analysis',
+      labelLanguage: 'Language',
+      labelSentiment: 'Sentiment',
+      labelResponseTime: 'Response time',
+      labelTopics: 'Topics detected',
+      noTopics: 'No topics yet...',
+      // Sidebar - Session Stats
+      sessionStats: 'Session Stats',
+      statMessages: 'Messages',
+      statAvgResponse: 'Avg Response',
+      statResolved: 'Resolved',
+      statCSAT: 'CSAT',
+      poweredBy: 'Powered by <strong>Praxis AI</strong>',
+      // Sentiment labels
+      sentimentPositive: 'Positive',
+      sentimentNegative: 'Negative',
+      sentimentNeutral: 'Neutral',
+      // Topic names
+      topicOrderTracking: 'Order Tracking',
+      topicReturns: 'Returns & Refunds',
+      topicPricing: 'Pricing',
+      topicAppointments: 'Appointments',
+      topicBusinessHours: 'Business Hours',
+      topicGreeting: 'Greeting',
+      topicAccount: 'Account',
+      topicSupport: 'Support',
+      topicHumanAgent: 'Human Agent',
+      // User avatar
+      userAvatar: 'You',
+      // Welcome message
+      welcomeMsg:
+        'Welcome! \uD83D\uDC4B I\'m your <strong>Praxis AI</strong> customer agent, available 24/7 to assist you.<br><br>' +
+        'I can help with:<br>' +
+        '&bull; <strong>Order tracking</strong> &amp; delivery updates<br>' +
+        '&bull; <strong>Returns</strong> &amp; refund processing<br>' +
+        '&bull; <strong>Appointment</strong> scheduling<br>' +
+        '&bull; <strong>Pricing</strong> &amp; plan information<br>' +
+        '&bull; General questions<br><br>' +
+        'How can I help you today?',
+      // Bot responses
+      greetingResponse:
+        "Hello! \uD83D\uDC4B I'm your AI assistant powered by Praxis. I can help you track orders, book appointments, answer pricing questions, process returns, and much more. How can I help you today?",
+      orderFoundTitle: 'Order Found',
+      orderLabel: 'Order:',
+      statusLabel: 'Status:',
+      etaLabel: 'ETA:',
+      carrierLabel: 'Carrier:',
+      carrierName: 'Express Logistics',
+      orderBusinessDay: 'business day',
+      orderBusinessDays: 'business days',
+      orderStatusInTransit: 'In Transit',
+      orderStatusOutForDelivery: 'Out for Delivery',
+      orderStatusProcessing: 'Processing',
+      orderStatusShipped: 'Shipped',
+      orderFollowUp: 'Would you like me to set up delivery notifications or make any changes to this order?',
+      returnTitle: 'Return & Refund Process',
+      returnIntro: "I can help you with that! Here's how it works:",
+      returnStep1: 'Verify your order details',
+      returnStep2: 'Select the item(s) to return',
+      returnStep3: 'Choose: refund or exchange',
+      returnStep4: 'Print your prepaid return label',
+      returnStep5: 'Drop off at any carrier location',
+      returnTimeline: 'Refunds are processed within <strong>3-5 business days</strong> after we receive the item.',
+      returnFollowUp: "Shall I start the return process? I'll just need your order number.",
+      pricingTitle: 'Our Plans',
+      planStarter: 'Starter',
+      planStarterPrice: '$49/mo',
+      planStarterF1: '1,000 conversations/mo',
+      planStarterF2: 'Basic analytics',
+      planStarterF3: 'Email support',
+      planPro: 'Professional',
+      planProPrice: '$149/mo',
+      planProF1: '10,000 conversations/mo',
+      planProF2: 'Advanced analytics & sentiment',
+      planProF3: 'Priority support',
+      planProF4: 'Custom branding',
+      planEnterprise: 'Enterprise',
+      planEnterprisePrice: 'Custom',
+      planEnterpriseF1: 'Unlimited conversations',
+      planEnterpriseF2: 'Dedicated account manager',
+      planEnterpriseF3: 'SLA guarantees',
+      planEnterpriseF4: 'On-premise option',
+      pricingTrial: 'All plans include a <strong>14-day free trial</strong>. Would you like to start one?',
+      appointmentsTitle: 'Available Appointments',
+      appointmentsIntro: 'Here are the next available slots:',
+      appointmentsDuration: 'Each session is <strong>30 minutes</strong>. Which time works best for you?',
+      businessHoursTitle: 'Business Hours',
+      businessHoursMF: 'Monday - Friday:',
+      businessHoursMFVal: '8:00 AM - 8:00 PM EST',
+      businessHoursSat: 'Saturday:',
+      businessHoursSatVal: '9:00 AM - 5:00 PM EST',
+      businessHoursSun: 'Sunday:',
+      businessHoursSunVal: 'Closed',
+      businessHoursAI: 'AI Support:',
+      businessHoursAIVal: 'Available <strong>24/7</strong>',
+      businessHoursFollowUp: "I'm always here to help, even outside business hours! Is there anything specific you need assistance with?",
+      humanAgentIntro: "Of course! I'll connect you with a human agent right away.",
+      humanAgentWait: 'Estimated wait time:',
+      humanAgentWaitVal: '~2 minutes',
+      humanAgentQueue: 'Queue position:',
+      humanAgentQueueVal: '3',
+      humanAgentFollowUp: "While you wait, I've prepared a summary of our conversation so the agent can pick up right where we left off. Is there anything else I can help with in the meantime?",
+      thankYouResponse: "You're very welcome! I'm glad I could help. \uD83D\uDE0A<br><br>If you need anything else in the future, don't hesitate to reach out. Have a wonderful day!",
+      fallbackPrefix: 'I understand your question about <strong>"',
+      fallbackSuffix: '"</strong>. Let me look into this for you.',
+      fallbackFollowUp: 'While I gather the relevant information, I can also connect you with a specialist who can provide more detailed assistance.<br><br>In the meantime, is there anything else I can help with?',
+      fallbackThat: 'that',
+    },
+    it: {
+      pageTitle: 'Praxis AI — Demo Agenti Clienti',
+      headerTitle: 'Agenti Clienti AI — Demo',
+      badgeLive: 'Live',
+      chatAgentName: 'Agente Praxis',
+      chatStatus: 'Online — Pronto ad aiutarti',
+      inputPlaceholder: 'Scrivi un messaggio...',
+      // Quick actions
+      quickTrackOrder: 'Traccia Ordine',
+      quickBookAppointment: 'Prenota Appuntamento',
+      quickPricingInfo: 'Info Prezzi',
+      quickTalkToHuman: 'Parla con un Operatore',
+      quickTrackOrderMsg: 'Vorrei tracciare il mio ordine',
+      quickBookAppointmentMsg: 'Vorrei prenotare un appuntamento',
+      quickPricingInfoMsg: 'Quali sono i vostri piani tariffari?',
+      quickTalkToHumanMsg: 'Vorrei parlare con un operatore',
+      // Sidebar - Live Analysis
+      liveAnalysis: 'Analisi in Tempo Reale',
+      labelLanguage: 'Lingua',
+      labelSentiment: 'Sentiment',
+      labelResponseTime: 'Tempo di risposta',
+      labelTopics: 'Argomenti rilevati',
+      noTopics: 'Nessun argomento...',
+      // Sidebar - Session Stats
+      sessionStats: 'Statistiche Sessione',
+      statMessages: 'Messaggi',
+      statAvgResponse: 'Risposta Media',
+      statResolved: 'Risolti',
+      statCSAT: 'CSAT',
+      poweredBy: 'Powered by <strong>Praxis AI</strong>',
+      // Sentiment labels
+      sentimentPositive: 'Positivo',
+      sentimentNegative: 'Negativo',
+      sentimentNeutral: 'Neutro',
+      // Topic names
+      topicOrderTracking: 'Tracciamento Ordini',
+      topicReturns: 'Resi e Rimborsi',
+      topicPricing: 'Prezzi',
+      topicAppointments: 'Appuntamenti',
+      topicBusinessHours: 'Orari di Apertura',
+      topicGreeting: 'Saluto',
+      topicAccount: 'Account',
+      topicSupport: 'Assistenza',
+      topicHumanAgent: 'Operatore Umano',
+      // User avatar
+      userAvatar: 'Tu',
+      // Welcome message
+      welcomeMsg:
+        'Benvenuto! \uD83D\uDC4B Sono il tuo agente <strong>Praxis AI</strong>, disponibile 24/7 per assisterti.<br><br>' +
+        'Posso aiutarti con:<br>' +
+        '&bull; <strong>Tracciamento ordini</strong> e aggiornamenti spedizioni<br>' +
+        '&bull; <strong>Resi</strong> e gestione rimborsi<br>' +
+        '&bull; Prenotazione <strong>appuntamenti</strong><br>' +
+        '&bull; Informazioni su <strong>prezzi</strong> e piani<br>' +
+        '&bull; Domande generali<br><br>' +
+        'Come posso aiutarti oggi?',
+      // Bot responses
+      greetingResponse:
+        "Ciao! \uD83D\uDC4B Sono il tuo assistente AI Praxis. Posso aiutarti a tracciare ordini, prenotare appuntamenti, rispondere a domande sui prezzi, gestire resi e molto altro. Come posso aiutarti oggi?",
+      orderFoundTitle: 'Ordine Trovato',
+      orderLabel: 'Ordine:',
+      statusLabel: 'Stato:',
+      etaLabel: 'Consegna prevista:',
+      carrierLabel: 'Corriere:',
+      carrierName: 'Express Logistics',
+      orderBusinessDay: 'giorno lavorativo',
+      orderBusinessDays: 'giorni lavorativi',
+      orderStatusInTransit: 'In Transito',
+      orderStatusOutForDelivery: 'In Consegna',
+      orderStatusProcessing: 'In Elaborazione',
+      orderStatusShipped: 'Spedito',
+      orderFollowUp: 'Vuoi che imposti delle notifiche di consegna o apporti modifiche a questo ordine?',
+      returnTitle: 'Procedura Reso e Rimborso',
+      returnIntro: 'Posso aiutarti! Ecco come funziona:',
+      returnStep1: 'Verifica i dettagli del tuo ordine',
+      returnStep2: 'Seleziona gli articoli da restituire',
+      returnStep3: 'Scegli: rimborso o sostituzione',
+      returnStep4: "Stampa l'etichetta di reso prepagata",
+      returnStep5: 'Consegna presso un punto di ritiro',
+      returnTimeline: 'I rimborsi vengono elaborati entro <strong>3-5 giorni lavorativi</strong> dalla ricezione dell\'articolo.',
+      returnFollowUp: "Vuoi avviare la procedura di reso? Mi servirà solo il numero dell'ordine.",
+      pricingTitle: 'I Nostri Piani',
+      planStarter: 'Starter',
+      planStarterPrice: '49 \u20AC/mese',
+      planStarterF1: '1.000 conversazioni/mese',
+      planStarterF2: 'Analytics di base',
+      planStarterF3: 'Supporto via email',
+      planPro: 'Professional',
+      planProPrice: '149 \u20AC/mese',
+      planProF1: '10.000 conversazioni/mese',
+      planProF2: 'Analytics avanzati e analisi del sentiment',
+      planProF3: 'Supporto prioritario',
+      planProF4: 'Personalizzazione del brand',
+      planEnterprise: 'Enterprise',
+      planEnterprisePrice: 'Personalizzato',
+      planEnterpriseF1: 'Conversazioni illimitate',
+      planEnterpriseF2: 'Account manager dedicato',
+      planEnterpriseF3: 'Garanzie SLA',
+      planEnterpriseF4: 'Opzione on-premise',
+      pricingTrial: 'Tutti i piani includono una <strong>prova gratuita di 14 giorni</strong>. Vuoi iniziare?',
+      appointmentsTitle: 'Appuntamenti Disponibili',
+      appointmentsIntro: 'Ecco i prossimi slot disponibili:',
+      appointmentsDuration: 'Ogni sessione dura <strong>30 minuti</strong>. Quale orario preferisci?',
+      businessHoursTitle: 'Orari di Apertura',
+      businessHoursMF: 'Luned\u00EC - Venerd\u00EC:',
+      businessHoursMFVal: '8:00 - 20:00',
+      businessHoursSat: 'Sabato:',
+      businessHoursSatVal: '9:00 - 17:00',
+      businessHoursSun: 'Domenica:',
+      businessHoursSunVal: 'Chiuso',
+      businessHoursAI: 'Supporto AI:',
+      businessHoursAIVal: 'Disponibile <strong>24/7</strong>',
+      businessHoursFollowUp: "Sono sempre qui per aiutarti, anche fuori dagli orari di apertura! C'\u00E8 qualcosa di specifico per cui hai bisogno di assistenza?",
+      humanAgentIntro: 'Certo! Ti metto subito in contatto con un operatore.',
+      humanAgentWait: 'Tempo di attesa stimato:',
+      humanAgentWaitVal: '~2 minuti',
+      humanAgentQueue: 'Posizione in coda:',
+      humanAgentQueueVal: '3',
+      humanAgentFollowUp: "Mentre aspetti, ho preparato un riepilogo della nostra conversazione cos\u00EC l'operatore potr\u00E0 riprendere da dove ci siamo fermati. C'\u00E8 qualcos'altro che posso fare nel frattempo?",
+      thankYouResponse: 'Grazie a te! Sono contento di essere stato utile. \uD83D\uDE0A<br><br>Se hai bisogno di qualsiasi cosa in futuro, non esitare a contattarci. Buona giornata!',
+      fallbackPrefix: 'Capisco la tua domanda riguardo <strong>"',
+      fallbackSuffix: '"</strong>. Fammi approfondire la questione.',
+      fallbackFollowUp: 'Mentre raccolgo le informazioni necessarie, posso anche metterti in contatto con uno specialista per un\'assistenza pi\u00F9 dettagliata.<br><br>Nel frattempo, posso aiutarti con qualcos\'altro?',
+      fallbackThat: 'questo',
+    },
+  }[LOCALE];
+
+  // Apply i18n to static HTML elements
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n');
+    if (T[key] !== undefined) el.textContent = T[key];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n-html');
+    if (T[key] !== undefined) el.innerHTML = T[key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n-placeholder');
+    if (T[key] !== undefined) el.placeholder = T[key];
+  });
+  // Set page title
+  document.title = T.pageTitle;
+
+  // Setup quick action buttons
+  var quickMap = {
+    trackOrder: { label: T.quickTrackOrder, msg: T.quickTrackOrderMsg },
+    bookAppointment: { label: T.quickBookAppointment, msg: T.quickBookAppointmentMsg },
+    pricingInfo: { label: T.quickPricingInfo, msg: T.quickPricingInfoMsg },
+    talkToHuman: { label: T.quickTalkToHuman, msg: T.quickTalkToHumanMsg },
+  };
+  document.querySelectorAll('[data-quick]').forEach(function(btn) {
+    var key = btn.getAttribute('data-quick');
+    var item = quickMap[key];
+    if (item) {
+      btn.textContent = item.label;
+      btn.onclick = function() { sendQuick(item.msg); };
+    }
+  });
+
   // ── State ──
   const state = {
     messages: [],
@@ -721,7 +1008,7 @@
     if (sender === 'bot') {
       avatar.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M12 8V4H8"/><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="6" y="14" width="12" height="8" rx="2"/><path d="M12 10v4"/></svg>';
     } else {
-      avatar.textContent = 'You';
+      avatar.textContent = T.userAvatar;
     }
 
     const content = document.createElement('div');
@@ -765,16 +1052,16 @@
   // ── Sentiment Analysis ──
   function analyzeSentiment(text) {
     var lower = text.toLowerCase();
-    var negWords = ['angry','upset','terrible','awful','worst','hate','frustrated','annoyed','disappointed','broken','wrong','bad','horrible','useless','ridiculous','unacceptable','complaint','disgusted','furious'];
-    var posWords = ['thanks','thank','great','awesome','perfect','love','excellent','amazing','wonderful','happy','pleased','good','helpful','nice','appreciate','fantastic','brilliant'];
+    var negWords = ['angry','upset','terrible','awful','worst','hate','frustrated','annoyed','disappointed','broken','wrong','bad','horrible','useless','ridiculous','unacceptable','complaint','disgusted','furious','arrabbiato','terribile','pessimo','odio','frustrato','deluso','rotto','sbagliato','orribile','inutile','inaccettabile','reclamo'];
+    var posWords = ['thanks','thank','great','awesome','perfect','love','excellent','amazing','wonderful','happy','pleased','good','helpful','nice','appreciate','fantastic','brilliant','grazie','ottimo','perfetto','eccellente','fantastico','meraviglioso','contento','soddisfatto','buono','utile','gentile','bravo'];
 
     var negCount = 0, posCount = 0;
     negWords.forEach(function(w) { if (lower.includes(w)) negCount++; });
     posWords.forEach(function(w) { if (lower.includes(w)) posCount++; });
 
-    if (negCount > posCount) return { emoji: '\uD83D\uDE1F', label: 'Negative' };
-    if (posCount > negCount) return { emoji: '\uD83D\uDE0A', label: 'Positive' };
-    return { emoji: '\uD83D\uDE10', label: 'Neutral' };
+    if (negCount > posCount) return { emoji: '\uD83D\uDE1F', label: T.sentimentNegative };
+    if (posCount > negCount) return { emoji: '\uD83D\uDE0A', label: T.sentimentPositive };
+    return { emoji: '\uD83D\uDE10', label: T.sentimentNeutral };
   }
 
   function updateSentiment(text) {
@@ -794,17 +1081,16 @@
   // ── Topic Detection ──
   function detectTopics(text) {
     var lower = text.toLowerCase();
-    var topicMap = {
-      'Order Tracking': ['order','tracking','delivery','shipped','package','shipment'],
-      'Returns & Refunds': ['refund','return','money back','exchange'],
-      'Pricing': ['pricing','plan','cost','price','subscription','billing','payment'],
-      'Appointments': ['appointment','schedule','book','booking','available','slot'],
-      'Business Hours': ['hours','open','close','closing','opening','when'],
-      'Greeting': ['hello','hi','hey','good morning','good afternoon'],
-      'Account': ['account','login','password','sign in','profile'],
-      'Support': ['help','support','issue','problem','question'],
-      'Human Agent': ['human','agent','person','real person','someone','speak with','talk to']
-    };
+    var topicMap = {};
+    topicMap[T.topicOrderTracking] = ['order','tracking','delivery','shipped','package','shipment','ordine','traccia','consegna','spedito','pacco','spedizione'];
+    topicMap[T.topicReturns] = ['refund','return','money back','exchange','rimborso','reso','restituire','sostituzione'];
+    topicMap[T.topicPricing] = ['pricing','plan','cost','price','subscription','billing','payment','prezzo','piano','costo','abbonamento','fatturazione','pagamento','tariff'];
+    topicMap[T.topicAppointments] = ['appointment','schedule','book','booking','available','slot','appuntamento','prenotare','prenotazione','disponibil'];
+    topicMap[T.topicBusinessHours] = ['hours','open','close','closing','opening','when','orari','aperto','chiuso','apertura','chiusura','quando'];
+    topicMap[T.topicGreeting] = ['hello','hi','hey','good morning','good afternoon','ciao','buongiorno','buonasera','salve'];
+    topicMap[T.topicAccount] = ['account','login','password','sign in','profile','profilo','accesso','accedi'];
+    topicMap[T.topicSupport] = ['help','support','issue','problem','question','aiuto','assistenza','problema','domanda'];
+    topicMap[T.topicHumanAgent] = ['human','agent','person','real person','someone','speak with','talk to','operatore','umano','persona','parlare con'];
 
     var found = [];
     Object.keys(topicMap).forEach(function(topic) {
@@ -835,116 +1121,117 @@
     var lower = text.toLowerCase();
 
     // Greetings
-    if (/^(hi|hello|hey|good morning|good afternoon|good evening|howdy|what'?s up)/i.test(lower)) {
-      return "Hello! \uD83D\uDC4B I'm your AI assistant powered by Praxis. I can help you track orders, book appointments, answer pricing questions, process returns, and much more. How can I help you today?";
+    if (/^(hi|hello|hey|good morning|good afternoon|good evening|howdy|what'?s up|ciao|buongiorno|buonasera|salve)/i.test(lower)) {
+      return T.greetingResponse;
     }
 
     // Order tracking
-    if (lower.includes('order') || lower.includes('tracking') || lower.includes('delivery') || lower.includes('shipped') || lower.includes('package')) {
+    if (lower.includes('order') || lower.includes('tracking') || lower.includes('delivery') || lower.includes('shipped') || lower.includes('package') || lower.includes('ordine') || lower.includes('traccia') || lower.includes('consegna') || lower.includes('spedito') || lower.includes('pacco')) {
       state.resolved++;
       document.getElementById('resolvedCount').textContent = state.resolved;
       var orderNum = 'PRX-' + (Math.floor(Math.random() * 90000) + 10000);
-      var statuses = ['In Transit', 'Out for Delivery', 'Processing', 'Shipped'];
+      var statuses = [T.orderStatusInTransit, T.orderStatusOutForDelivery, T.orderStatusProcessing, T.orderStatusShipped];
       var status = statuses[Math.floor(Math.random() * statuses.length)];
       var days = Math.floor(Math.random() * 3) + 1;
-      return '<strong>Order Found</strong><br><br>' +
-        '\uD83D\uDCE6 <strong>Order:</strong> ' + orderNum + '<br>' +
-        '\uD83D\uDCCD <strong>Status:</strong> ' + status + '<br>' +
-        '\uD83D\uDE9A <strong>ETA:</strong> ' + days + ' business day' + (days > 1 ? 's' : '') + '<br>' +
-        '\uD83D\uDCDE <strong>Carrier:</strong> Express Logistics<br><br>' +
-        'Would you like me to set up delivery notifications or make any changes to this order?';
+      var dayWord = days > 1 ? T.orderBusinessDays : T.orderBusinessDay;
+      return '<strong>' + T.orderFoundTitle + '</strong><br><br>' +
+        '\uD83D\uDCE6 <strong>' + T.orderLabel + '</strong> ' + orderNum + '<br>' +
+        '\uD83D\uDCCD <strong>' + T.statusLabel + '</strong> ' + status + '<br>' +
+        '\uD83D\uDE9A <strong>' + T.etaLabel + '</strong> ' + days + ' ' + dayWord + '<br>' +
+        '\uD83D\uDCDE <strong>' + T.carrierLabel + '</strong> ' + T.carrierName + '<br><br>' +
+        T.orderFollowUp;
     }
 
     // Refund / return
-    if (lower.includes('refund') || lower.includes('return') || lower.includes('money back') || lower.includes('exchange')) {
+    if (lower.includes('refund') || lower.includes('return') || lower.includes('money back') || lower.includes('exchange') || lower.includes('rimborso') || lower.includes('reso') || lower.includes('restituire') || lower.includes('sostituzione')) {
       state.resolved++;
       document.getElementById('resolvedCount').textContent = state.resolved;
-      return '<strong>Return & Refund Process</strong><br><br>' +
-        'I can help you with that! Here\'s how it works:<br><br>' +
-        '<strong>1.</strong> Verify your order details<br>' +
-        '<strong>2.</strong> Select the item(s) to return<br>' +
-        '<strong>3.</strong> Choose: refund or exchange<br>' +
-        '<strong>4.</strong> Print your prepaid return label<br>' +
-        '<strong>5.</strong> Drop off at any carrier location<br><br>' +
-        '\u2705 Refunds are processed within <strong>3-5 business days</strong> after we receive the item.<br><br>' +
-        'Shall I start the return process? I\'ll just need your order number.';
+      return '<strong>' + T.returnTitle + '</strong><br><br>' +
+        T.returnIntro + '<br><br>' +
+        '<strong>1.</strong> ' + T.returnStep1 + '<br>' +
+        '<strong>2.</strong> ' + T.returnStep2 + '<br>' +
+        '<strong>3.</strong> ' + T.returnStep3 + '<br>' +
+        '<strong>4.</strong> ' + T.returnStep4 + '<br>' +
+        '<strong>5.</strong> ' + T.returnStep5 + '<br><br>' +
+        '\u2705 ' + T.returnTimeline + '<br><br>' +
+        T.returnFollowUp;
     }
 
     // Pricing
-    if (lower.includes('pricing') || lower.includes('plan') || lower.includes('cost') || lower.includes('price') || lower.includes('subscription')) {
+    if (lower.includes('pricing') || lower.includes('plan') || lower.includes('cost') || lower.includes('price') || lower.includes('subscription') || lower.includes('prezzo') || lower.includes('piano') || lower.includes('costo') || lower.includes('abbonamento') || lower.includes('tariff')) {
       state.resolved++;
       document.getElementById('resolvedCount').textContent = state.resolved;
-      return '<strong>Our Plans</strong><br><br>' +
-        '<strong>Starter</strong> &mdash; $49/mo<br>' +
-        '&bull; 1,000 conversations/mo<br>' +
-        '&bull; Basic analytics<br>' +
-        '&bull; Email support<br><br>' +
-        '<strong>Professional</strong> &mdash; $149/mo<br>' +
-        '&bull; 10,000 conversations/mo<br>' +
-        '&bull; Advanced analytics & sentiment<br>' +
-        '&bull; Priority support<br>' +
-        '&bull; Custom branding<br><br>' +
-        '<strong>Enterprise</strong> &mdash; Custom<br>' +
-        '&bull; Unlimited conversations<br>' +
-        '&bull; Dedicated account manager<br>' +
-        '&bull; SLA guarantees<br>' +
-        '&bull; On-premise option<br><br>' +
-        'All plans include a <strong>14-day free trial</strong>. Would you like to start one?';
+      return '<strong>' + T.pricingTitle + '</strong><br><br>' +
+        '<strong>' + T.planStarter + '</strong> &mdash; ' + T.planStarterPrice + '<br>' +
+        '&bull; ' + T.planStarterF1 + '<br>' +
+        '&bull; ' + T.planStarterF2 + '<br>' +
+        '&bull; ' + T.planStarterF3 + '<br><br>' +
+        '<strong>' + T.planPro + '</strong> &mdash; ' + T.planProPrice + '<br>' +
+        '&bull; ' + T.planProF1 + '<br>' +
+        '&bull; ' + T.planProF2 + '<br>' +
+        '&bull; ' + T.planProF3 + '<br>' +
+        '&bull; ' + T.planProF4 + '<br><br>' +
+        '<strong>' + T.planEnterprise + '</strong> &mdash; ' + T.planEnterprisePrice + '<br>' +
+        '&bull; ' + T.planEnterpriseF1 + '<br>' +
+        '&bull; ' + T.planEnterpriseF2 + '<br>' +
+        '&bull; ' + T.planEnterpriseF3 + '<br>' +
+        '&bull; ' + T.planEnterpriseF4 + '<br><br>' +
+        T.pricingTrial;
     }
 
     // Appointment / booking
-    if (lower.includes('appointment') || lower.includes('schedule') || lower.includes('book') || lower.includes('slot')) {
+    if (lower.includes('appointment') || lower.includes('schedule') || lower.includes('book') || lower.includes('slot') || lower.includes('appuntamento') || lower.includes('prenotare') || lower.includes('prenotazione')) {
       state.resolved++;
       document.getElementById('resolvedCount').textContent = state.resolved;
       var today = new Date();
+      var dateLocale = LOCALE === 'it' ? 'it-IT' : 'en-US';
       var slots = [];
       for (var i = 1; i <= 3; i++) {
         var d = new Date(today);
         d.setDate(d.getDate() + i);
-        var dayName = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-        var times = ['9:00 AM', '11:30 AM', '2:00 PM', '4:30 PM'];
+        var dayName = d.toLocaleDateString(dateLocale, { weekday: 'short', month: 'short', day: 'numeric' });
+        var times = ['9:00', '11:30', '14:00', '16:30'];
+        if (LOCALE === 'en') times = ['9:00 AM', '11:30 AM', '2:00 PM', '4:30 PM'];
         var avail = times.slice(0, Math.floor(Math.random() * 2) + 2);
         slots.push('<strong>' + dayName + ':</strong> ' + avail.join(', '));
       }
-      return '<strong>Available Appointments</strong><br><br>' +
-        'Here are the next available slots:<br><br>' +
+      return '<strong>' + T.appointmentsTitle + '</strong><br><br>' +
+        T.appointmentsIntro + '<br><br>' +
         slots.join('<br>') + '<br><br>' +
-        'Each session is <strong>30 minutes</strong>. Which time works best for you?';
+        T.appointmentsDuration;
     }
 
     // Business hours
-    if (lower.includes('hours') || lower.includes('open') || lower.includes('close') || lower.includes('closing') || lower.includes('when')) {
+    if (lower.includes('hours') || lower.includes('open') || lower.includes('close') || lower.includes('closing') || lower.includes('when') || lower.includes('orari') || lower.includes('aperto') || lower.includes('chiuso') || lower.includes('quando')) {
       state.resolved++;
       document.getElementById('resolvedCount').textContent = state.resolved;
-      return '<strong>Business Hours</strong><br><br>' +
-        '\uD83D\uDCC5 <strong>Monday - Friday:</strong> 8:00 AM - 8:00 PM EST<br>' +
-        '\uD83D\uDCC5 <strong>Saturday:</strong> 9:00 AM - 5:00 PM EST<br>' +
-        '\uD83D\uDCC5 <strong>Sunday:</strong> Closed<br><br>' +
-        '\uD83E\uDD16 <strong>AI Support:</strong> Available <strong>24/7</strong><br><br>' +
-        'I\'m always here to help, even outside business hours! Is there anything specific you need assistance with?';
+      return '<strong>' + T.businessHoursTitle + '</strong><br><br>' +
+        '\uD83D\uDCC5 <strong>' + T.businessHoursMF + '</strong> ' + T.businessHoursMFVal + '<br>' +
+        '\uD83D\uDCC5 <strong>' + T.businessHoursSat + '</strong> ' + T.businessHoursSatVal + '<br>' +
+        '\uD83D\uDCC5 <strong>' + T.businessHoursSun + '</strong> ' + T.businessHoursSunVal + '<br><br>' +
+        '\uD83E\uDD16 <strong>' + T.businessHoursAI + '</strong> ' + T.businessHoursAIVal + '<br><br>' +
+        T.businessHoursFollowUp;
     }
 
     // Human agent request
-    if (lower.includes('human') || lower.includes('agent') || lower.includes('person') || lower.includes('real person') || lower.includes('speak with') || lower.includes('talk to')) {
-      return 'Of course! I\'ll connect you with a human agent right away.<br><br>' +
-        '\uD83D\uDCDE <strong>Estimated wait time:</strong> ~2 minutes<br>' +
-        '\uD83D\uDCCB <strong>Queue position:</strong> 3<br><br>' +
-        'While you wait, I\'ve prepared a summary of our conversation so the agent can pick up right where we left off. Is there anything else I can help with in the meantime?';
+    if (lower.includes('human') || lower.includes('agent') || lower.includes('person') || lower.includes('real person') || lower.includes('speak with') || lower.includes('talk to') || lower.includes('operatore') || lower.includes('parlare con')) {
+      return T.humanAgentIntro + '<br><br>' +
+        '\uD83D\uDCDE <strong>' + T.humanAgentWait + '</strong> ' + T.humanAgentWaitVal + '<br>' +
+        '\uD83D\uDCCB <strong>' + T.humanAgentQueue + '</strong> ' + T.humanAgentQueueVal + '<br><br>' +
+        T.humanAgentFollowUp;
     }
 
     // Thank you / positive
-    if (lower.includes('thank') || lower.includes('thanks') || lower.includes('great') || lower.includes('awesome') || lower.includes('perfect')) {
+    if (lower.includes('thank') || lower.includes('thanks') || lower.includes('great') || lower.includes('awesome') || lower.includes('perfect') || lower.includes('grazie') || lower.includes('ottimo') || lower.includes('perfetto') || lower.includes('fantastico')) {
       document.getElementById('satisfactionScore').textContent = '4.8';
-      return 'You\'re very welcome! I\'m glad I could help. \uD83D\uDE0A<br><br>If you need anything else in the future, don\'t hesitate to reach out. Have a wonderful day!';
+      return T.thankYouResponse;
     }
 
     // Fallback - smart topic extraction
     var words = text.replace(/[^\w\s]/g, '').split(/\s+/).filter(function(w) { return w.length > 3; });
-    var topic = words.length > 0 ? words.slice(0, 3).join(' ') : 'that';
+    var topic = words.length > 0 ? words.slice(0, 3).join(' ') : T.fallbackThat;
 
-    return 'I understand your question about <strong>"' + topic + '"</strong>. Let me look into this for you.<br><br>' +
-      'While I gather the relevant information, I can also connect you with a specialist who can provide more detailed assistance.<br><br>' +
-      'In the meantime, is there anything else I can help with?';
+    return T.fallbackPrefix + topic + T.fallbackSuffix + '<br><br>' + T.fallbackFollowUp;
   }
 
   // ── Send Message ──
@@ -989,17 +1276,7 @@
 
   // ── Welcome Message ──
   function init() {
-    addMessage(
-      'Welcome! \uD83D\uDC4B I\'m your <strong>Praxis AI</strong> customer agent, available 24/7 to assist you.<br><br>' +
-      'I can help with:<br>' +
-      '&bull; <strong>Order tracking</strong> &amp; delivery updates<br>' +
-      '&bull; <strong>Returns</strong> &amp; refund processing<br>' +
-      '&bull; <strong>Appointment</strong> scheduling<br>' +
-      '&bull; <strong>Pricing</strong> &amp; plan information<br>' +
-      '&bull; General questions<br><br>' +
-      'How can I help you today?',
-      'bot'
-    );
+    addMessage(T.welcomeMsg, 'bot');
     // Reset count since the welcome message auto-incremented
     state.totalMessages = 1;
     document.getElementById('msgCount').textContent = '1';

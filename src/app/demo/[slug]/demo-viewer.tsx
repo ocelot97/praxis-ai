@@ -13,7 +13,11 @@ export function DemoViewer({ html, slug }: { html: string; slug: string }) {
     .join(" ");
 
   const srcDoc = React.useMemo(() => {
-    return html.replace("<head>", '<head><base target="_blank">');
+    const locale =
+      (typeof window !== "undefined" && localStorage.getItem("praxis-locale")) ||
+      "it";
+    const localeScript = `<script>window.__PRAXIS_LOCALE__="${locale}";</script>`;
+    return html.replace("<head>", `<head><base target="_blank">${localeScript}`);
   }, [html]);
 
   return (

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Workflow Automation Demo — Praxis AI</title>
+<title>Workflow Automation Demo &mdash; Praxis AI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
@@ -640,30 +640,30 @@
   <div class="header-left">
     <div class="logo">Praxis AI</div>
     <div class="header-divider"></div>
-    <div class="header-title">Workflow Automation &mdash; Demo</div>
+    <div class="header-title" data-i18n="headerTitle">Workflow Automation &mdash; Demo</div>
   </div>
   <div class="header-right">
-    <div class="badge-live">Live Preview</div>
+    <div class="badge-live" data-i18n="badgeLive">Live Preview</div>
   </div>
 </header>
 
 <!-- TEMPLATE SELECTOR -->
 <div class="template-bar">
-  <div class="template-bar-label">Workflow Templates</div>
+  <div class="template-bar-label" data-i18n="templateBarLabel">Workflow Templates</div>
   <div class="template-cards">
     <div class="template-card active" data-template="lead">
       <div class="t-icon">&#x1F3AF;</div>
-      <div class="t-label">Lead Qualification</div>
+      <div class="t-label" data-i18n="tplLeadQualification">Lead Qualification</div>
     </div>
     <div class="template-card" data-template="invoice">
       <div class="t-icon">&#x1F4C4;</div>
-      <div class="t-label">Invoice Processing</div>
-      <span class="coming-soon">Soon</span>
+      <div class="t-label" data-i18n="tplInvoiceProcessing">Invoice Processing</div>
+      <span class="coming-soon" data-i18n="comingSoon">Soon</span>
     </div>
     <div class="template-card" data-template="support">
       <div class="t-icon">&#x1F3AB;</div>
-      <div class="t-label">Support Ticket Routing</div>
-      <span class="coming-soon">Soon</span>
+      <div class="t-label" data-i18n="tplSupportTicketRouting">Support Ticket Routing</div>
+      <span class="coming-soon" data-i18n="comingSoon">Soon</span>
     </div>
   </div>
 </div>
@@ -690,24 +690,24 @@
     <!-- Row 1: Trigger -->
     <div class="node accent-green" id="node-trigger" style="left: 0px; top: 60px;">
       <div class="node-icon">&#x26A1;</div>
-      <div class="node-title">New Lead Received</div>
-      <div class="node-desc">From website form, email, or CRM</div>
+      <div class="node-title" data-i18n="nodeNewLead">New Lead Received</div>
+      <div class="node-desc" data-i18n="nodeNewLeadDesc">From website form, email, or CRM</div>
       <div class="node-status"><div class="status-spinner"></div><span class="status-text">Processing...</span></div>
     </div>
 
     <!-- Row 1: AI Scoring -->
     <div class="node accent-terracotta" id="node-ai" style="left: 240px; top: 60px;">
       <div class="node-icon">&#x1F9E0;</div>
-      <div class="node-title">AI Lead Scoring</div>
-      <div class="node-desc">Analyze company size, industry, intent signals</div>
+      <div class="node-title" data-i18n="nodeAIScoring">AI Lead Scoring</div>
+      <div class="node-desc" data-i18n="nodeAIScoringDesc">Analyze company size, industry, intent signals</div>
       <div class="node-status"><div class="status-spinner"></div><span class="status-text">Processing...</span></div>
     </div>
 
     <!-- Row 1: Decision -->
     <div class="node decision accent-yellow" id="node-decision" style="left: 480px; top: 55px;">
       <div class="node-icon">&#x2696;&#xFE0F;</div>
-      <div class="node-title">Score &gt; 70?</div>
-      <div class="node-desc">AI confidence threshold</div>
+      <div class="node-title" data-i18n="nodeScoreThreshold">Score &gt; 70?</div>
+      <div class="node-desc" data-i18n="nodeScoreThresholdDesc">AI confidence threshold</div>
       <div class="node-status"><div class="status-spinner"></div><span class="status-text">Processing...</span></div>
       <div class="thinking-overlay" id="thinkingOverlay">
         <div class="thinking-dots"><span></span><span></span><span></span></div>
@@ -715,43 +715,43 @@
     </div>
 
     <!-- Branch labels -->
-    <div class="branch-label yes" id="label-yes" style="left: 632px; top: 34px;">YES</div>
-    <div class="branch-label no" id="label-no" style="left: 632px; top: 210px;">NO</div>
+    <div class="branch-label yes" id="label-yes" style="left: 632px; top: 34px;" data-i18n="branchYes">YES</div>
+    <div class="branch-label no" id="label-no" style="left: 632px; top: 210px;" data-i18n="branchNo">NO</div>
 
     <!-- YES PATH -->
     <div class="node accent-blue" id="node-enrich" style="left: 700px; top: 0px;">
       <div class="node-icon">&#x1F50D;</div>
-      <div class="node-title">Enrich Data</div>
-      <div class="node-desc">Pull company info from LinkedIn, Clearbit</div>
+      <div class="node-title" data-i18n="nodeEnrichData">Enrich Data</div>
+      <div class="node-desc" data-i18n="nodeEnrichDataDesc">Pull company info from LinkedIn, Clearbit</div>
       <div class="node-status"><div class="status-spinner"></div><span class="status-text">Processing...</span></div>
     </div>
 
     <div class="node accent-blue" id="node-assign" style="left: 700px; top: 130px;">
       <div class="node-icon">&#x1F464;</div>
-      <div class="node-title">Assign to Sales Rep</div>
-      <div class="node-desc">Route to available rep by territory</div>
+      <div class="node-title" data-i18n="nodeAssignSalesRep">Assign to Sales Rep</div>
+      <div class="node-desc" data-i18n="nodeAssignSalesRepDesc">Route to available rep by territory</div>
       <div class="node-status"><div class="status-spinner"></div><span class="status-text">Processing...</span></div>
     </div>
 
     <div class="node accent-purple" id="node-email" style="left: 930px; top: 65px;">
       <div class="node-icon">&#x2709;&#xFE0F;</div>
-      <div class="node-title">Send Welcome Email</div>
-      <div class="node-desc">Personalized email via template</div>
+      <div class="node-title" data-i18n="nodeSendWelcomeEmail">Send Welcome Email</div>
+      <div class="node-desc" data-i18n="nodeSendWelcomeEmailDesc">Personalized email via template</div>
       <div class="node-status"><div class="status-spinner"></div><span class="status-text">Processing...</span></div>
     </div>
 
     <!-- NO PATH -->
     <div class="node accent-blue" id="node-nurture" style="left: 700px; top: 270px;">
       <div class="node-icon">&#x1F4E7;</div>
-      <div class="node-title">Add to Nurture Campaign</div>
-      <div class="node-desc">Automated drip email sequence</div>
+      <div class="node-title" data-i18n="nodeNurtureCampaign">Add to Nurture Campaign</div>
+      <div class="node-desc" data-i18n="nodeNurtureCampaignDesc">Automated drip email sequence</div>
       <div class="node-status"><div class="status-spinner"></div><span class="status-text">Processing...</span></div>
     </div>
 
     <div class="node accent-purple" id="node-rescore" style="left: 930px; top: 270px;">
       <div class="node-icon">&#x1F504;</div>
-      <div class="node-title">Re-score in 30 Days</div>
-      <div class="node-desc">Schedule re-evaluation</div>
+      <div class="node-title" data-i18n="nodeRescore">Re-score in 30 Days</div>
+      <div class="node-desc" data-i18n="nodeRescoreDesc">Schedule re-evaluation</div>
       <div class="node-status"><div class="status-spinner"></div><span class="status-text">Processing...</span></div>
     </div>
 
@@ -764,11 +764,11 @@
 <div class="run-bar">
   <button class="btn-run" id="btnRun">
     <span class="play-icon"></span>
-    Run Workflow
+    <span data-i18n="btnRunWorkflow">Run Workflow</span>
   </button>
   <div class="run-result" id="runResult">
     <div class="result-icon">&#x2713;</div>
-    <span>Lead qualified! Score: <strong>85/100</strong> &rarr; Assigned to <strong>Sarah M.</strong> &mdash; Welcome email sent.</span>
+    <span id="runResultText"></span>
   </div>
 </div>
 
@@ -776,29 +776,150 @@
 <div class="stats-panel">
   <div class="stat-card">
     <div class="stat-value" id="statTime">2.3s</div>
-    <div class="stat-label">Avg. processing time</div>
+    <div class="stat-label" data-i18n="statAvgTime">Avg. processing time</div>
   </div>
   <div class="stat-card">
     <div class="stat-value" id="statLeads">847</div>
-    <div class="stat-label">Leads processed today</div>
+    <div class="stat-label" data-i18n="statLeadsToday">Leads processed today</div>
   </div>
   <div class="stat-card">
     <div class="stat-value" id="statRate">94%</div>
-    <div class="stat-label">Automation rate</div>
+    <div class="stat-label" data-i18n="statAutomationRate">Automation rate</div>
   </div>
   <div class="stat-card">
     <div class="stat-value" id="statSavings">$12,400/mo</div>
-    <div class="stat-label">Cost savings</div>
+    <div class="stat-label" data-i18n="statCostSavings">Cost savings</div>
   </div>
 </div>
 
-<div class="footer">
+<div class="footer" id="footerText">
   Built with <a href="#">Praxis AI</a> &mdash; No-code workflow automation powered by artificial intelligence.
 </div>
 
 <script>
 (function() {
   'use strict';
+
+  // --- i18n ---
+  const LOCALE = window.__PRAXIS_LOCALE__ || 'it';
+  const T = {
+    en: {
+      // Header
+      headerTitle: 'Workflow Automation \u2014 Demo',
+      badgeLive: 'Live Preview',
+      // Template bar
+      templateBarLabel: 'Workflow Templates',
+      tplLeadQualification: 'Lead Qualification',
+      tplInvoiceProcessing: 'Invoice Processing',
+      tplSupportTicketRouting: 'Support Ticket Routing',
+      comingSoon: 'Soon',
+      // Node titles
+      nodeNewLead: 'New Lead Received',
+      nodeNewLeadDesc: 'From website form, email, or CRM',
+      nodeAIScoring: 'AI Lead Scoring',
+      nodeAIScoringDesc: 'Analyze company size, industry, intent signals',
+      nodeScoreThreshold: 'Score > 70?',
+      nodeScoreThresholdDesc: 'AI confidence threshold',
+      nodeEnrichData: 'Enrich Data',
+      nodeEnrichDataDesc: 'Pull company info from LinkedIn, Clearbit',
+      nodeAssignSalesRep: 'Assign to Sales Rep',
+      nodeAssignSalesRepDesc: 'Route to available rep by territory',
+      nodeSendWelcomeEmail: 'Send Welcome Email',
+      nodeSendWelcomeEmailDesc: 'Personalized email via template',
+      nodeNurtureCampaign: 'Add to Nurture Campaign',
+      nodeNurtureCampaignDesc: 'Automated drip email sequence',
+      nodeRescore: 'Re-score in 30 Days',
+      nodeRescoreDesc: 'Schedule re-evaluation',
+      // Branch labels
+      branchYes: 'YES',
+      branchNo: 'NO',
+      // Button
+      btnRunWorkflow: 'Run Workflow',
+      btnRunAgain: 'Run Again',
+      btnRunning: 'Running...',
+      // Status
+      statusProcessing: 'Processing...',
+      statusComplete: 'Complete \u2713',
+      statusAnalyzing: 'Analyzing...',
+      statusDecisionResult: 'Score: 85 \u2192 YES',
+      // Result
+      runResultText: 'Lead qualified! Score: <strong>85/100</strong> \u2192 Assigned to <strong>Sarah M.</strong> \u2014 Welcome email sent.',
+      // Stats
+      statAvgTime: 'Avg. processing time',
+      statLeadsToday: 'Leads processed today',
+      statAutomationRate: 'Automation rate',
+      statCostSavings: 'Cost savings',
+      // Footer
+      footerText: 'Built with <a href="#">Praxis AI</a> \u2014 No-code workflow automation powered by artificial intelligence.',
+      // Back button
+      backToDemos: '\u2190 Back to Demos',
+    },
+    it: {
+      // Header
+      headerTitle: 'Automazione Workflow \u2014 Demo',
+      badgeLive: 'Anteprima Live',
+      // Template bar
+      templateBarLabel: 'Template Workflow',
+      tplLeadQualification: 'Qualificazione Lead',
+      tplInvoiceProcessing: 'Gestione Fatture',
+      tplSupportTicketRouting: 'Smistamento Ticket',
+      comingSoon: 'Presto',
+      // Node titles
+      nodeNewLead: 'Nuovo Lead Ricevuto',
+      nodeNewLeadDesc: 'Da form web, email o CRM',
+      nodeAIScoring: 'Scoring AI del Lead',
+      nodeAIScoringDesc: 'Analisi dimensione azienda, settore, segnali di interesse',
+      nodeScoreThreshold: 'Score > 70?',
+      nodeScoreThresholdDesc: 'Soglia di confidenza AI',
+      nodeEnrichData: 'Arricchimento Dati',
+      nodeEnrichDataDesc: 'Recupera info aziendali da LinkedIn, Clearbit',
+      nodeAssignSalesRep: 'Assegna al Commerciale',
+      nodeAssignSalesRepDesc: 'Instrada al commerciale disponibile per zona',
+      nodeSendWelcomeEmail: 'Invia Email di Benvenuto',
+      nodeSendWelcomeEmailDesc: 'Email personalizzata da template',
+      nodeNurtureCampaign: 'Aggiungi a Campagna Nurture',
+      nodeNurtureCampaignDesc: 'Sequenza email automatica drip',
+      nodeRescore: 'Rivaluta tra 30 Giorni',
+      nodeRescoreDesc: 'Pianifica rivalutazione',
+      // Branch labels
+      branchYes: 'S\u00CC',
+      branchNo: 'NO',
+      // Button
+      btnRunWorkflow: 'Avvia Workflow',
+      btnRunAgain: 'Esegui di Nuovo',
+      btnRunning: 'In esecuzione...',
+      // Status
+      statusProcessing: 'Elaborazione...',
+      statusComplete: 'Completato \u2713',
+      statusAnalyzing: 'Analisi in corso...',
+      statusDecisionResult: 'Score: 85 \u2192 S\u00CC',
+      // Result
+      runResultText: 'Lead qualificato! Score: <strong>85/100</strong> \u2192 Assegnato a <strong>Sarah M.</strong> \u2014 Email di benvenuto inviata.',
+      // Stats
+      statAvgTime: 'Tempo medio elaborazione',
+      statLeadsToday: 'Lead elaborati oggi',
+      statAutomationRate: 'Tasso di automazione',
+      statCostSavings: 'Risparmio sui costi',
+      // Footer
+      footerText: 'Costruito con <a href="#">Praxis AI</a> \u2014 Automazione workflow no-code basata sull\'intelligenza artificiale.',
+      // Back button
+      backToDemos: '\u2190 Torna alle Demo',
+    },
+  }[LOCALE];
+
+  // Apply i18n to static HTML elements
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n');
+    if (T[key]) el.textContent = T[key];
+  });
+
+  // Set result text (contains HTML)
+  var runResultTextEl = document.getElementById('runResultText');
+  if (runResultTextEl) runResultTextEl.innerHTML = T.runResultText;
+
+  // Set footer text (contains HTML)
+  var footerEl = document.getElementById('footerText');
+  if (footerEl) footerEl.innerHTML = T.footerText;
 
   // --- NODE POSITIONS HELPER ---
   // Returns center point of a node element
@@ -980,7 +1101,7 @@
   function resetAllNodes() {
     document.querySelectorAll('.node').forEach(function(n) {
       n.classList.remove('executing', 'completed');
-      n.querySelector('.status-text').textContent = 'Processing...';
+      n.querySelector('.status-text').textContent = T.statusProcessing;
     });
     connections.forEach(function(c) {
       c.path.classList.remove('active', 'completed');
@@ -994,14 +1115,14 @@
   function setNodeExecuting(nodeId) {
     const el = document.getElementById(nodeId);
     el.classList.add('executing');
-    el.querySelector('.status-text').textContent = 'Processing...';
+    el.querySelector('.status-text').textContent = T.statusProcessing;
   }
 
   function setNodeComplete(nodeId) {
     const el = document.getElementById(nodeId);
     el.classList.remove('executing');
     el.classList.add('completed');
-    el.querySelector('.status-text').textContent = 'Complete \u2713';
+    el.querySelector('.status-text').textContent = T.statusComplete;
   }
 
   function activateConnection(connId) {
@@ -1066,7 +1187,7 @@
     if (isRunning) return;
     isRunning = true;
     btnRun.disabled = true;
-    btnRun.innerHTML = '<div class="status-spinner" style="display:block;border-color:rgba(255,255,255,0.3);border-top-color:#fff;width:14px;height:14px;"></div> Running...';
+    btnRun.innerHTML = '<div class="status-spinner" style="display:block;border-color:rgba(255,255,255,0.3);border-top-color:#fff;width:14px;height:14px;"></div> ' + T.btnRunning;
     resetAllNodes();
 
     await delay(300);
@@ -1090,10 +1211,10 @@
     completeConnection('ai-decision');
     setNodeExecuting('node-decision');
     document.getElementById('thinkingOverlay').classList.add('visible');
-    document.getElementById('node-decision').querySelector('.status-text').textContent = 'Analyzing...';
+    document.getElementById('node-decision').querySelector('.status-text').textContent = T.statusAnalyzing;
     await delay(1500);
     document.getElementById('thinkingOverlay').classList.remove('visible');
-    document.getElementById('node-decision').querySelector('.status-text').textContent = 'Score: 85 \u2192 YES';
+    document.getElementById('node-decision').querySelector('.status-text').textContent = T.statusDecisionResult;
     await delay(400);
     setNodeComplete('node-decision');
 
@@ -1136,7 +1257,7 @@
     const currentLeads = parseInt(leadsEl.textContent);
     leadsEl.textContent = (currentLeads + 1).toLocaleString();
 
-    btnRun.innerHTML = '<span class="play-icon"></span> Run Again';
+    btnRun.innerHTML = '<span class="play-icon"></span> ' + T.btnRunAgain;
     btnRun.disabled = false;
     isRunning = false;
   }

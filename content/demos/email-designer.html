@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1385,16 +1385,16 @@
 <!-- ══════════════════════════ HEADER ══════════════════════════ -->
 <header class="header">
   <div class="header-left">
-    <a href="/demo" class="back-btn">&#8592; Back to Demos</a>
+    <a href="/demo" class="back-btn" data-i18n="backBtn">&#8592; Back to Demos</a>
     <div class="header-divider"></div>
     <div class="header-brand">
-      <span class="header-logo">Email Design AI</span>
-      <span class="header-subtitle">AI Ops &times; Drag &amp; Drop Editor</span>
+      <span class="header-logo" data-i18n="headerLogo">Email Design AI</span>
+      <span class="header-subtitle" data-i18n="headerSubtitle">AI Ops &times; Drag &amp; Drop Editor</span>
     </div>
   </div>
   <div class="header-right">
-    <button class="btn btn-outline" id="btnValidate" onclick="openValidation()">Validate Against Brief</button>
-    <button class="btn btn-primary" id="btnExport" onclick="openExport()">Export to Klaviyo</button>
+    <button class="btn btn-outline" id="btnValidate" onclick="openValidation()" data-i18n="btnValidate">Validate Against Brief</button>
+    <button class="btn btn-primary" id="btnExport" onclick="openExport()" data-i18n="btnExport">Export to Klaviyo</button>
   </div>
 </header>
 
@@ -1407,19 +1407,19 @@
     <!-- Campaign Brief -->
     <div class="sidebar-section">
       <div class="section-header" onclick="toggleSection(this)">
-        <span class="section-title">Campaign Brief</span>
+        <span class="section-title" data-i18n="sectionBrief">Campaign Brief</span>
         <span class="section-toggle collapsed">&#9662;</span>
       </div>
       <div class="section-body collapsed">
-        <div class="brief-row"><span class="brief-label">Campaign</span><span class="brief-value">Cart Recovery &mdash; Email 1</span></div>
-        <div class="brief-row"><span class="brief-label">Segment</span><span class="brief-value">Cart Abandoners (3,800)</span></div>
-        <div class="brief-row"><span class="brief-label">Goal</span><span class="brief-value">Recover 25% of abandoned carts</span></div>
-        <div class="brief-row"><span class="brief-label">Tone</span><span class="brief-value">Friendly reminder, not pushy</span></div>
-        <div class="brief-row"><span class="brief-label">Content</span><span class="brief-value">Cart contents, social proof, urgency</span></div>
-        <div class="brief-row"><span class="brief-label">CTA</span><span class="brief-value">Complete Your Order</span></div>
-        <div class="brief-row"><span class="brief-label">Design</span><span class="brief-value">Clean, product-focused, mobile-first</span></div>
+        <div class="brief-row"><span class="brief-label" data-i18n="briefCampaign">Campaign</span><span class="brief-value" data-i18n="briefCampaignVal">Cart Recovery &mdash; Email 1</span></div>
+        <div class="brief-row"><span class="brief-label" data-i18n="briefSegment">Segment</span><span class="brief-value" data-i18n="briefSegmentVal">Cart Abandoners (3,800)</span></div>
+        <div class="brief-row"><span class="brief-label" data-i18n="briefGoal">Goal</span><span class="brief-value" data-i18n="briefGoalVal">Recover 25% of abandoned carts</span></div>
+        <div class="brief-row"><span class="brief-label" data-i18n="briefTone">Tone</span><span class="brief-value" data-i18n="briefToneVal">Friendly reminder, not pushy</span></div>
+        <div class="brief-row"><span class="brief-label" data-i18n="briefContent">Content</span><span class="brief-value" data-i18n="briefContentVal">Cart contents, social proof, urgency</span></div>
+        <div class="brief-row"><span class="brief-label" data-i18n="briefCta">CTA</span><span class="brief-value" data-i18n="briefCtaVal">Complete Your Order</span></div>
+        <div class="brief-row"><span class="brief-label" data-i18n="briefDesign">Design</span><span class="brief-value" data-i18n="briefDesignVal">Clean, product-focused, mobile-first</span></div>
         <div style="margin-top: 6px;">
-          <span class="brief-tag">From AI Strategist</span>
+          <span class="brief-tag" data-i18n="briefTag">From AI Strategist</span>
         </div>
       </div>
     </div>
@@ -1427,48 +1427,48 @@
     <!-- Block Palette -->
     <div class="sidebar-section">
       <div class="section-header" onclick="toggleSection(this)">
-        <span class="section-title">Block Palette</span>
+        <span class="section-title" data-i18n="sectionPalette">Block Palette</span>
         <span class="section-toggle">&#9662;</span>
       </div>
       <div class="section-body">
         <div class="palette-block" draggable="true" data-block-type="header" ondragstart="paletteDragStart(event, 'header')">
           <span class="p-icon">&#x1F4E7;</span>
-          <span class="p-label">Header (Logo + Nav)</span>
+          <span class="p-label" data-i18n="blockHeader">Header (Logo + Nav)</span>
           <span class="p-drag">&#x2982;</span>
         </div>
         <div class="palette-block" draggable="true" data-block-type="hero" ondragstart="paletteDragStart(event, 'hero')">
           <span class="p-icon">&#x1F5BC;</span>
-          <span class="p-label">Hero Image</span>
+          <span class="p-label" data-i18n="blockHero">Hero Image</span>
           <span class="p-drag">&#x2982;</span>
         </div>
         <div class="palette-block" draggable="true" data-block-type="text" ondragstart="paletteDragStart(event, 'text')">
           <span class="p-icon">&#x1F4DD;</span>
-          <span class="p-label">Text Block</span>
+          <span class="p-label" data-i18n="blockText">Text Block</span>
           <span class="p-drag">&#x2982;</span>
         </div>
         <div class="palette-block" draggable="true" data-block-type="products" ondragstart="paletteDragStart(event, 'products')">
           <span class="p-icon">&#x1F6CD;</span>
-          <span class="p-label">Product Grid</span>
+          <span class="p-label" data-i18n="blockProducts">Product Grid</span>
           <span class="p-drag">&#x2982;</span>
         </div>
         <div class="palette-block" draggable="true" data-block-type="cta" ondragstart="paletteDragStart(event, 'cta')">
           <span class="p-icon">&#x1F518;</span>
-          <span class="p-label">CTA Button</span>
+          <span class="p-label" data-i18n="blockCta">CTA Button</span>
           <span class="p-drag">&#x2982;</span>
         </div>
         <div class="palette-block" draggable="true" data-block-type="social-proof" ondragstart="paletteDragStart(event, 'social-proof')">
           <span class="p-icon">&#x2B50;</span>
-          <span class="p-label">Reviews / Social Proof</span>
+          <span class="p-label" data-i18n="blockSocial">Reviews / Social Proof</span>
           <span class="p-drag">&#x2982;</span>
         </div>
         <div class="palette-block" draggable="true" data-block-type="spacer" ondragstart="paletteDragStart(event, 'spacer')">
           <span class="p-icon">&#x1F4F1;</span>
-          <span class="p-label">Spacer</span>
+          <span class="p-label" data-i18n="blockSpacer">Spacer</span>
           <span class="p-drag">&#x2982;</span>
         </div>
         <div class="palette-block" draggable="true" data-block-type="footer" ondragstart="paletteDragStart(event, 'footer')">
           <span class="p-icon">&#x1F517;</span>
-          <span class="p-label">Footer (Unsub + Social)</span>
+          <span class="p-label" data-i18n="blockFooter">Footer (Unsub + Social)</span>
           <span class="p-drag">&#x2982;</span>
         </div>
       </div>
@@ -1477,13 +1477,13 @@
     <!-- Brand Settings -->
     <div class="sidebar-section">
       <div class="section-header" onclick="toggleSection(this)">
-        <span class="section-title">Brand Settings</span>
+        <span class="section-title" data-i18n="sectionBrand">Brand Settings</span>
         <span class="section-toggle">&#9662;</span>
       </div>
       <div class="section-body">
         <!-- Brand Color -->
         <div class="brand-row">
-          <div class="brand-label">Brand Color</div>
+          <div class="brand-label" data-i18n="brandColor">Brand Color</div>
           <div class="color-swatches">
             <div class="swatch active" style="background: #C15F3C;" data-color="#C15F3C" onclick="setBrandColor(this)"></div>
             <div class="swatch" style="background: #2563eb;" data-color="#2563eb" onclick="setBrandColor(this)"></div>
@@ -1494,7 +1494,7 @@
         </div>
         <!-- Font -->
         <div class="brand-row">
-          <div class="brand-label">Font Family</div>
+          <div class="brand-label" data-i18n="brandFont">Font Family</div>
           <select class="brand-select" id="brandFont" onchange="setBrandFont(this.value)">
             <option value="'Inter', sans-serif">Inter</option>
             <option value="'Playfair Display', serif">Playfair Display</option>
@@ -1503,12 +1503,12 @@
         </div>
         <!-- Logo -->
         <div class="brand-row">
-          <div class="brand-label">Logo</div>
+          <div class="brand-label" data-i18n="brandLogo">Logo</div>
           <div class="brand-logo-preview">BRAND</div>
         </div>
         <!-- Corner Radius -->
         <div class="brand-row">
-          <div class="brand-label">Corner Radius</div>
+          <div class="brand-label" data-i18n="brandRadius">Corner Radius</div>
           <div class="radius-slider-row">
             <input type="range" class="radius-slider" id="brandRadius" min="0" max="16" value="8" oninput="setBrandRadius(this.value)">
             <span class="radius-value" id="radiusVal">8px</span>
@@ -1525,10 +1525,10 @@
       <!-- Empty State -->
       <div class="canvas-empty" id="canvasEmpty">
         <div class="canvas-empty-icon">&#x2709;</div>
-        <div class="canvas-empty-title">No email yet</div>
-        <div class="canvas-empty-sub">Click "Generate Email" to let AI build your campaign</div>
-        <button class="btn-generate" onclick="generateEmail()">
-          <span>&#x2728;</span> Generate Email
+        <div class="canvas-empty-title" data-i18n="canvasEmptyTitle">No email yet</div>
+        <div class="canvas-empty-sub" data-i18n="canvasEmptySub">Click "Generate Email" to let AI build your campaign</div>
+        <button class="btn-generate" id="btnGenerateEmail" onclick="generateEmail()">
+          <span>&#x2728;</span> <span data-i18n="btnGenerate">Generate Email</span>
         </button>
       </div>
 
@@ -1536,11 +1536,11 @@
       <div class="generation-overlay" id="genOverlay">
         <div class="gen-spinner"></div>
         <ul class="gen-steps">
-          <li class="gen-step" data-step="0"><span class="gen-step-icon">1</span> Reading briefing...</li>
-          <li class="gen-step" data-step="1"><span class="gen-step-icon">2</span> Generating structure...</li>
-          <li class="gen-step" data-step="2"><span class="gen-step-icon">3</span> Applying branding...</li>
-          <li class="gen-step" data-step="3"><span class="gen-step-icon">4</span> Writing copy...</li>
-          <li class="gen-step" data-step="4"><span class="gen-step-icon">&#x2713;</span> Done!</li>
+          <li class="gen-step" data-step="0"><span class="gen-step-icon">1</span> <span data-i18n="genStep1">Reading briefing...</span></li>
+          <li class="gen-step" data-step="1"><span class="gen-step-icon">2</span> <span data-i18n="genStep2">Generating structure...</span></li>
+          <li class="gen-step" data-step="2"><span class="gen-step-icon">3</span> <span data-i18n="genStep3">Applying branding...</span></li>
+          <li class="gen-step" data-step="3"><span class="gen-step-icon">4</span> <span data-i18n="genStep4">Writing copy...</span></li>
+          <li class="gen-step" data-step="4"><span class="gen-step-icon">&#x2713;</span> <span data-i18n="genStep5">Done!</span></li>
         </ul>
       </div>
 
@@ -1561,21 +1561,21 @@
     <!-- Empty State -->
     <div class="props-empty" id="propsEmpty">
       <div class="props-empty-icon">&#x1F4CB;</div>
-      <div class="props-empty-text">Select a block to edit</div>
-      <div class="props-empty-sub">Click any block in the email canvas to view and edit its properties</div>
+      <div class="props-empty-text" data-i18n="propsEmptyText">Select a block to edit</div>
+      <div class="props-empty-sub" data-i18n="propsEmptySub">Click any block in the email canvas to view and edit its properties</div>
 
       <div class="email-props">
         <div class="props-divider"></div>
-        <div class="email-props-title">Email Settings</div>
+        <div class="email-props-title" data-i18n="emailSettings">Email Settings</div>
         <div class="prop-group">
-          <div class="prop-label">Background Color</div>
+          <div class="prop-label" data-i18n="propBgColor">Background Color</div>
           <div class="prop-color-row">
             <input type="color" class="prop-color-input" value="#ffffff" onchange="setEmailBg(this.value)">
             <span class="prop-color-hex">#ffffff</span>
           </div>
         </div>
         <div class="prop-group">
-          <div class="prop-label">Content Width</div>
+          <div class="prop-label" data-i18n="propContentWidth">Content Width</div>
           <div class="prop-slider-row">
             <input type="range" class="prop-slider" min="400" max="700" value="600" oninput="setCanvasWidth(this.value)">
             <span class="prop-slider-value">600px</span>
@@ -1586,10 +1586,10 @@
 
     <!-- Header Props -->
     <div class="props-panel" id="props-header">
-      <div class="props-title">Header Block <span class="props-type-badge">Header</span></div>
+      <div class="props-title"><span data-i18n="propsHeader">Header Block</span> <span class="props-type-badge">Header</span></div>
       <div class="props-divider"></div>
       <div class="prop-group">
-        <div class="prop-label">Logo Alignment</div>
+        <div class="prop-label" data-i18n="propLogoAlign">Logo Alignment</div>
         <div class="align-buttons">
           <button class="align-btn" onclick="setHeaderAlign('left', this)">L</button>
           <button class="align-btn active" onclick="setHeaderAlign('center', this)">C</button>
@@ -1597,7 +1597,7 @@
         </div>
       </div>
       <div class="prop-group">
-        <div class="prop-label">Background Color</div>
+        <div class="prop-label" data-i18n="propBgColor">Background Color</div>
         <div class="prop-color-row">
           <input type="color" class="prop-color-input" value="#ffffff" onchange="setHeaderBg(this.value)">
           <span class="prop-color-hex">#ffffff</span>
@@ -1607,18 +1607,18 @@
 
     <!-- Hero Props -->
     <div class="props-panel" id="props-hero">
-      <div class="props-title">Hero Block <span class="props-type-badge">Hero</span></div>
+      <div class="props-title"><span data-i18n="propsHero">Hero Block</span> <span class="props-type-badge">Hero</span></div>
       <div class="props-divider"></div>
       <div class="prop-group">
-        <div class="prop-label">Headline</div>
-        <input type="text" class="prop-input" id="heroHeadline" value="You left something behind &#x1F440;" oninput="updateHeroText()">
+        <div class="prop-label" data-i18n="propHeadline">Headline</div>
+        <input type="text" class="prop-input" id="heroHeadline" data-i18n-value="emailHeroHeadline" value="You left something behind &#x1F440;" oninput="updateHeroText()">
       </div>
       <div class="prop-group">
-        <div class="prop-label">Subtext</div>
-        <input type="text" class="prop-input" id="heroSubtext" value="Your cart is waiting for you" oninput="updateHeroText()">
+        <div class="prop-label" data-i18n="propSubtext">Subtext</div>
+        <input type="text" class="prop-input" id="heroSubtext" data-i18n-value="emailHeroSubtext" value="Your cart is waiting for you" oninput="updateHeroText()">
       </div>
       <div class="prop-group">
-        <div class="prop-label">Text Alignment</div>
+        <div class="prop-label" data-i18n="propTextAlign">Text Alignment</div>
         <div class="align-buttons">
           <button class="align-btn" onclick="setHeroAlign('left', this)">L</button>
           <button class="align-btn active" onclick="setHeroAlign('center', this)">C</button>
@@ -1629,21 +1629,21 @@
 
     <!-- Text Props -->
     <div class="props-panel" id="props-text">
-      <div class="props-title">Text Block <span class="props-type-badge">Text</span></div>
+      <div class="props-title"><span data-i18n="propsText">Text Block</span> <span class="props-type-badge">Text</span></div>
       <div class="props-divider"></div>
       <div class="prop-group">
-        <div class="prop-label">Content</div>
-        <textarea class="prop-textarea" id="textContent" oninput="updateTextBlock()">Custom text block. Edit this content in the properties panel.</textarea>
+        <div class="prop-label" data-i18n="propContent">Content</div>
+        <textarea class="prop-textarea" id="textContent" data-i18n="emailTextDefault" oninput="updateTextBlock()">Custom text block. Edit this content in the properties panel.</textarea>
       </div>
       <div class="prop-group">
-        <div class="prop-label">Font Size</div>
+        <div class="prop-label" data-i18n="propFontSize">Font Size</div>
         <div class="prop-slider-row">
           <input type="range" class="prop-slider" id="textSize" min="12" max="28" value="15" oninput="updateTextBlock()">
           <span class="prop-slider-value" id="textSizeVal">15px</span>
         </div>
       </div>
       <div class="prop-group">
-        <div class="prop-label">Alignment</div>
+        <div class="prop-label" data-i18n="propAlignment">Alignment</div>
         <div class="align-buttons">
           <button class="align-btn active" onclick="setTextAlign('left', this)">L</button>
           <button class="align-btn" onclick="setTextAlign('center', this)">C</button>
@@ -1651,7 +1651,7 @@
         </div>
       </div>
       <div class="prop-group">
-        <div class="prop-label">Text Color</div>
+        <div class="prop-label" data-i18n="propTextColor">Text Color</div>
         <div class="prop-color-row">
           <input type="color" class="prop-color-input" value="#141413" id="textColor" onchange="updateTextBlock()">
           <span class="prop-color-hex" id="textColorHex">#141413</span>
@@ -1661,32 +1661,32 @@
 
     <!-- CTA Props -->
     <div class="props-panel" id="props-cta">
-      <div class="props-title">CTA Button <span class="props-type-badge">CTA</span></div>
+      <div class="props-title"><span data-i18n="propsCta">CTA Button</span> <span class="props-type-badge">CTA</span></div>
       <div class="props-divider"></div>
       <div class="prop-group">
-        <div class="prop-label">Button Text</div>
-        <input type="text" class="prop-input" id="ctaText" value="Complete Your Order &#x2192;" oninput="updateCtaBlock()">
+        <div class="prop-label" data-i18n="propBtnText">Button Text</div>
+        <input type="text" class="prop-input" id="ctaText" data-i18n-value="emailCtaText" value="Complete Your Order &#x2192;" oninput="updateCtaBlock()">
       </div>
       <div class="prop-group">
-        <div class="prop-label">Button Color</div>
+        <div class="prop-label" data-i18n="propBtnColor">Button Color</div>
         <div class="prop-color-row">
           <input type="color" class="prop-color-input" id="ctaColor" onchange="updateCtaBlock()">
           <span class="prop-color-hex" id="ctaColorHex"></span>
         </div>
       </div>
       <div class="prop-group">
-        <div class="prop-label">Button URL</div>
+        <div class="prop-label" data-i18n="propBtnUrl">Button URL</div>
         <input type="text" class="prop-input" id="ctaUrl" value="https://shop.example.com/cart" oninput="updateCtaBlock()">
       </div>
       <div class="prop-group">
-        <div class="prop-label">Border Radius</div>
+        <div class="prop-label" data-i18n="propBorderRadius">Border Radius</div>
         <div class="prop-slider-row">
           <input type="range" class="prop-slider" id="ctaRadius" min="0" max="30" value="8" oninput="updateCtaBlock()">
           <span class="prop-slider-value" id="ctaRadiusVal">8px</span>
         </div>
       </div>
       <div class="prop-group">
-        <div class="prop-label">Padding</div>
+        <div class="prop-label" data-i18n="propPadding">Padding</div>
         <div class="prop-slider-row">
           <input type="range" class="prop-slider" id="ctaPadding" min="8" max="28" value="16" oninput="updateCtaBlock()">
           <span class="prop-slider-value" id="ctaPaddingVal">16px</span>
@@ -1696,10 +1696,10 @@
 
     <!-- Products Props -->
     <div class="props-panel" id="props-products">
-      <div class="props-title">Product Grid <span class="props-type-badge">Products</span></div>
+      <div class="props-title"><span data-i18n="propsProducts">Product Grid</span> <span class="props-type-badge">Products</span></div>
       <div class="props-divider"></div>
       <div class="prop-group">
-        <div class="prop-label">Number of Products</div>
+        <div class="prop-label" data-i18n="propNumProducts">Number of Products</div>
         <div class="align-buttons">
           <button class="align-btn" onclick="setProductCount(2, this)">2</button>
           <button class="align-btn active" onclick="setProductCount(3, this)">3</button>
@@ -1708,11 +1708,11 @@
       </div>
       <div class="prop-group">
         <div class="prop-toggle-row">
-          <span class="prop-toggle-label">Show Price</span>
+          <span class="prop-toggle-label" data-i18n="propShowPrice">Show Price</span>
           <div class="toggle-switch on" onclick="toggleSwitch(this); updateProductToggles()"></div>
         </div>
         <div class="prop-toggle-row">
-          <span class="prop-toggle-label">Show "Add to Cart"</span>
+          <span class="prop-toggle-label" data-i18n="propShowAddToCart">Show "Add to Cart"</span>
           <div class="toggle-switch on" onclick="toggleSwitch(this); updateProductToggles()"></div>
         </div>
       </div>
@@ -1720,44 +1720,44 @@
 
     <!-- Social Proof Props -->
     <div class="props-panel" id="props-social-proof">
-      <div class="props-title">Social Proof <span class="props-type-badge">Reviews</span></div>
+      <div class="props-title"><span data-i18n="propsSocialProof">Social Proof</span> <span class="props-type-badge">Reviews</span></div>
       <div class="props-divider"></div>
       <div class="prop-group">
-        <div class="prop-label">Rating Text</div>
-        <input type="text" class="prop-input" id="spRating" value="4.8/5 from 2,340+ reviews" oninput="updateSocialProof()">
+        <div class="prop-label" data-i18n="propRatingText">Rating Text</div>
+        <input type="text" class="prop-input" id="spRating" data-i18n-value="emailRating" value="4.8/5 from 2,340+ reviews" oninput="updateSocialProof()">
       </div>
       <div class="prop-group">
-        <div class="prop-label">Testimonial</div>
-        <textarea class="prop-textarea" id="spQuote" oninput="updateSocialProof()">"Absolutely love the quality! Best purchase I've made this year. Fast shipping too."</textarea>
+        <div class="prop-label" data-i18n="propTestimonial">Testimonial</div>
+        <textarea class="prop-textarea" id="spQuote" data-i18n="emailTestimonial" oninput="updateSocialProof()">"Absolutely love the quality! Best purchase I've made this year. Fast shipping too."</textarea>
       </div>
     </div>
 
     <!-- Urgency Props -->
     <div class="props-panel" id="props-urgency">
-      <div class="props-title">Urgency Block <span class="props-type-badge">Urgency</span></div>
+      <div class="props-title"><span data-i18n="propsUrgency">Urgency Block</span> <span class="props-type-badge">Urgency</span></div>
       <div class="props-divider"></div>
       <div class="prop-group">
-        <div class="prop-label">Message</div>
-        <input type="text" class="prop-input" id="urgencyText" value="Your cart expires in 48 hours" oninput="updateUrgency()">
+        <div class="prop-label" data-i18n="propMessage">Message</div>
+        <input type="text" class="prop-input" id="urgencyText" data-i18n-value="emailUrgency" value="Your cart expires in 48 hours" oninput="updateUrgency()">
       </div>
     </div>
 
     <!-- Footer Props -->
     <div class="props-panel" id="props-footer">
-      <div class="props-title">Footer Block <span class="props-type-badge">Footer</span></div>
+      <div class="props-title"><span data-i18n="propsFooter">Footer Block</span> <span class="props-type-badge">Footer</span></div>
       <div class="props-divider"></div>
       <div class="prop-group">
-        <div class="prop-label">Company Name</div>
+        <div class="prop-label" data-i18n="propCompanyName">Company Name</div>
         <input type="text" class="prop-input" value="BRAND Inc." oninput="updateFooter(this.value)">
       </div>
     </div>
 
     <!-- Spacer Props -->
     <div class="props-panel" id="props-spacer">
-      <div class="props-title">Spacer <span class="props-type-badge">Spacer</span></div>
+      <div class="props-title"><span data-i18n="propsSpacer">Spacer</span> <span class="props-type-badge">Spacer</span></div>
       <div class="props-divider"></div>
       <div class="prop-group">
-        <div class="prop-label">Height</div>
+        <div class="prop-label" data-i18n="propHeight">Height</div>
         <div class="prop-slider-row">
           <input type="range" class="prop-slider" id="spacerHeight" min="10" max="80" value="30" oninput="updateSpacer()">
           <span class="prop-slider-value" id="spacerHeightVal">30px</span>
@@ -1772,20 +1772,20 @@
 <div class="modal-overlay" id="validationModal">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title">Brief Validation</span>
+      <span class="modal-title" data-i18n="validationTitle">Brief Validation</span>
       <button class="modal-close" onclick="closeModal('validationModal')">&times;</button>
     </div>
     <div class="modal-body">
       <div id="validationResults">
-        <div class="validation-item" data-vi="0"><span class="validation-icon">&#x2713;</span><span class="validation-label">Cart contents displayed</span><span class="validation-check">Yes</span></div>
-        <div class="validation-item" data-vi="1"><span class="validation-icon">&#x2713;</span><span class="validation-label">Social proof included</span><span class="validation-check">Yes</span></div>
-        <div class="validation-item" data-vi="2"><span class="validation-icon">&#x2713;</span><span class="validation-label">CTA matches brief</span><span class="validation-check">"Complete Your Order" &#x2713;</span></div>
-        <div class="validation-item" data-vi="3"><span class="validation-icon">&#x2713;</span><span class="validation-label">Tone check</span><span class="validation-check">Friendly, non-pushy &#x2713;</span></div>
-        <div class="validation-item" data-vi="4"><span class="validation-icon">&#x2713;</span><span class="validation-label">Mobile responsive</span><span class="validation-check">Yes</span></div>
+        <div class="validation-item" data-vi="0"><span class="validation-icon">&#x2713;</span><span class="validation-label" data-i18n="valCartContents">Cart contents displayed</span><span class="validation-check" data-i18n="valYes">Yes</span></div>
+        <div class="validation-item" data-vi="1"><span class="validation-icon">&#x2713;</span><span class="validation-label" data-i18n="valSocialProof">Social proof included</span><span class="validation-check" data-i18n="valYes">Yes</span></div>
+        <div class="validation-item" data-vi="2"><span class="validation-icon">&#x2713;</span><span class="validation-label" data-i18n="valCtaMatch">CTA matches brief</span><span class="validation-check" data-i18n="valCtaCheck">"Complete Your Order" &#x2713;</span></div>
+        <div class="validation-item" data-vi="3"><span class="validation-icon">&#x2713;</span><span class="validation-label" data-i18n="valTone">Tone check</span><span class="validation-check" data-i18n="valToneCheck">Friendly, non-pushy &#x2713;</span></div>
+        <div class="validation-item" data-vi="4"><span class="validation-icon">&#x2713;</span><span class="validation-label" data-i18n="valMobile">Mobile responsive</span><span class="validation-check" data-i18n="valYes">Yes</span></div>
       </div>
       <div class="validation-score" id="validationScore" style="display:none;">
-        <div class="validation-score-number">98%</div>
-        <div class="validation-score-label">Excellent match to briefing</div>
+        <div class="validation-score-number" data-i18n="valScoreNumber">98%</div>
+        <div class="validation-score-label" data-i18n="valScoreLabel">Excellent match to briefing</div>
       </div>
     </div>
   </div>
@@ -1795,7 +1795,7 @@
 <div class="modal-overlay" id="exportModal">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title">Export to Klaviyo</span>
+      <span class="modal-title" data-i18n="exportTitle">Export to Klaviyo</span>
       <button class="modal-close" onclick="closeModal('exportModal')">&times;</button>
     </div>
     <div class="modal-body">
@@ -1817,12 +1817,12 @@
         <span class="tag">&lt;/table&gt;</span>
       </div>
       <div class="export-meta">
-        <span class="export-badge size">12.4 KB</span>
-        <span class="export-badge compat">Klaviyo-compatible &#x2713;</span>
+        <span class="export-badge size" data-i18n="exportSize">12.4 KB</span>
+        <span class="export-badge compat" data-i18n="exportCompat">Klaviyo-compatible &#x2713;</span>
       </div>
       <div class="export-buttons">
-        <button class="btn btn-outline" onclick="copyExportHtml()">Copy HTML</button>
-        <button class="btn btn-primary" onclick="sendToKlaviyo()">Send to Klaviyo</button>
+        <button class="btn btn-outline" onclick="copyExportHtml()" data-i18n="exportCopyHtml">Copy HTML</button>
+        <button class="btn btn-primary" onclick="sendToKlaviyo()" data-i18n="exportSendKlaviyo">Send to Klaviyo</button>
       </div>
     </div>
   </div>
@@ -1833,6 +1833,324 @@
 
 <!-- ══════════════════════════ JAVASCRIPT ══════════════════════════ -->
 <script>
+// --- i18n ---
+const LOCALE = window.__PRAXIS_LOCALE__ || 'it';
+const T = {
+  en: {
+    // Header
+    backBtn: '\u2190 Back to Demos',
+    headerLogo: 'Email Design AI',
+    headerSubtitle: 'AI Ops \u00d7 Drag & Drop Editor',
+    btnValidate: 'Validate Against Brief',
+    btnExport: 'Export to Klaviyo',
+
+    // Left sidebar - Campaign Brief
+    sectionBrief: 'Campaign Brief',
+    briefCampaign: 'Campaign',
+    briefCampaignVal: 'Cart Recovery \u2014 Email 1',
+    briefSegment: 'Segment',
+    briefSegmentVal: 'Cart Abandoners (3,800)',
+    briefGoal: 'Goal',
+    briefGoalVal: 'Recover 25% of abandoned carts',
+    briefTone: 'Tone',
+    briefToneVal: 'Friendly reminder, not pushy',
+    briefContent: 'Content',
+    briefContentVal: 'Cart contents, social proof, urgency',
+    briefCta: 'CTA',
+    briefCtaVal: 'Complete Your Order',
+    briefDesign: 'Design',
+    briefDesignVal: 'Clean, product-focused, mobile-first',
+    briefTag: 'From AI Strategist',
+
+    // Left sidebar - Block Palette
+    sectionPalette: 'Block Palette',
+    blockHeader: 'Header (Logo + Nav)',
+    blockHero: 'Hero Image',
+    blockText: 'Text Block',
+    blockProducts: 'Product Grid',
+    blockCta: 'CTA Button',
+    blockSocial: 'Reviews / Social Proof',
+    blockSpacer: 'Spacer',
+    blockFooter: 'Footer (Unsub + Social)',
+
+    // Left sidebar - Brand Settings
+    sectionBrand: 'Brand Settings',
+    brandColor: 'Brand Color',
+    brandFont: 'Font Family',
+    brandLogo: 'Logo',
+    brandRadius: 'Corner Radius',
+
+    // Canvas empty state
+    canvasEmptyTitle: 'No email yet',
+    canvasEmptySub: 'Click "Generate Email" to let AI build your campaign',
+    btnGenerate: 'Generate Email',
+
+    // Generation steps
+    genStep1: 'Reading briefing...',
+    genStep2: 'Generating structure...',
+    genStep3: 'Applying branding...',
+    genStep4: 'Writing copy...',
+    genStep5: 'Done!',
+
+    // Right sidebar - Properties
+    propsEmptyText: 'Select a block to edit',
+    propsEmptySub: 'Click any block in the email canvas to view and edit its properties',
+    emailSettings: 'Email Settings',
+    propBgColor: 'Background Color',
+    propContentWidth: 'Content Width',
+    propLogoAlign: 'Logo Alignment',
+    propHeadline: 'Headline',
+    propSubtext: 'Subtext',
+    propTextAlign: 'Text Alignment',
+    propContent: 'Content',
+    propFontSize: 'Font Size',
+    propAlignment: 'Alignment',
+    propTextColor: 'Text Color',
+    propBtnText: 'Button Text',
+    propBtnColor: 'Button Color',
+    propBtnUrl: 'Button URL',
+    propBorderRadius: 'Border Radius',
+    propPadding: 'Padding',
+    propNumProducts: 'Number of Products',
+    propShowPrice: 'Show Price',
+    propShowAddToCart: 'Show "Add to Cart"',
+    propRatingText: 'Rating Text',
+    propTestimonial: 'Testimonial',
+    propMessage: 'Message',
+    propCompanyName: 'Company Name',
+    propHeight: 'Height',
+
+    // Props panel titles
+    propsHeader: 'Header Block',
+    propsHero: 'Hero Block',
+    propsText: 'Text Block',
+    propsCta: 'CTA Button',
+    propsProducts: 'Product Grid',
+    propsSocialProof: 'Social Proof',
+    propsUrgency: 'Urgency Block',
+    propsFooter: 'Footer Block',
+    propsSpacer: 'Spacer',
+
+    // Validation modal
+    validationTitle: 'Brief Validation',
+    valCartContents: 'Cart contents displayed',
+    valSocialProof: 'Social proof included',
+    valCtaMatch: 'CTA matches brief',
+    valCtaCheck: '"Complete Your Order" \u2713',
+    valTone: 'Tone check',
+    valToneCheck: 'Friendly, non-pushy \u2713',
+    valMobile: 'Mobile responsive',
+    valYes: 'Yes',
+    valScoreNumber: '98%',
+    valScoreLabel: 'Excellent match to briefing',
+
+    // Export modal
+    exportTitle: 'Export to Klaviyo',
+    exportCopyHtml: 'Copy HTML',
+    exportSendKlaviyo: 'Send to Klaviyo',
+    exportSize: '12.4 KB',
+    exportCompat: 'Klaviyo-compatible \u2713',
+
+    // Toast messages
+    toastGenFirst: 'Generate an email first',
+    toastHtmlCopied: 'HTML copied to clipboard',
+    toastSentKlaviyo: 'Email sent to Klaviyo successfully',
+
+    // Email content
+    emailLogoText: 'BRAND',
+    emailNavShop: 'Shop',
+    emailNavNewIn: 'New In',
+    emailNavSale: 'Sale',
+    emailHeroHeadline: 'You left something behind \uD83D\uDC40',
+    emailHeroSubtext: 'Your cart is waiting for you',
+    emailProductsTitle: 'Items in your cart',
+    emailProduct1: 'Premium Leather Bag',
+    emailProduct2: 'Silk Scarf Collection',
+    emailProduct3: 'Designer Sunglasses',
+    emailProduct4: 'Canvas Sneakers',
+    emailRating: '4.8/5 from 2,340+ reviews',
+    emailTestimonial: '"Absolutely love the quality! Best purchase I\'ve made this year. Fast shipping too."',
+    emailCtaText: 'Complete Your Order \u2192',
+    emailUrgency: 'Your cart expires in 48 hours',
+    emailUnsubscribe: 'Unsubscribe',
+    emailPrivacy: 'Privacy Policy',
+    emailFooterAddress: 'BRAND Inc. \u00b7 123 Commerce St \u00b7 New York, NY 10001',
+    emailTextDefault: 'Custom text block. Edit this content in the properties panel.',
+
+    // Drag handle
+    dragToReorder: 'Drag to reorder',
+  },
+  it: {
+    // Header
+    backBtn: '\u2190 Torna alle Demo',
+    headerLogo: 'Email Design AI',
+    headerSubtitle: 'AI Ops \u00d7 Editor Drag & Drop',
+    btnValidate: 'Valida rispetto al Brief',
+    btnExport: 'Esporta su Klaviyo',
+
+    // Left sidebar - Campaign Brief
+    sectionBrief: 'Brief della Campagna',
+    briefCampaign: 'Campagna',
+    briefCampaignVal: 'Recupero Carrello \u2014 Email 1',
+    briefSegment: 'Segmento',
+    briefSegmentVal: 'Carrelli abbandonati (3.800)',
+    briefGoal: 'Obiettivo',
+    briefGoalVal: 'Recuperare il 25% dei carrelli abbandonati',
+    briefTone: 'Tono',
+    briefToneVal: 'Promemoria amichevole, non invadente',
+    briefContent: 'Contenuto',
+    briefContentVal: 'Contenuto carrello, riprova sociale, urgenza',
+    briefCta: 'CTA',
+    briefCtaVal: 'Completa il tuo Ordine',
+    briefDesign: 'Design',
+    briefDesignVal: 'Pulito, centrato sul prodotto, mobile-first',
+    briefTag: 'Da AI Strategist',
+
+    // Left sidebar - Block Palette
+    sectionPalette: 'Palette Blocchi',
+    blockHeader: 'Header (Logo + Nav)',
+    blockHero: 'Immagine Hero',
+    blockText: 'Blocco Testo',
+    blockProducts: 'Griglia Prodotti',
+    blockCta: 'Pulsante CTA',
+    blockSocial: 'Recensioni / Riprova Sociale',
+    blockSpacer: 'Spaziatore',
+    blockFooter: 'Footer (Unsub + Social)',
+
+    // Left sidebar - Brand Settings
+    sectionBrand: 'Impostazioni Brand',
+    brandColor: 'Colore Brand',
+    brandFont: 'Famiglia Font',
+    brandLogo: 'Logo',
+    brandRadius: 'Raggio Angoli',
+
+    // Canvas empty state
+    canvasEmptyTitle: 'Nessuna email',
+    canvasEmptySub: 'Clicca "Genera Email" per far creare la campagna all\'AI',
+    btnGenerate: 'Genera Email',
+
+    // Generation steps
+    genStep1: 'Lettura del brief...',
+    genStep2: 'Generazione struttura...',
+    genStep3: 'Applicazione branding...',
+    genStep4: 'Scrittura testi...',
+    genStep5: 'Fatto!',
+
+    // Right sidebar - Properties
+    propsEmptyText: 'Seleziona un blocco da modificare',
+    propsEmptySub: 'Clicca un blocco nell\'email per visualizzare e modificare le sue propriet\u00e0',
+    emailSettings: 'Impostazioni Email',
+    propBgColor: 'Colore Sfondo',
+    propContentWidth: 'Larghezza Contenuto',
+    propLogoAlign: 'Allineamento Logo',
+    propHeadline: 'Titolo',
+    propSubtext: 'Sottotitolo',
+    propTextAlign: 'Allineamento Testo',
+    propContent: 'Contenuto',
+    propFontSize: 'Dimensione Font',
+    propAlignment: 'Allineamento',
+    propTextColor: 'Colore Testo',
+    propBtnText: 'Testo Pulsante',
+    propBtnColor: 'Colore Pulsante',
+    propBtnUrl: 'URL Pulsante',
+    propBorderRadius: 'Raggio Bordi',
+    propPadding: 'Spaziatura',
+    propNumProducts: 'Numero Prodotti',
+    propShowPrice: 'Mostra Prezzo',
+    propShowAddToCart: 'Mostra "Aggiungi al Carrello"',
+    propRatingText: 'Testo Valutazione',
+    propTestimonial: 'Testimonianza',
+    propMessage: 'Messaggio',
+    propCompanyName: 'Nome Azienda',
+    propHeight: 'Altezza',
+
+    // Props panel titles
+    propsHeader: 'Blocco Header',
+    propsHero: 'Blocco Hero',
+    propsText: 'Blocco Testo',
+    propsCta: 'Pulsante CTA',
+    propsProducts: 'Griglia Prodotti',
+    propsSocialProof: 'Riprova Sociale',
+    propsUrgency: 'Blocco Urgenza',
+    propsFooter: 'Blocco Footer',
+    propsSpacer: 'Spaziatore',
+
+    // Validation modal
+    validationTitle: 'Validazione Brief',
+    valCartContents: 'Contenuto carrello visualizzato',
+    valSocialProof: 'Riprova sociale inclusa',
+    valCtaMatch: 'CTA conforme al brief',
+    valCtaCheck: '"Completa il tuo Ordine" \u2713',
+    valTone: 'Verifica tono',
+    valToneCheck: 'Amichevole, non invadente \u2713',
+    valMobile: 'Responsive mobile',
+    valYes: 'S\u00ec',
+    valScoreNumber: '98%',
+    valScoreLabel: 'Eccellente corrispondenza con il brief',
+
+    // Export modal
+    exportTitle: 'Esporta su Klaviyo',
+    exportCopyHtml: 'Copia HTML',
+    exportSendKlaviyo: 'Invia a Klaviyo',
+    exportSize: '12.4 KB',
+    exportCompat: 'Compatibile Klaviyo \u2713',
+
+    // Toast messages
+    toastGenFirst: 'Prima genera un\'email',
+    toastHtmlCopied: 'HTML copiato negli appunti',
+    toastSentKlaviyo: 'Email inviata a Klaviyo con successo',
+
+    // Email content
+    emailLogoText: 'BRAND',
+    emailNavShop: 'Shop',
+    emailNavNewIn: 'Novit\u00e0',
+    emailNavSale: 'Saldi',
+    emailHeroHeadline: 'Hai dimenticato qualcosa \uD83D\uDC40',
+    emailHeroSubtext: 'Il tuo carrello ti sta aspettando',
+    emailProductsTitle: 'Articoli nel tuo carrello',
+    emailProduct1: 'Borsa in Pelle Premium',
+    emailProduct2: 'Collezione Foulard in Seta',
+    emailProduct3: 'Occhiali da Sole Firmati',
+    emailProduct4: 'Sneakers in Tela',
+    emailRating: '4,8/5 da oltre 2.340 recensioni',
+    emailTestimonial: '"Adoro la qualit\u00e0! Il miglior acquisto dell\'anno. Spedizione velocissima."',
+    emailCtaText: 'Completa il tuo Ordine \u2192',
+    emailUrgency: 'Il tuo carrello scade tra 48 ore',
+    emailUnsubscribe: 'Annulla iscrizione',
+    emailPrivacy: 'Informativa Privacy',
+    emailFooterAddress: 'BRAND S.r.l. \u00b7 Via del Commercio 123 \u00b7 Roma, 00100',
+    emailTextDefault: 'Blocco di testo personalizzato. Modifica il contenuto nel pannello propriet\u00e0.',
+
+    // Drag handle
+    dragToReorder: 'Trascina per riordinare',
+  },
+}[LOCALE];
+
+// Set html lang
+document.getElementById('htmlRoot').lang = LOCALE === 'it' ? 'it' : 'en';
+
+// Apply i18n to static elements after DOM loads
+function applyI18n() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (T[key] !== undefined) el.textContent = T[key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (T[key] !== undefined) el.placeholder = T[key];
+  });
+  document.querySelectorAll('[data-i18n-value]').forEach(el => {
+    const key = el.getAttribute('data-i18n-value');
+    if (T[key] !== undefined) el.value = T[key];
+  });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    const key = el.getAttribute('data-i18n-title');
+    if (T[key] !== undefined) el.title = T[key];
+  });
+  // Update page title
+  document.title = T.headerLogo + ' \u2014 Praxis AI';
+}
+
 /* ── State ── */
 let emailGenerated = false;
 let selectedBlockId = null;
@@ -1846,50 +2164,50 @@ let brandRadius = 8;
 const blockTemplates = {
   header: () => `
     <div class="eb-header" style="background: #ffffff;">
-      <div class="header-logo-text" style="font-family: ${brandFont};">BRAND</div>
-      <div class="header-nav"><span>Shop</span><span>New In</span><span>Sale</span></div>
+      <div class="header-logo-text" style="font-family: ${brandFont};">${T.emailLogoText}</div>
+      <div class="header-nav"><span>${T.emailNavShop}</span><span>${T.emailNavNewIn}</span><span>${T.emailNavSale}</span></div>
     </div>`,
   hero: () => `
     <div class="eb-hero" style="background: linear-gradient(135deg, ${brandColor}, #e8956e);">
-      <h2 style="font-family: ${brandFont};">You left something behind &#x1F440;</h2>
-      <p style="font-family: ${brandFont};">Your cart is waiting for you</p>
+      <h2 style="font-family: ${brandFont};">${T.emailHeroHeadline}</h2>
+      <p style="font-family: ${brandFont};">${T.emailHeroSubtext}</p>
     </div>`,
   text: () => `
     <div style="padding: 24px 40px; font-size: 15px; line-height: 1.7; color: #141413; font-family: ${brandFont}; text-align: left;">
-      Custom text block. Edit this content in the properties panel.
+      ${T.emailTextDefault}
     </div>`,
   products: () => `
     <div class="eb-products">
-      <div class="eb-products-title" style="font-family: ${brandFont};">Items in your cart</div>
+      <div class="eb-products-title" style="font-family: ${brandFont};">${T.emailProductsTitle}</div>
       <div class="eb-products-grid" data-count="2">
         <div class="eb-product-card" style="border-radius: ${brandRadius}px;">
           <div class="eb-product-img">&#x1F45C;</div>
           <div class="eb-product-info">
-            <div class="eb-product-name" style="font-family: ${brandFont};">Premium Leather Bag</div>
-            <div class="eb-product-price" style="color: ${brandColor}; font-family: ${brandFont};">&euro;129.00</div>
+            <div class="eb-product-name" style="font-family: ${brandFont};">${T.emailProduct1}</div>
+            <div class="eb-product-price" style="color: ${brandColor}; font-family: ${brandFont};">&euro;129,00</div>
           </div>
         </div>
         <div class="eb-product-card" style="border-radius: ${brandRadius}px;">
           <div class="eb-product-img">&#x1F9E3;</div>
           <div class="eb-product-info">
-            <div class="eb-product-name" style="font-family: ${brandFont};">Silk Scarf Collection</div>
-            <div class="eb-product-price" style="color: ${brandColor}; font-family: ${brandFont};">&euro;59.00</div>
+            <div class="eb-product-name" style="font-family: ${brandFont};">${T.emailProduct2}</div>
+            <div class="eb-product-price" style="color: ${brandColor}; font-family: ${brandFont};">&euro;59,00</div>
           </div>
         </div>
       </div>
     </div>`,
   'social-proof': () => `
     <div class="eb-social-proof">
-      <div class="sp-rating" style="font-family: ${brandFont};">&#x2B50; 4.8/5 from 2,340+ reviews</div>
-      <div class="sp-quote" style="font-family: ${brandFont};">"Absolutely love the quality! Best purchase I've made this year. Fast shipping too."</div>
+      <div class="sp-rating" style="font-family: ${brandFont};">&#x2B50; ${T.emailRating}</div>
+      <div class="sp-quote" style="font-family: ${brandFont};">${T.emailTestimonial}</div>
     </div>`,
   cta: () => `
     <div class="eb-cta">
-      <a class="eb-cta-button" href="#" style="background: ${brandColor}; border-radius: ${brandRadius}px; font-family: ${brandFont};">Complete Your Order &#x2192;</a>
+      <a class="eb-cta-button" href="#" style="background: ${brandColor}; border-radius: ${brandRadius}px; font-family: ${brandFont};">${T.emailCtaText}</a>
     </div>`,
   urgency: () => `
     <div class="eb-urgency" style="font-family: ${brandFont};">
-      &#x23F0; Your cart expires in 48 hours
+      &#x23F0; ${T.emailUrgency}
     </div>`,
   footer: () => `
     <div class="eb-footer">
@@ -1899,8 +2217,8 @@ const blockTemplates = {
         <span title="Facebook">&#x1F310;</span>
       </div>
       <div class="footer-links">
-        <a href="#">Unsubscribe</a> &middot; <a href="#">Privacy Policy</a><br>
-        BRAND Inc. &middot; 123 Commerce St &middot; New York, NY 10001
+        <a href="#">${T.emailUnsubscribe}</a> &middot; <a href="#">${T.emailPrivacy}</a><br>
+        ${T.emailFooterAddress}
       </div>
     </div>`,
   spacer: () => `<div style="height: 30px;"></div>`
@@ -1968,7 +2286,7 @@ function createBlockElement(type, id) {
   div.id = id;
   div.dataset.type = type;
   div.draggable = true;
-  div.innerHTML = `<div class="block-drag-handle" title="Drag to reorder">&#x2982;</div>` + blockTemplates[type]();
+  div.innerHTML = `<div class="block-drag-handle" title="${T.dragToReorder}">&#x2982;</div>` + blockTemplates[type]();
   div.addEventListener('click', (e) => {
     e.stopPropagation();
     selectBlock(id, type);
@@ -2208,7 +2526,7 @@ function setHeaderAlign(align, btn) {
 function setHeaderBg(color) {
   const block = document.querySelector('#' + selectedBlockId + ' .eb-header');
   if (block) block.style.background = color;
-  const hex = block ? block.parentElement.querySelector('.prop-color-hex') : null;
+  const hex = document.querySelector('#props-header .prop-color-hex');
   if (hex) hex.textContent = color;
 }
 
@@ -2269,10 +2587,10 @@ function setProductCount(n, btn) {
   const grid = document.querySelector('#' + selectedBlockId + ' .eb-products-grid');
   if (!grid) return;
   const products = [
-    { icon: '&#x1F45C;', name: 'Premium Leather Bag', price: '&euro;129.00' },
-    { icon: '&#x1F9E3;', name: 'Silk Scarf Collection', price: '&euro;59.00' },
-    { icon: '&#x1F453;', name: 'Designer Sunglasses', price: '&euro;89.00' },
-    { icon: '&#x1F45F;', name: 'Canvas Sneakers', price: '&euro;79.00' }
+    { icon: '&#x1F45C;', name: T.emailProduct1, price: '&euro;129,00' },
+    { icon: '&#x1F9E3;', name: T.emailProduct2, price: '&euro;59,00' },
+    { icon: '&#x1F453;', name: T.emailProduct3, price: '&euro;89,00' },
+    { icon: '&#x1F45F;', name: T.emailProduct4, price: '&euro;79,00' }
   ];
   grid.innerHTML = '';
   for (let i = 0; i < n && i < products.length; i++) {
@@ -2321,7 +2639,8 @@ function updateFooter(name) {
   if (!block) return;
   const links = block.querySelector('.footer-links');
   if (links) {
-    links.innerHTML = `<a href="#">Unsubscribe</a> &middot; <a href="#">Privacy Policy</a><br>${name} &middot; 123 Commerce St &middot; New York, NY 10001`;
+    const addr = LOCALE === 'it' ? `${name} &middot; Via del Commercio 123 &middot; Roma, 00100` : `${name} &middot; 123 Commerce St &middot; New York, NY 10001`;
+    links.innerHTML = `<a href="#">${T.emailUnsubscribe}</a> &middot; <a href="#">${T.emailPrivacy}</a><br>${addr}`;
   }
 }
 
@@ -2360,7 +2679,7 @@ function setCanvasWidth(val) {
 
 /* ── Validation Modal ── */
 function openValidation() {
-  if (!emailGenerated) { showToast('Generate an email first'); return; }
+  if (!emailGenerated) { showToast(T.toastGenFirst); return; }
   const modal = document.getElementById('validationModal');
   modal.classList.add('active');
 
@@ -2387,17 +2706,17 @@ function openValidation() {
 
 /* ── Export Modal ── */
 function openExport() {
-  if (!emailGenerated) { showToast('Generate an email first'); return; }
+  if (!emailGenerated) { showToast(T.toastGenFirst); return; }
   document.getElementById('exportModal').classList.add('active');
 }
 
 function copyExportHtml() {
-  showToast('HTML copied to clipboard');
+  showToast(T.toastHtmlCopied);
 }
 
 function sendToKlaviyo() {
   closeModal('exportModal');
-  showToast('Email sent to Klaviyo successfully');
+  showToast(T.toastSentKlaviyo);
 }
 
 /* ── Modal Helpers ── */
@@ -2437,6 +2756,9 @@ document.addEventListener('keydown', (e) => {
     }
   }
 });
+
+/* ── Apply i18n on load ── */
+applyI18n();
 </script>
 </body>
 </html>

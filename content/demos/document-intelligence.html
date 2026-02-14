@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Document Intelligence Demo — Praxis AI</title>
+<title data-i18n="pageTitle">Document Intelligence Demo — Praxis AI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
@@ -755,8 +755,8 @@
     <span class="header-name">Praxis AI</span>
   </div>
   <div>
-    <span class="header-title">Document Intelligence</span>
-    <span class="header-badge">Demo</span>
+    <span class="header-title" data-i18n="headerTitle">Document Intelligence</span>
+    <span class="header-badge" data-i18n="headerBadge">Demo</span>
   </div>
 </header>
 
@@ -765,15 +765,15 @@
 
   <!-- Document Selector -->
   <div>
-    <div class="section-label">Select a Document</div>
+    <div class="section-label" data-i18n="sectionLabel">Select a Document</div>
     <div class="doc-selector">
       <div class="doc-card" data-doc="invoice" onclick="selectDocument('invoice')">
         <div class="doc-card-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
         </div>
         <div class="doc-card-info">
-          <h3>Invoice #INV-2024-0847</h3>
-          <p>Vendor invoice with line items, tax, and payment terms</p>
+          <h3 data-i18n="invoiceTitle">Invoice #INV-2024-0847</h3>
+          <p data-i18n="invoiceDesc">Vendor invoice with line items, tax, and payment terms</p>
         </div>
       </div>
       <div class="doc-card" data-doc="contract" onclick="selectDocument('contract')">
@@ -781,8 +781,8 @@
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
         </div>
         <div class="doc-card-info">
-          <h3>Employment Contract</h3>
-          <p>Full employment agreement with compensation and terms</p>
+          <h3 data-i18n="contractTitle">Employment Contract</h3>
+          <p data-i18n="contractDesc">Full employment agreement with compensation and terms</p>
         </div>
       </div>
       <div class="doc-card" data-doc="claim" onclick="selectDocument('claim')">
@@ -790,8 +790,8 @@
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="M9 15l3 3 3-3"/></svg>
         </div>
         <div class="doc-card-info">
-          <h3>Insurance Claim Form</h3>
-          <p>Auto collision claim with damage assessment details</p>
+          <h3 data-i18n="claimTitle">Insurance Claim Form</h3>
+          <p data-i18n="claimDesc">Auto collision claim with damage assessment details</p>
         </div>
       </div>
     </div>
@@ -802,8 +802,8 @@
     <div class="placeholder-icon">
       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--mid)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
     </div>
-    <h3>Select a document to begin</h3>
-    <p>Choose one of the sample documents above to see AI-powered data extraction in action.</p>
+    <h3 data-i18n="placeholderTitle">Select a document to begin</h3>
+    <p data-i18n="placeholderDesc">Choose one of the sample documents above to see AI-powered data extraction in action.</p>
   </div>
 
   <!-- Split Panel -->
@@ -813,7 +813,7 @@
       <div class="panel-header">
         <h2>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-          Document Preview
+          <span data-i18n="panelDocPreview">Document Preview</span>
         </h2>
         <span class="panel-header-tag" id="docTypeTag">PDF</span>
       </div>
@@ -828,13 +828,13 @@
       <div class="panel-header">
         <h2>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          Extracted Data
+          <span data-i18n="panelExtractedData">Extracted Data</span>
         </h2>
-        <span class="panel-header-tag" id="fieldCountTag">0 fields</span>
+        <span class="panel-header-tag" id="fieldCountTag" data-i18n="zeroFields">0 fields</span>
       </div>
       <div class="extraction-progress" id="progressSection">
         <div class="progress-label">
-          <span id="progressLabel">Analyzing document...</span>
+          <span id="progressLabel" data-i18n="analyzingDoc">Analyzing document...</span>
           <span id="progressPercent">0%</span>
         </div>
         <div class="progress-bar-track">
@@ -846,7 +846,7 @@
       </div>
       <div class="processing-time" id="processingTime">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Processed in <strong id="timeValue">0.0s</strong>
+        <span data-i18n="processedIn">Processed in</span> <strong id="timeValue">0.0s</strong>
       </div>
     </div>
   </div>
@@ -858,7 +858,7 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       </div>
       <div>
-        <div class="stat-label">Fields Extracted</div>
+        <div class="stat-label" data-i18n="statFieldsExtracted">Fields Extracted</div>
         <div class="stat-value" id="statFields">--</div>
       </div>
     </div>
@@ -867,7 +867,7 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
       </div>
       <div>
-        <div class="stat-label">Avg. Confidence</div>
+        <div class="stat-label" data-i18n="statAvgConfidence">Avg. Confidence</div>
         <div class="stat-value" id="statConfidence">--</div>
       </div>
     </div>
@@ -876,16 +876,288 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       </div>
       <div>
-        <div class="stat-label">Processing Time</div>
+        <div class="stat-label" data-i18n="statProcessingTime">Processing Time</div>
         <div class="stat-value" id="statTime">--</div>
       </div>
     </div>
-    <div class="stat-badge">95%+ Accuracy</div>
+    <div class="stat-badge" data-i18n="statAccuracy">95%+ Accuracy</div>
   </div>
 
 </main>
 
 <script>
+// --- i18n ---
+const LOCALE = window.__PRAXIS_LOCALE__ || 'it';
+const T = {
+  en: {
+    pageTitle: 'Document Intelligence Demo — Praxis AI',
+    headerTitle: 'Document Intelligence',
+    headerBadge: 'Demo',
+    sectionLabel: 'Select a Document',
+    invoiceTitle: 'Invoice #INV-2024-0847',
+    invoiceDesc: 'Vendor invoice with line items, tax, and payment terms',
+    contractTitle: 'Employment Contract',
+    contractDesc: 'Full employment agreement with compensation and terms',
+    claimTitle: 'Insurance Claim Form',
+    claimDesc: 'Auto collision claim with damage assessment details',
+    placeholderTitle: 'Select a document to begin',
+    placeholderDesc: 'Choose one of the sample documents above to see AI-powered data extraction in action.',
+    panelDocPreview: 'Document Preview',
+    panelExtractedData: 'Extracted Data',
+    zeroFields: '0 fields',
+    analyzingDoc: 'Analyzing document...',
+    extractionComplete: 'Extraction complete',
+    processedIn: 'Processed in',
+    statFieldsExtracted: 'Fields Extracted',
+    statAvgConfidence: 'Avg. Confidence',
+    statProcessingTime: 'Processing Time',
+    statAccuracy: '95%+ Accuracy',
+    fieldSuffix: 'field',
+    fieldsSuffix: 'fields',
+    // Invoice field names
+    fVendor: 'Vendor',
+    fInvoiceNo: 'Invoice No.',
+    fDate: 'Date',
+    fDueDate: 'Due Date',
+    fItem1: 'Item 1',
+    fItem2: 'Item 2',
+    fItem3: 'Item 3',
+    fSubtotal: 'Subtotal',
+    fTax: 'Tax (9%)',
+    fTotal: 'Total',
+    // Invoice field values
+    vItem1: 'Cloud Server License x2 @ $1,200',
+    vItem2: 'API Gateway Setup x1 @ $850',
+    vItem3: 'Support Plan (Annual) x1 @ $1,000',
+    // Contract field names
+    fPartyA: 'Party A',
+    fPartyB: 'Party B',
+    fEffectiveDate: 'Effective Date',
+    fPosition: 'Position',
+    fSalary: 'Salary',
+    fDuration: 'Duration',
+    fNoticePeriod: 'Notice Period',
+    fNonCompete: 'Non-Compete',
+    // Contract field values
+    vDuration: '24 months',
+    vNoticePeriod: '30 days',
+    vNonCompete: '12 months, 50mi radius',
+    // Claim field names
+    fClaimNo: 'Claim No.',
+    fPolicyHolder: 'Policy Holder',
+    fPolicyNo: 'Policy No.',
+    fIncidentDate: 'Incident Date',
+    fClaimType: 'Claim Type',
+    fEstDamage: 'Est. Damage',
+    fDeductible: 'Deductible',
+    // Claim field values
+    vClaimType: 'Auto - Collision',
+    // Invoice preview labels
+    pInvoiceNumber: 'Invoice Number',
+    pDateIssued: 'Date Issued',
+    pDueDate: 'Due Date',
+    pPaymentTerms: 'Payment Terms',
+    pBillTo: 'Bill To',
+    pDescription: 'Description',
+    pQty: 'Qty',
+    pUnitPrice: 'Unit Price',
+    pAmount: 'Amount',
+    pSubtotal: 'Subtotal',
+    pSalesTax: 'Sales Tax (9%)',
+    pTotalDue: 'Total Due',
+    pInvoiceNote: 'Payment is due within 30 days of invoice date. Please include invoice number on all correspondence. Wire transfers accepted. Late payments subject to 1.5% monthly interest.',
+    pInvoiceTypeTitle: 'Invoice',
+    // Contract preview labels
+    pConfidential: 'Confidential',
+    pEmploymentAgreement: 'Employment Agreement',
+    pEffectiveDate: 'Effective Date:',
+    pSectionParties: '1. Parties',
+    pPartiesText1: 'This Employment Agreement ("Agreement") is entered into between',
+    pPartiesText2: ', a Delaware corporation with principal offices at 500 Market Street, San Francisco, CA 94105 ("Employer"), and',
+    pPartiesText3: ', an individual residing at 742 Evergreen Terrace, Springfield, IL 62704 ("Employee").',
+    pSectionPosition: '2. Position & Duties',
+    pPositionText1: 'Employee shall serve in the role of',
+    pPositionText2: 'and shall report directly to the VP of Engineering. Employee agrees to devote full-time professional efforts to the duties and responsibilities assigned by the Employer.',
+    pSectionCompensation: '3. Compensation',
+    pCompText1: 'Employer agrees to pay Employee a base annual salary of',
+    pCompText2: ', payable in accordance with Employer\'s standard payroll schedule. Employee shall also be eligible for an annual performance bonus of up to 15% of base salary, subject to meeting performance objectives established by management.',
+    pSectionTerm: '4. Term',
+    pTermText1: 'This Agreement shall be effective for a period of',
+    pTermText2: 'from the Effective Date, subject to earlier termination as provided herein. Either party may terminate this Agreement with',
+    pTermText3: 'prior written notice to the other party.',
+    pSectionNonCompete: '5. Non-Competition',
+    pNonCompeteText1: 'Upon termination, Employee agrees not to engage in competing business activities for a period of',
+    pNonCompeteText2: 'within a',
+    pNonCompeteText3: 'of any Employer office location. This restriction applies to direct employment, consulting, and advisory roles with competitors in the same market segment.',
+    p50miRadius: '50-mile radius',
+    pAuthorizedSignatory: 'Authorized Signatory',
+    pEmployee: 'Employee',
+    // Claim preview labels
+    pInsuranceClaimDiv: 'Insurance Claim Division',
+    pClaimForm: 'Claim Form',
+    pFormRevision: 'Form CL-200 Rev. 2023',
+    pClaimInformation: 'Claim Information',
+    pClaimNumber: 'Claim Number',
+    pDateFiled: 'Date Filed',
+    pClaimTypeLabel: 'Claim Type',
+    pPolicyholderDetails: 'Policyholder Details',
+    pFullName: 'Full Name',
+    pPolicyNumber: 'Policy Number',
+    pAddress: 'Address',
+    pPhone: 'Phone',
+    pIncidentDetails: 'Incident Details',
+    pDateOfIncident: 'Date of Incident',
+    pLocation: 'Location',
+    pDescriptionLabel: 'Description',
+    pIncidentDescription: 'Vehicle was struck on the rear passenger side by another vehicle that ran a red light at the intersection. Police report filed (#BPD-2023-44291). Other driver cited for failure to obey traffic signal.',
+    pFinancialSummary: 'Financial Summary',
+    pEstimatedDamage: 'Estimated Damage',
+    pDeductible: 'Deductible',
+    pNetClaimAmount: 'Net Claim Amount',
+    pClaimCertification: 'By signing below, I certify that the information provided is true and accurate to the best of my knowledge. I understand that any false statements may result in denial of my claim.',
+    pPolicyholderSignature: 'Policyholder Signature',
+  },
+  it: {
+    pageTitle: 'Demo Document Intelligence — Praxis AI',
+    headerTitle: 'Document Intelligence',
+    headerBadge: 'Demo',
+    sectionLabel: 'Seleziona un Documento',
+    invoiceTitle: 'Fattura #INV-2024-0847',
+    invoiceDesc: 'Fattura fornitore con voci, imposte e termini di pagamento',
+    contractTitle: 'Contratto di Lavoro',
+    contractDesc: 'Contratto di assunzione completo con compenso e condizioni',
+    claimTitle: 'Modulo Richiesta Risarcimento',
+    claimDesc: 'Richiesta risarcimento auto con dettagli del danno',
+    placeholderTitle: 'Seleziona un documento per iniziare',
+    placeholderDesc: 'Scegli uno dei documenti sopra per vedere l\'estrazione dati basata su AI in azione.',
+    panelDocPreview: 'Anteprima Documento',
+    panelExtractedData: 'Dati Estratti',
+    zeroFields: '0 campi',
+    analyzingDoc: 'Analisi del documento...',
+    extractionComplete: 'Estrazione completata',
+    processedIn: 'Elaborato in',
+    statFieldsExtracted: 'Campi Estratti',
+    statAvgConfidence: 'Affidabilit\u00E0 Media',
+    statProcessingTime: 'Tempo di Elaborazione',
+    statAccuracy: 'Accuratezza 95%+',
+    fieldSuffix: 'campo',
+    fieldsSuffix: 'campi',
+    // Invoice field names
+    fVendor: 'Fornitore',
+    fInvoiceNo: 'N. Fattura',
+    fDate: 'Data',
+    fDueDate: 'Scadenza',
+    fItem1: 'Voce 1',
+    fItem2: 'Voce 2',
+    fItem3: 'Voce 3',
+    fSubtotal: 'Subtotale',
+    fTax: 'IVA (9%)',
+    fTotal: 'Totale',
+    // Invoice field values
+    vItem1: 'Licenza Cloud Server x2 @ $1.200',
+    vItem2: 'Setup API Gateway x1 @ $850',
+    vItem3: 'Piano Supporto (Annuale) x1 @ $1.000',
+    // Contract field names
+    fPartyA: 'Parte A',
+    fPartyB: 'Parte B',
+    fEffectiveDate: 'Data Decorrenza',
+    fPosition: 'Posizione',
+    fSalary: 'Retribuzione',
+    fDuration: 'Durata',
+    fNoticePeriod: 'Preavviso',
+    fNonCompete: 'Non Concorrenza',
+    // Contract field values
+    vDuration: '24 mesi',
+    vNoticePeriod: '30 giorni',
+    vNonCompete: '12 mesi, raggio 80 km',
+    // Claim field names
+    fClaimNo: 'N. Pratica',
+    fPolicyHolder: 'Assicurato',
+    fPolicyNo: 'N. Polizza',
+    fIncidentDate: 'Data Sinistro',
+    fClaimType: 'Tipo Sinistro',
+    fEstDamage: 'Danno Stimato',
+    fDeductible: 'Franchigia',
+    // Claim field values
+    vClaimType: 'Auto - Collisione',
+    // Invoice preview labels
+    pInvoiceNumber: 'Numero Fattura',
+    pDateIssued: 'Data Emissione',
+    pDueDate: 'Data Scadenza',
+    pPaymentTerms: 'Termini di Pagamento',
+    pBillTo: 'Destinatario',
+    pDescription: 'Descrizione',
+    pQty: 'Qt\u00E0',
+    pUnitPrice: 'Prezzo Unitario',
+    pAmount: 'Importo',
+    pSubtotal: 'Subtotale',
+    pSalesTax: 'IVA (9%)',
+    pTotalDue: 'Totale Dovuto',
+    pInvoiceNote: 'Il pagamento \u00E8 dovuto entro 30 giorni dalla data della fattura. Si prega di indicare il numero di fattura in tutta la corrispondenza. Accettati bonifici bancari. Interessi dell\'1,5% mensile sui pagamenti in ritardo.',
+    pInvoiceTypeTitle: 'Fattura',
+    // Contract preview labels
+    pConfidential: 'Riservato',
+    pEmploymentAgreement: 'Contratto di Lavoro',
+    pEffectiveDate: 'Data Decorrenza:',
+    pSectionParties: '1. Parti',
+    pPartiesText1: 'Il presente Contratto di Lavoro ("Contratto") \u00E8 stipulato tra',
+    pPartiesText2: ', societ\u00E0 del Delaware con sede principale in 500 Market Street, San Francisco, CA 94105 ("Datore di Lavoro"), e',
+    pPartiesText3: ', residente in 742 Evergreen Terrace, Springfield, IL 62704 ("Dipendente").',
+    pSectionPosition: '2. Posizione e Mansioni',
+    pPositionText1: 'Il Dipendente ricoprir\u00E0 il ruolo di',
+    pPositionText2: 'e risponder\u00E0 direttamente al VP of Engineering. Il Dipendente si impegna a dedicare il proprio impegno professionale a tempo pieno alle mansioni assegnate dal Datore di Lavoro.',
+    pSectionCompensation: '3. Retribuzione',
+    pCompText1: 'Il Datore di Lavoro si impegna a corrispondere al Dipendente uno stipendio base annuo di',
+    pCompText2: ', pagabile secondo il calendario retributivo standard del Datore di Lavoro. Il Dipendente avr\u00E0 inoltre diritto a un bonus annuale fino al 15% dello stipendio base, subordinato al raggiungimento degli obiettivi stabiliti dalla direzione.',
+    pSectionTerm: '4. Durata',
+    pTermText1: 'Il presente Contratto avr\u00E0 efficacia per un periodo di',
+    pTermText2: 'dalla Data di Decorrenza, salvo risoluzione anticipata. Ciascuna parte potr\u00E0 recedere dal Contratto con un preavviso scritto di',
+    pTermText3: 'all\'altra parte.',
+    pSectionNonCompete: '5. Non Concorrenza',
+    pNonCompeteText1: 'Alla cessazione del rapporto, il Dipendente si impegna a non svolgere attivit\u00E0 in concorrenza per un periodo di',
+    pNonCompeteText2: 'entro un',
+    pNonCompeteText3: 'da qualsiasi sede del Datore di Lavoro. Questa restrizione si applica a impiego diretto, consulenza e ruoli di advisory presso concorrenti nello stesso segmento di mercato.',
+    p50miRadius: 'raggio di 80 km',
+    pAuthorizedSignatory: 'Firmatario Autorizzato',
+    pEmployee: 'Dipendente',
+    // Claim preview labels
+    pInsuranceClaimDiv: 'Divisione Sinistri',
+    pClaimForm: 'Modulo Sinistro',
+    pFormRevision: 'Modulo CL-200 Rev. 2023',
+    pClaimInformation: 'Informazioni Sinistro',
+    pClaimNumber: 'Numero Pratica',
+    pDateFiled: 'Data Apertura',
+    pClaimTypeLabel: 'Tipo Sinistro',
+    pPolicyholderDetails: 'Dati Assicurato',
+    pFullName: 'Nome Completo',
+    pPolicyNumber: 'Numero Polizza',
+    pAddress: 'Indirizzo',
+    pPhone: 'Telefono',
+    pIncidentDetails: 'Dettagli Sinistro',
+    pDateOfIncident: 'Data del Sinistro',
+    pLocation: 'Luogo',
+    pDescriptionLabel: 'Descrizione',
+    pIncidentDescription: 'Il veicolo \u00E8 stato colpito sul lato posteriore del passeggero da un altro veicolo che ha ignorato il semaforo rosso all\'incrocio. Rapporto di polizia depositato (#BPD-2023-44291). L\'altro conducente sanzionato per mancato rispetto del segnale stradale.',
+    pFinancialSummary: 'Riepilogo Finanziario',
+    pEstimatedDamage: 'Danno Stimato',
+    pDeductible: 'Franchigia',
+    pNetClaimAmount: 'Importo Netto Risarcimento',
+    pClaimCertification: 'Con la firma sottostante, dichiaro che le informazioni fornite sono veritiere e accurate al meglio delle mie conoscenze. Comprendo che dichiarazioni false possono comportare il rigetto della richiesta.',
+    pPolicyholderSignature: 'Firma dell\'Assicurato',
+  },
+}[LOCALE];
+
+// Apply i18n to static HTML elements
+document.querySelectorAll('[data-i18n]').forEach(function(el) {
+  var key = el.getAttribute('data-i18n');
+  if (T[key] !== undefined) el.textContent = T[key];
+});
+document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
+  var key = el.getAttribute('data-i18n-placeholder');
+  if (T[key] !== undefined) el.placeholder = T[key];
+});
+document.title = T.pageTitle;
+
 // ═══════════════════════════════════════════════
 //  Document Data
 // ═══════════════════════════════════════════════
@@ -895,16 +1167,16 @@ const documents = {
     type: 'PDF',
     time: '1.2s',
     fields: [
-      { name: 'Vendor', value: 'TechSupply Co.', confidence: 98 },
-      { name: 'Invoice No.', value: 'INV-2024-0847', confidence: 99 },
-      { name: 'Date', value: 'January 15, 2024', confidence: 97 },
-      { name: 'Due Date', value: 'February 15, 2024', confidence: 96 },
-      { name: 'Item 1', value: 'Cloud Server License x2 @ $1,200', confidence: 97 },
-      { name: 'Item 2', value: 'API Gateway Setup x1 @ $850', confidence: 96 },
-      { name: 'Item 3', value: 'Support Plan (Annual) x1 @ $1,000', confidence: 95 },
-      { name: 'Subtotal', value: '$4,250.00', confidence: 99 },
-      { name: 'Tax (9%)', value: '$382.50', confidence: 98 },
-      { name: 'Total', value: '$4,632.50', confidence: 99 },
+      { name: T.fVendor, value: 'TechSupply Co.', confidence: 98 },
+      { name: T.fInvoiceNo, value: 'INV-2024-0847', confidence: 99 },
+      { name: T.fDate, value: 'January 15, 2024', confidence: 97 },
+      { name: T.fDueDate, value: 'February 15, 2024', confidence: 96 },
+      { name: T.fItem1, value: T.vItem1, confidence: 97 },
+      { name: T.fItem2, value: T.vItem2, confidence: 96 },
+      { name: T.fItem3, value: T.vItem3, confidence: 95 },
+      { name: T.fSubtotal, value: '$4,250.00', confidence: 99 },
+      { name: T.fTax, value: '$382.50', confidence: 98 },
+      { name: T.fTotal, value: '$4,632.50', confidence: 99 },
     ],
     preview: `
       <div class="doc-header-block">
@@ -918,32 +1190,32 @@ const documents = {
           </div>
         </div>
         <div style="text-align:right">
-          <div class="doc-type-title">Invoice</div>
+          <div class="doc-type-title">${T.pInvoiceTypeTitle}</div>
         </div>
       </div>
 
       <div class="doc-meta-row">
         <div class="doc-meta-group">
-          <label>Invoice Number</label>
+          <label>${T.pInvoiceNumber}</label>
           <span data-field="invoice_no">INV-2024-0847</span>
         </div>
         <div class="doc-meta-group">
-          <label>Date Issued</label>
+          <label>${T.pDateIssued}</label>
           <span data-field="date">January 15, 2024</span>
         </div>
         <div class="doc-meta-group">
-          <label>Due Date</label>
+          <label>${T.pDueDate}</label>
           <span data-field="due_date">February 15, 2024</span>
         </div>
         <div class="doc-meta-group">
-          <label>Payment Terms</label>
+          <label>${T.pPaymentTerms}</label>
           <span>Net 30</span>
         </div>
       </div>
 
       <div class="doc-meta-row" style="margin-bottom:8px">
         <div class="doc-meta-group">
-          <label>Bill To</label>
+          <label>${T.pBillTo}</label>
           <span>Meridian Dynamics Inc.<br>
           <span style="color:#777;font-size:11px">1200 Park Avenue, New York, NY 10128</span></span>
         </div>
@@ -952,10 +1224,10 @@ const documents = {
       <table class="doc-table">
         <thead>
           <tr>
-            <th style="width:45%">Description</th>
-            <th style="width:10%">Qty</th>
-            <th class="text-right" style="width:20%">Unit Price</th>
-            <th class="text-right" style="width:25%">Amount</th>
+            <th style="width:45%">${T.pDescription}</th>
+            <th style="width:10%">${T.pQty}</th>
+            <th class="text-right" style="width:20%">${T.pUnitPrice}</th>
+            <th class="text-right" style="width:25%">${T.pAmount}</th>
           </tr>
         </thead>
         <tbody>
@@ -982,22 +1254,21 @@ const documents = {
 
       <div class="doc-totals">
         <div class="total-row" data-field="subtotal">
-          <span class="total-label">Subtotal</span>
+          <span class="total-label">${T.pSubtotal}</span>
           <span>$4,250.00</span>
         </div>
         <div class="total-row" data-field="tax">
-          <span class="total-label">Sales Tax (9%)</span>
+          <span class="total-label">${T.pSalesTax}</span>
           <span>$382.50</span>
         </div>
         <div class="total-row grand" data-field="total">
-          <span class="total-label">Total Due</span>
+          <span class="total-label">${T.pTotalDue}</span>
           <span>$4,632.50</span>
         </div>
       </div>
 
       <div style="margin-top:32px;padding-top:16px;border-top:1px solid #eee;font-family:var(--font-body);font-size:11px;color:#999;line-height:1.5">
-        Payment is due within 30 days of invoice date. Please include invoice number on all correspondence.
-        Wire transfers accepted. Late payments subject to 1.5% monthly interest.
+        ${T.pInvoiceNote}
       </div>
     `
   },
@@ -1006,76 +1277,67 @@ const documents = {
     type: 'DOCX',
     time: '1.8s',
     fields: [
-      { name: 'Party A', value: 'Acme Corp', confidence: 97 },
-      { name: 'Party B', value: 'Jane Smith', confidence: 96 },
-      { name: 'Effective Date', value: 'March 1, 2024', confidence: 98 },
-      { name: 'Position', value: 'Senior Developer', confidence: 99 },
-      { name: 'Salary', value: '$145,000/year', confidence: 97 },
-      { name: 'Duration', value: '24 months', confidence: 95 },
-      { name: 'Notice Period', value: '30 days', confidence: 94 },
-      { name: 'Non-Compete', value: '12 months, 50mi radius', confidence: 91 },
+      { name: T.fPartyA, value: 'Acme Corp', confidence: 97 },
+      { name: T.fPartyB, value: 'Jane Smith', confidence: 96 },
+      { name: T.fEffectiveDate, value: 'March 1, 2024', confidence: 98 },
+      { name: T.fPosition, value: 'Senior Developer', confidence: 99 },
+      { name: T.fSalary, value: '$145,000/year', confidence: 97 },
+      { name: T.fDuration, value: T.vDuration, confidence: 95 },
+      { name: T.fNoticePeriod, value: T.vNoticePeriod, confidence: 94 },
+      { name: T.fNonCompete, value: T.vNonCompete, confidence: 91 },
     ],
     preview: `
       <div style="text-align:center;margin-bottom:12px">
-        <div style="font-family:var(--font-body);font-size:11px;color:#999;letter-spacing:1px;text-transform:uppercase">Confidential</div>
+        <div style="font-family:var(--font-body);font-size:11px;color:#999;letter-spacing:1px;text-transform:uppercase">${T.pConfidential}</div>
       </div>
-      <div class="contract-title">Employment Agreement</div>
+      <div class="contract-title">${T.pEmploymentAgreement}</div>
 
       <div style="text-align:center;margin-bottom:28px;font-family:var(--font-body);font-size:12px;color:#777">
-        Effective Date: <span data-field="effective_date" style="color:#333;font-weight:600">March 1, 2024</span>
+        ${T.pEffectiveDate} <span data-field="effective_date" style="color:#333;font-weight:600">March 1, 2024</span>
       </div>
 
       <div class="contract-section">
-        <div class="contract-section-title">1. Parties</div>
+        <div class="contract-section-title">${T.pSectionParties}</div>
         <div class="contract-text">
-          This Employment Agreement ("Agreement") is entered into between
-          <span data-field="party_a" style="font-weight:700">Acme Corp</span>, a Delaware corporation
-          with principal offices at 500 Market Street, San Francisco, CA 94105 ("Employer"),
-          and <span data-field="party_b" style="font-weight:700">Jane Smith</span>,
-          an individual residing at 742 Evergreen Terrace, Springfield, IL 62704 ("Employee").
+          ${T.pPartiesText1}
+          <span data-field="party_a" style="font-weight:700">Acme Corp</span>${T.pPartiesText2}
+          <span data-field="party_b" style="font-weight:700">Jane Smith</span>${T.pPartiesText3}
         </div>
       </div>
 
       <div class="contract-section">
-        <div class="contract-section-title">2. Position & Duties</div>
+        <div class="contract-section-title">${T.pSectionPosition}</div>
         <div class="contract-text">
-          Employee shall serve in the role of <span data-field="position" style="font-weight:700">Senior Developer</span>
-          and shall report directly to the VP of Engineering. Employee agrees to devote full-time
-          professional efforts to the duties and responsibilities assigned by the Employer.
+          ${T.pPositionText1} <span data-field="position" style="font-weight:700">Senior Developer</span>
+          ${T.pPositionText2}
         </div>
       </div>
 
       <div class="contract-section">
-        <div class="contract-section-title">3. Compensation</div>
+        <div class="contract-section-title">${T.pSectionCompensation}</div>
         <div class="contract-text">
-          Employer agrees to pay Employee a base annual salary of
-          <span data-field="salary" style="font-weight:700">$145,000/year</span>,
-          payable in accordance with Employer's standard payroll schedule. Employee shall
-          also be eligible for an annual performance bonus of up to 15% of base salary,
-          subject to meeting performance objectives established by management.
+          ${T.pCompText1}
+          <span data-field="salary" style="font-weight:700">$145,000/year</span>${T.pCompText2}
         </div>
       </div>
 
       <div class="contract-section">
-        <div class="contract-section-title">4. Term</div>
+        <div class="contract-section-title">${T.pSectionTerm}</div>
         <div class="contract-text">
-          This Agreement shall be effective for a period of
-          <span data-field="duration" style="font-weight:700">24 months</span>
-          from the Effective Date, subject to earlier termination as provided herein.
-          Either party may terminate this Agreement with
-          <span data-field="notice_period" style="font-weight:700">30 days</span>
-          prior written notice to the other party.
+          ${T.pTermText1}
+          <span data-field="duration" style="font-weight:700">${T.vDuration}</span>
+          ${T.pTermText2}
+          <span data-field="notice_period" style="font-weight:700">${T.vNoticePeriod}</span>
+          ${T.pTermText3}
         </div>
       </div>
 
       <div class="contract-section">
-        <div class="contract-section-title">5. Non-Competition</div>
+        <div class="contract-section-title">${T.pSectionNonCompete}</div>
         <div class="contract-text">
-          Upon termination, Employee agrees not to engage in competing business activities for a period of
-          <span data-field="non_compete" style="font-weight:700">12 months</span> within a
-          <span style="font-weight:700">50-mile radius</span> of any Employer office location.
-          This restriction applies to direct employment, consulting, and advisory roles
-          with competitors in the same market segment.
+          ${T.pNonCompeteText1}
+          <span data-field="non_compete" style="font-weight:700">12 ${LOCALE === 'it' ? 'mesi' : 'months'}</span> ${T.pNonCompeteText2}
+          <span style="font-weight:700">${T.p50miRadius}</span> ${T.pNonCompeteText3}
         </div>
       </div>
 
@@ -1083,13 +1345,13 @@ const documents = {
         <div>
           <div style="border-top:1px solid #333;width:200px;padding-top:8px;margin-top:40px">
             <strong>Acme Corp</strong><br>
-            <span style="color:#999">Authorized Signatory</span>
+            <span style="color:#999">${T.pAuthorizedSignatory}</span>
           </div>
         </div>
         <div>
           <div style="border-top:1px solid #333;width:200px;padding-top:8px;margin-top:40px">
             <strong>Jane Smith</strong><br>
-            <span style="color:#999">Employee</span>
+            <span style="color:#999">${T.pEmployee}</span>
           </div>
         </div>
       </div>
@@ -1100,13 +1362,13 @@ const documents = {
     type: 'PDF',
     time: '1.4s',
     fields: [
-      { name: 'Claim No.', value: 'CLM-2024-12847', confidence: 99 },
-      { name: 'Policy Holder', value: 'Robert Johnson', confidence: 97 },
-      { name: 'Policy No.', value: 'POL-889234', confidence: 98 },
-      { name: 'Incident Date', value: 'December 3, 2023', confidence: 96 },
-      { name: 'Claim Type', value: 'Auto - Collision', confidence: 98 },
-      { name: 'Est. Damage', value: '$8,750.00', confidence: 94 },
-      { name: 'Deductible', value: '$500.00', confidence: 99 },
+      { name: T.fClaimNo, value: 'CLM-2024-12847', confidence: 99 },
+      { name: T.fPolicyHolder, value: 'Robert Johnson', confidence: 97 },
+      { name: T.fPolicyNo, value: 'POL-889234', confidence: 98 },
+      { name: T.fIncidentDate, value: 'December 3, 2023', confidence: 96 },
+      { name: T.fClaimType, value: T.vClaimType, confidence: 98 },
+      { name: T.fEstDamage, value: '$8,750.00', confidence: 94 },
+      { name: T.fDeductible, value: '$500.00', confidence: 99 },
     ],
     preview: `
       <div class="doc-header-block">
@@ -1114,88 +1376,85 @@ const documents = {
           <div class="doc-company-logo" style="background:#1a5276;border-radius:50%">SI</div>
           <div class="doc-company-name">SafeGuard Insurance</div>
           <div class="doc-company-address">
-            Insurance Claim Division<br>
+            ${T.pInsuranceClaimDiv}<br>
             P.O. Box 44820, Hartford, CT 06144<br>
             claims@safeguardins.com | 1-800-555-0199
           </div>
         </div>
         <div style="text-align:right">
-          <div class="doc-type-title" style="font-size:18px;letter-spacing:1px">Claim Form</div>
-          <div style="font-family:var(--font-body);font-size:11px;color:#999;margin-top:4px">Form CL-200 Rev. 2023</div>
+          <div class="doc-type-title" style="font-size:18px;letter-spacing:1px">${T.pClaimForm}</div>
+          <div style="font-family:var(--font-body);font-size:11px;color:#999;margin-top:4px">${T.pFormRevision}</div>
         </div>
       </div>
 
-      <div class="form-section-title">Claim Information</div>
+      <div class="form-section-title">${T.pClaimInformation}</div>
       <div class="form-field">
-        <div class="form-label">Claim Number</div>
+        <div class="form-label">${T.pClaimNumber}</div>
         <div class="form-value" data-field="claim_no">CLM-2024-12847</div>
       </div>
       <div class="form-field">
-        <div class="form-label">Date Filed</div>
+        <div class="form-label">${T.pDateFiled}</div>
         <div class="form-value">December 5, 2023</div>
       </div>
       <div class="form-field">
-        <div class="form-label">Claim Type</div>
-        <div class="form-value" data-field="claim_type">Auto - Collision</div>
+        <div class="form-label">${T.pClaimTypeLabel}</div>
+        <div class="form-value" data-field="claim_type">${T.vClaimType}</div>
       </div>
 
-      <div class="form-section-title">Policyholder Details</div>
+      <div class="form-section-title">${T.pPolicyholderDetails}</div>
       <div class="form-field">
-        <div class="form-label">Full Name</div>
+        <div class="form-label">${T.pFullName}</div>
         <div class="form-value" data-field="policy_holder">Robert Johnson</div>
       </div>
       <div class="form-field">
-        <div class="form-label">Policy Number</div>
+        <div class="form-label">${T.pPolicyNumber}</div>
         <div class="form-value" data-field="policy_no">POL-889234</div>
       </div>
       <div class="form-field">
-        <div class="form-label">Address</div>
+        <div class="form-label">${T.pAddress}</div>
         <div class="form-value">385 Oak Street, Apt 12B, Boston, MA 02116</div>
       </div>
       <div class="form-field">
-        <div class="form-label">Phone</div>
+        <div class="form-label">${T.pPhone}</div>
         <div class="form-value">(617) 555-0342</div>
       </div>
 
-      <div class="form-section-title">Incident Details</div>
+      <div class="form-section-title">${T.pIncidentDetails}</div>
       <div class="form-field">
-        <div class="form-label">Date of Incident</div>
+        <div class="form-label">${T.pDateOfIncident}</div>
         <div class="form-value" data-field="incident_date">December 3, 2023</div>
       </div>
       <div class="form-field">
-        <div class="form-label">Location</div>
+        <div class="form-label">${T.pLocation}</div>
         <div class="form-value">Intersection of Main St & 5th Ave, Boston, MA</div>
       </div>
       <div class="form-field">
-        <div class="form-label">Description</div>
+        <div class="form-label">${T.pDescriptionLabel}</div>
         <div class="form-value" style="font-size:11.5px;line-height:1.5">
-          Vehicle was struck on the rear passenger side by another vehicle that ran a red light
-          at the intersection. Police report filed (#BPD-2023-44291). Other driver cited for
-          failure to obey traffic signal.
+          ${T.pIncidentDescription}
         </div>
       </div>
 
-      <div class="form-section-title">Financial Summary</div>
+      <div class="form-section-title">${T.pFinancialSummary}</div>
       <div class="form-field">
-        <div class="form-label">Estimated Damage</div>
+        <div class="form-label">${T.pEstimatedDamage}</div>
         <div class="form-value" data-field="est_damage" style="font-weight:700">$8,750.00</div>
       </div>
       <div class="form-field">
-        <div class="form-label">Deductible</div>
+        <div class="form-label">${T.pDeductible}</div>
         <div class="form-value" data-field="deductible">$500.00</div>
       </div>
       <div class="form-field" style="border-bottom:2px solid #333">
-        <div class="form-label" style="font-weight:700">Net Claim Amount</div>
+        <div class="form-label" style="font-weight:700">${T.pNetClaimAmount}</div>
         <div class="form-value" style="font-weight:700">$8,250.00</div>
       </div>
 
       <div style="margin-top:24px;font-family:var(--font-body);font-size:11px;color:#999;line-height:1.5">
-        By signing below, I certify that the information provided is true and accurate to the best of my knowledge.
-        I understand that any false statements may result in denial of my claim.
+        ${T.pClaimCertification}
       </div>
       <div style="margin-top:20px;border-top:1px solid #333;width:200px;padding-top:8px;font-family:var(--font-body);font-size:12px">
         <strong>Robert Johnson</strong><br>
-        <span style="color:#999">Policyholder Signature</span>
+        <span style="color:#999">${T.pPolicyholderSignature}</span>
       </div>
     `
   }
@@ -1278,8 +1537,8 @@ function selectDocument(docKey) {
   document.getElementById('extractedList').innerHTML = '';
   document.getElementById('progressBar').style.width = '0%';
   document.getElementById('progressPercent').textContent = '0%';
-  document.getElementById('progressLabel').textContent = 'Analyzing document...';
-  document.getElementById('fieldCountTag').textContent = '0 fields';
+  document.getElementById('progressLabel').textContent = T.analyzingDoc;
+  document.getElementById('fieldCountTag').textContent = '0 ' + T.fieldsSuffix;
   document.getElementById('processingTime').classList.remove('visible');
   document.getElementById('statsBar').classList.remove('visible');
 
@@ -1345,12 +1604,12 @@ function startExtraction(docKey, doc) {
       const progress = Math.round(((i + 1) / totalFields) * 100);
       document.getElementById('progressBar').style.width = progress + '%';
       document.getElementById('progressPercent').textContent = progress + '%';
-      document.getElementById('fieldCountTag').textContent = (i + 1) + ' field' + (i + 1 > 1 ? 's' : '');
+      document.getElementById('fieldCountTag').textContent = (i + 1) + ' ' + ((i + 1) > 1 ? T.fieldsSuffix : T.fieldSuffix);
 
       if (i === totalFields - 1) {
         // Extraction complete
         setTimeout(() => {
-          document.getElementById('progressLabel').textContent = 'Extraction complete';
+          document.getElementById('progressLabel').textContent = T.extractionComplete;
           showStats(doc);
         }, 200);
       }
