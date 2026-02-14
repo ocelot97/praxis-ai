@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { inter, caveat } from "@/lib/fonts";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
@@ -49,6 +50,7 @@ export default function RootLayout({
           <main id="main-content">{children}</main>
           <Footer />
         </LocaleProvider>
+        <Analytics />
       </body>
     </html>
   );
