@@ -29,18 +29,6 @@ function useReducedMotion() {
   return reduced;
 }
 
-function useMobile() {
-  const [mobile, setMobile] = React.useState(false);
-  React.useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    setMobile(mq.matches);
-    const h = (e: MediaQueryListEvent) => setMobile(e.matches);
-    mq.addEventListener("change", h);
-    return () => mq.removeEventListener("change", h);
-  }, []);
-  return mobile;
-}
-
 type DrawFn = (ctx: CanvasRenderingContext2D, w: number, h: number, frame: number) => void;
 
 function useCanvasAnimation(
@@ -49,13 +37,12 @@ function useCanvasAnimation(
   duration: number
 ) {
   const reduced = useReducedMotion();
-  const mobile = useMobile();
   const frameRef = React.useRef(0);
   const lastRef = React.useRef(0);
 
   React.useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || reduced || mobile) return;
+    if (!canvas || reduced) return;
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
@@ -91,7 +78,7 @@ function useCanvasAnimation(
       cancelAnimationFrame(raf);
       ro.disconnect();
     };
-  }, [canvasRef, draw, duration, reduced, mobile]);
+  }, [canvasRef, draw, duration, reduced]);
 }
 
 function AnimatedBg({
