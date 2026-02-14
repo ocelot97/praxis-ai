@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/section";
 import { useLocale } from "@/lib/i18n";
+import { SolutionPreview } from "@/components/ui/solution-preview";
 
 const container = {
   hidden: { opacity: 0 },
@@ -28,6 +29,8 @@ const item = {
   hidden: { opacity: 0, y: 30 },
   show: { opacity: 1, y: 0 },
 };
+
+const showcaseSlugs = ["customer-agents", "document-intelligence", "workflow-automation"];
 
 export function SolutionsShowcase() {
   const { t } = useLocale();
@@ -54,7 +57,8 @@ export function SolutionsShowcase() {
                 <CardTitle>{solution.title}</CardTitle>
                 <CardDescription>{solution.description}</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-4">
+                <SolutionPreview slug={showcaseSlugs[index]} className="aspect-video" />
                 <ul className="space-y-3">
                   {solution.features.map((feature, fIdx) => (
                     <li key={fIdx} className="flex items-start gap-3">

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { NeuralFlowBg } from "@/components/ui/animated-background";
 import { useLocale } from "@/lib/i18n";
+import { SolutionPreview } from "@/components/ui/solution-preview";
 
 const customIcons = [
   <div key="chip" className="w-12 h-12 text-terracotta mb-4">
@@ -103,6 +104,8 @@ export default function SolutionsPage() {
                     <CardDescription className="text-base">
                       {solution.description}
                     </CardDescription>
+
+                    <SolutionPreview slug={solution.id} className="aspect-video" />
 
                     <div>
                       <h4 className="text-sm font-sans font-semibold text-charcoal mb-3">
