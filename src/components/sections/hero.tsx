@@ -157,7 +157,9 @@ export function Hero() {
       <div className="absolute top-20 left-10 w-96 h-96 bg-terracotta/5 rounded-full blur-3xl z-[1]" />
       <div className="absolute bottom-20 right-10 w-80 h-80 bg-terracotta-light/5 rounded-full blur-3xl z-[1]" />
 
-      <HeroIllustration parallaxY={illustrationY} />
+      <div className="hidden lg:block">
+        <HeroIllustration parallaxY={illustrationY} />
+      </div>
 
       <div className="section-container relative z-10 py-20 md:py-28 lg:py-32 w-full">
         <div className="flex flex-col lg:flex-row lg:items-center lg:gap-16">

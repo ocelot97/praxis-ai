@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { createClient } from "@/lib/supabase/client";
 import { validateEmail } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n";
 
@@ -80,6 +79,7 @@ export function ContactForm() {
     setSubmitError(null);
 
     try {
+      const { createClient } = await import("@/lib/supabase/client");
       const supabase = createClient();
 
       const { error } = await supabase.from("contact_submissions").insert({

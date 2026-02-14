@@ -64,7 +64,7 @@ export default function SolutionsPage() {
           animate="animate"
           variants={fadeInUp}
         >
-          <h1 className="text-6xl md:text-7xl lg:text-8xl font-[family-name:var(--font-caveat)] font-bold text-charcoal mb-6">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-[family-name:var(--font-caveat)] font-bold text-charcoal mb-6">
             {t.solutionsPage.title}
           </h1>
           <p className="text-xl md:text-2xl font-sans text-mid leading-relaxed">

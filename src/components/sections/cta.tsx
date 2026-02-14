@@ -64,9 +64,9 @@ export function CTA() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: true, margin: "-50px" }}
         transition={{ duration: 0.6 }}
-        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-terracotta to-terracotta-light p-12 md:p-16 lg:p-20"
+        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-terracotta to-terracotta-light p-8 md:p-12 lg:p-16"
       >
         <FloatingShapes />
 

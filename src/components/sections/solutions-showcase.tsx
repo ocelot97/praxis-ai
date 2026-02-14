@@ -44,7 +44,7 @@ export function SolutionsShowcase() {
         variants={container}
         initial="hidden"
         whileInView="show"
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: true, margin: "-50px" }}
         className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
       >
         {t.solutionsShowcase.items.map((solution, index) => (

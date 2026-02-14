@@ -180,6 +180,14 @@ function HeroAmbientCanvas() {
 export function HeroAmbientBg({ overlay, className }: { overlay?: string; className?: string }) {
   return (
     <AnimatedBg overlay={overlay} className={className}>
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 60% 50% at 20% 30%, rgba(200,195,180,0.18) 0%, transparent 70%), " +
+            "radial-gradient(ellipse 50% 60% at 75% 70%, rgba(193,95,60,0.06) 0%, transparent 70%)",
+        }}
+      />
       <HeroAmbientCanvas />
     </AnimatedBg>
   );
@@ -337,6 +345,13 @@ function ProcessWeaveCanvas() {
 export function ProcessWeaveBg({ overlay, className }: { overlay?: string; className?: string }) {
   return (
     <AnimatedBg overlay={overlay} className={className}>
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 40% at 50% 80%, rgba(193,95,60,0.05) 0%, transparent 70%)",
+        }}
+      />
       <ProcessWeaveCanvas />
     </AnimatedBg>
   );
@@ -488,6 +503,15 @@ function NeuralFlowCanvas() {
 export function NeuralFlowBg({ overlay, className }: { overlay?: string; className?: string }) {
   return (
     <AnimatedBg overlay={overlay} className={className}>
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(circle at 50% 50%, rgba(193,95,60,0.06) 0%, transparent 60%), " +
+            "radial-gradient(circle at 20% 30%, rgba(193,95,60,0.03) 0%, transparent 40%), " +
+            "radial-gradient(circle at 80% 70%, rgba(193,95,60,0.03) 0%, transparent 40%)",
+        }}
+      />
       <NeuralFlowCanvas />
     </AnimatedBg>
   );
