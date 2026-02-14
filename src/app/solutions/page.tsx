@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { Section } from "@/components/ui/section";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,6 +53,29 @@ const staggerContainer = {
 
 export default function SolutionsPage() {
   const { t } = useLocale();
+  const router = useRouter();
+  const keysRef = React.useRef<string[]>([]);
+  const timerRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      keysRef.current.push(e.key.toLowerCase());
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => {
+        keysRef.current = [];
+      }, 2000);
+      if (keysRef.current.slice(-4).join("") === "demo") {
+        keysRef.current = [];
+        if (timerRef.current) clearTimeout(timerRef.current);
+        router.push("/demo/login");
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [router]);
 
   return (
     <main>
@@ -210,6 +234,12 @@ export default function SolutionsPage() {
               <Button size="lg">{t.solutionsPage.talkToTeam}</Button>
             </Link>
           </motion.div>
+
+          <div className="mt-16 pb-8 text-center">
+            <p className="text-xs font-sans text-mid/40 hover:text-mid/60 transition-colors duration-300">
+              <Link href="/demo/login">Praxis AI</Link> &middot; Built with intelligence
+            </p>
+          </div>
         </motion.div>
       </Section>
     </main>
