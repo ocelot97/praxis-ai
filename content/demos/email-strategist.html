@@ -8,934 +8,214 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --terracotta: #C15F3C;
-    --terracotta-light: #d4795a;
-    --terracotta-dark: #a8502f;
-    --terracotta-glow: rgba(193, 95, 60, 0.15);
-    --cream: #F4F3EE;
-    --charcoal: #141413;
-    --mid: #b0aea5;
-    --border: #e8e6dc;
-    --white: #ffffff;
-    --green: #3a9a5c;
-    --green-light: #e6f5ec;
-    --blue: #3b7dd8;
-    --blue-light: #e8f0fc;
-    --purple: #7c5cbf;
-    --purple-light: #f0ebf8;
-    --amber: #c9a227;
-    --amber-light: #fdf6e0;
-    --rose: #c0392b;
-    --rose-light: #fdecea;
-    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
-    --font-display: 'Caveat', cursive;
-    --shadow-sm: 0 1px 3px rgba(20,20,19,0.06);
-    --shadow-md: 0 4px 12px rgba(20,20,19,0.08);
-    --shadow-lg: 0 8px 30px rgba(20,20,19,0.12);
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-  }
-
-  html { font-size: 16px; }
-
-  body {
-    font-family: var(--font-body);
-    background: var(--cream);
-    color: var(--charcoal);
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    padding-bottom: 72px;
-  }
-
-  /* ── Header ── */
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 40px;
-    border-bottom: 1px solid var(--border);
-    background: rgba(244, 243, 238, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-
-  .back-btn {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--mid);
-    text-decoration: none;
-    transition: color 0.2s;
-    font-family: var(--font-body);
-    white-space: nowrap;
-  }
-
-  .back-btn:hover { color: var(--terracotta); }
-
-  .header-divider {
-    width: 1px;
-    height: 28px;
-    background: var(--border);
-  }
-
-  .header-brand {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .header-title {
-    font-family: var(--font-display);
-    font-size: 26px;
-    font-weight: 700;
-    color: var(--charcoal);
-    line-height: 1;
-  }
-
-  .header-subtitle {
-    font-size: 12px;
-    color: var(--mid);
-    font-weight: 500;
-    letter-spacing: 0.02em;
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .badge-live {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--green);
-    background: var(--green-light);
-    padding: 5px 12px;
-    border-radius: 100px;
-  }
-
-  .badge-live::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--green);
-    animation: pulse-dot 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse-dot {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  /* ── Main Container ── */
-  .main {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 0 32px;
-  }
-
-  /* ── Section shared ── */
-  .section {
-    margin-top: 32px;
-    opacity: 0;
-    transform: translateY(16px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-  }
-
-  .section.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .section-label {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--mid);
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .section-label .step-num {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--terracotta);
-    color: var(--white);
-    font-size: 11px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* ── Step 1: Data Sources ── */
-  .sources-grid {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .source-card {
-    flex: 1;
-    min-width: 280px;
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    padding: 24px;
-    box-shadow: var(--shadow-sm);
-    transition: border-color 0.3s, box-shadow 0.3s;
-  }
-
-  .source-card.connected {
-    border-color: var(--green);
-    box-shadow: 0 0 0 3px rgba(58, 154, 92, 0.1), var(--shadow-sm);
-  }
-
-  .source-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-  }
-
-  .source-header-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .source-icon {
-    font-size: 24px;
-  }
-
-  .source-name {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--charcoal);
-  }
-
-  .source-status {
-    font-size: 12px;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 20px;
-    transition: all 0.3s;
-  }
-
-  .source-status.connecting {
-    background: var(--amber-light);
-    color: var(--amber);
-  }
-
-  .source-status.connected {
-    background: var(--green-light);
-    color: var(--green);
-  }
-
-  .connecting-bar {
-    height: 3px;
-    background: var(--border);
-    border-radius: 3px;
-    margin-bottom: 16px;
-    overflow: hidden;
-  }
-
-  .connecting-bar-fill {
-    height: 100%;
-    width: 0%;
-    background: var(--terracotta);
-    border-radius: 3px;
-    transition: width 1.2s ease;
-  }
-
-  .source-metrics {
-    display: none;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .source-metrics.visible { display: flex; }
-
-  .source-metric {
-    flex: 1;
-    min-width: 100px;
-    text-align: center;
-    padding: 10px 8px;
-    background: var(--cream);
-    border-radius: var(--radius-sm);
-  }
-
-  .source-metric-value {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--charcoal);
-    line-height: 1.2;
-  }
-
-  .source-metric-label {
-    font-size: 11px;
-    color: var(--mid);
-    margin-top: 2px;
-  }
-
-  /* ── Step 2: Event Analysis ── */
-  .analysis-status {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--charcoal);
-  }
-
-  .analysis-spinner {
-    width: 16px;
-    height: 16px;
-    border: 2.5px solid var(--terracotta-glow);
-    border-top-color: var(--terracotta);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .analysis-progress {
-    height: 4px;
-    background: var(--border);
-    border-radius: 4px;
-    margin-bottom: 24px;
-    overflow: hidden;
-    display: none;
-  }
-
-  .analysis-progress.visible { display: block; }
-
-  .analysis-progress-fill {
-    height: 100%;
-    width: 0%;
-    background: var(--terracotta);
-    border-radius: 4px;
-    transition: width 1.8s ease;
-  }
-
-  .events-panel {
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    padding: 24px;
-    box-shadow: var(--shadow-sm);
-    display: none;
-  }
-
-  .events-panel.visible { display: block; }
-
-  .events-panel h3 {
-    font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    color: var(--charcoal);
-  }
-
-  .event-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-    opacity: 0;
-    transform: translateX(-10px);
-    transition: opacity 0.35s ease, transform 0.35s ease;
-  }
-
-  .event-row.visible {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  .event-row:last-child { border-bottom: none; }
-
-  .event-label {
-    width: 150px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--charcoal);
-    flex-shrink: 0;
-  }
-
-  .event-bar-track {
-    flex: 1;
-    height: 24px;
-    background: var(--cream);
-    border-radius: 6px;
-    overflow: hidden;
-  }
-
-  .event-bar-fill {
-    height: 100%;
-    width: 0%;
-    border-radius: 6px;
-    background: var(--blue);
-    transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .event-bar-fill.highlight { background: var(--terracotta); }
-
-  .event-count {
-    width: 60px;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--charcoal);
-    text-align: right;
-    flex-shrink: 0;
-  }
-
-  .event-opportunity {
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    background: var(--terracotta-glow);
-    color: var(--terracotta);
-    padding: 2px 8px;
-    border-radius: 4px;
-    flex-shrink: 0;
-  }
-
-  /* ── Segments Grid ── */
-  .segments-heading {
-    font-size: 14px;
-    font-weight: 700;
-    margin: 24px 0 14px;
-    color: var(--charcoal);
-    display: none;
-  }
-
-  .segments-heading.visible { display: block; }
-
-  .segments-grid {
-    display: none;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .segments-grid.visible { display: flex; }
-
-  .segment-card {
-    flex: 1;
-    min-width: 280px;
-    background: var(--white);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border);
-    padding: 16px 16px 16px 20px;
-    box-shadow: var(--shadow-sm);
-    position: relative;
-    overflow: hidden;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.4s ease, transform 0.4s ease;
-  }
-
-  .segment-card.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .segment-card::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-  }
-
-  .segment-card:nth-child(1)::before { background: var(--terracotta); }
-  .segment-card:nth-child(2)::before { background: var(--amber); }
-  .segment-card:nth-child(3)::before { background: var(--green); }
-  .segment-card:nth-child(4)::before { background: var(--blue); }
-  .segment-card:nth-child(5)::before { background: var(--purple); }
-  .segment-card:nth-child(6)::before { background: var(--rose); }
-
-  .segment-name {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--charcoal);
-    margin-bottom: 6px;
-  }
-
-  .segment-stats {
-    display: flex;
-    gap: 16px;
-    font-size: 12px;
-    color: var(--mid);
-    font-weight: 500;
-  }
-
-  .segment-stat-value {
-    font-weight: 700;
-    color: var(--charcoal);
-  }
-
-  /* ── Step 3: AI Strategy Generation ── */
-  .thinking-status {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--charcoal);
-  }
-
-  .brain-pulse {
-    font-size: 20px;
-    animation: brain-glow 1.5s ease-in-out infinite;
-  }
-
-  @keyframes brain-glow {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.1); }
-  }
-
-  .campaigns-grid {
-    display: none;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-
-  .campaigns-grid.visible { display: flex; }
-
-  .campaign-card {
-    flex: 1;
-    min-width: 280px;
-    max-width: calc(50% - 8px);
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    padding: 24px;
-    box-shadow: var(--shadow-sm);
-    cursor: pointer;
-    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
-    opacity: 0;
-    transform: translateY(12px);
-  }
-
-  .campaign-card.visible {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.4s ease, transform 0.4s ease, border-color 0.2s, box-shadow 0.2s;
-  }
-
-  .campaign-card:hover {
-    border-color: var(--terracotta);
-    box-shadow: 0 0 0 3px var(--terracotta-glow), var(--shadow-md);
-    transform: translateY(-2px);
-  }
-
-  .campaign-card.visible:hover {
-    transform: translateY(-2px);
-  }
-
-  .campaign-number {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--terracotta);
-    margin-bottom: 6px;
-  }
-
-  .campaign-name {
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--charcoal);
-    margin-bottom: 10px;
-  }
-
-  .campaign-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    font-size: 12px;
-    color: var(--mid);
-    margin-bottom: 14px;
-  }
-
-  .campaign-meta span {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .campaign-meta strong { color: var(--charcoal); font-weight: 600; }
-
-  .campaign-brief {
-    font-size: 13px;
-    line-height: 1.55;
-    color: #555;
-    margin-bottom: 14px;
-  }
-
-  .campaign-roi {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--green);
-    background: var(--green-light);
-    padding: 5px 12px;
-    border-radius: 20px;
-  }
-
-  .campaign-click-hint {
-    font-size: 11px;
-    color: var(--mid);
-    margin-top: 10px;
-    font-weight: 500;
-  }
-
-  /* ── Step 4: Briefing Panel ── */
-  .briefing-overlay {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: rgba(20, 20, 19, 0.3);
-    z-index: 200;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-  }
-
-  .briefing-overlay.visible {
-    opacity: 1;
-    pointer-events: all;
-  }
-
-  .briefing-panel {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 520px;
-    max-width: 100vw;
-    background: var(--white);
-    z-index: 210;
-    transform: translateX(100%);
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    overflow-y: auto;
-    box-shadow: -8px 0 30px rgba(20,20,19,0.12);
-  }
-
-  .briefing-panel.visible {
-    transform: translateX(0);
-  }
-
-  .briefing-close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: var(--white);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    color: var(--mid);
-    transition: all 0.2s;
-  }
-
-  .briefing-close:hover {
-    color: var(--charcoal);
-    border-color: var(--charcoal);
-  }
-
-  .briefing-content {
-    padding: 40px 32px;
-  }
-
-  .briefing-label {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--terracotta);
-    margin-bottom: 8px;
-  }
-
-  .briefing-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--charcoal);
-    margin-bottom: 24px;
-    line-height: 1.25;
-  }
-
-  .briefing-section {
-    margin-bottom: 24px;
-  }
-
-  .briefing-section h4 {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--mid);
-    margin-bottom: 10px;
-  }
-
-  .briefing-kv {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-  }
-
-  .briefing-kv:last-child { border-bottom: none; }
-
-  .briefing-kv .kv-label { color: var(--mid); font-weight: 500; }
-  .briefing-kv .kv-value { font-weight: 600; color: var(--charcoal); }
-
-  .briefing-timeline {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .timeline-item {
-    display: flex;
-    gap: 12px;
-    position: relative;
-  }
-
-  .timeline-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--terracotta);
-    margin-top: 5px;
-    flex-shrink: 0;
-  }
-
-  .timeline-item:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    left: 4px;
-    top: 17px;
-    bottom: -10px;
-    width: 2px;
-    background: var(--border);
-  }
-
-  .timeline-text {
-    font-size: 13px;
-    line-height: 1.5;
-    color: var(--charcoal);
-  }
-
-  .timeline-text strong { font-weight: 600; }
-
-  .briefing-pillars {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .pillar-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: var(--charcoal);
-    padding: 8px 14px;
-    background: var(--cream);
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-  }
-
-  .briefing-design {
-    font-size: 13px;
-    line-height: 1.6;
-    color: #555;
-  }
-
-  .validation-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--green);
-    background: var(--green-light);
-    padding: 8px 16px;
-    border-radius: var(--radius-sm);
-    margin-bottom: 20px;
-  }
-
-  .briefing-actions {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  .btn-primary {
-    padding: 12px 24px;
-    background: var(--terracotta);
-    color: var(--white);
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    font-weight: 600;
-    font-family: var(--font-body);
-    cursor: pointer;
-    transition: background 0.2s, transform 0.15s;
-  }
-
-  .btn-primary:hover { background: var(--terracotta-dark); }
-  .btn-primary:active { transform: scale(0.97); }
-
-  .btn-secondary {
-    padding: 12px 24px;
-    background: var(--white);
-    color: var(--charcoal);
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    font-weight: 600;
-    font-family: var(--font-body);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .btn-secondary:hover {
-    border-color: var(--charcoal);
-  }
-
-  /* ── Bottom Stats Bar ── */
-  .bottom-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--white);
-    border-top: 1px solid var(--border);
-    padding: 14px 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 40px;
-    z-index: 50;
-    box-shadow: 0 -2px 12px rgba(20,20,19,0.04);
-    opacity: 0;
-    transform: translateY(100%);
-    transition: opacity 0.4s ease, transform 0.4s ease;
-  }
-
-  .bottom-bar.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .bottom-stat {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-  }
-
-  .bottom-stat-value {
-    font-weight: 700;
-    color: var(--charcoal);
-    font-size: 15px;
-  }
-
-  .bottom-stat-label {
-    color: var(--mid);
-    font-weight: 500;
-  }
-
-  .bottom-stat-icon {
-    font-size: 16px;
-  }
-
-  /* ── Toast ── */
-  .toast {
-    position: fixed;
-    bottom: 90px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--charcoal);
-    color: var(--white);
-    padding: 12px 24px;
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    font-weight: 600;
-    box-shadow: var(--shadow-lg);
-    opacity: 0;
-    transition: opacity 0.3s, transform 0.3s;
-    z-index: 300;
-    pointer-events: none;
-  }
-
-  .toast.visible {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-
-  /* ── Responsive ── */
-  @media (max-width: 768px) {
-    .header { padding: 16px 20px; flex-wrap: wrap; gap: 8px; }
-    .main { padding: 0 16px; }
-    .sources-grid { flex-direction: column; }
-    .campaign-card { max-width: 100%; }
-    .briefing-panel { width: 100%; }
-    .bottom-bar { gap: 16px; padding: 12px 16px; flex-wrap: wrap; justify-content: space-around; }
-    .bottom-stat { font-size: 12px; }
-    .segments-grid { flex-direction: column; }
-    .segment-card { min-width: auto; }
-  }
-
-  @media (max-width: 480px) {
-    .header-divider { display: none; }
-    .header-subtitle { display: none; }
-    .back-btn { font-size: 13px; }
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --terracotta:#C15F3C;--terracotta-light:#d4795a;--terracotta-dark:#a8502f;
+  --terracotta-glow:rgba(193,95,60,0.15);--cream:#F4F3EE;--charcoal:#141413;
+  --mid:#b0aea5;--border:#e8e6dc;--white:#ffffff;
+  --green:#3a9a5c;--green-light:#e6f5ec;--blue:#3b7dd8;--blue-light:#e8f0fc;
+  --purple:#7c5cbf;--purple-light:#f0ebf8;--amber:#c9a227;--amber-light:#fdf6e0;
+  --rose:#c0392b;--rose-light:#fdecea;
+  --font-body:'Inter',system-ui,-apple-system,sans-serif;
+  --font-display:'Caveat',cursive;
+  --shadow-sm:0 1px 3px rgba(20,20,19,0.06);--shadow-md:0 4px 12px rgba(20,20,19,0.08);
+  --shadow-lg:0 8px 30px rgba(20,20,19,0.12);
+  --radius-sm:8px;--radius-md:12px;--radius-lg:16px
+}
+html{font-size:16px}
+body{font-family:var(--font-body);background:var(--cream);color:var(--charcoal);min-height:100vh;-webkit-font-smoothing:antialiased;padding-bottom:80px}
+
+.header{display:flex;align-items:center;justify-content:space-between;padding:20px 40px;border-bottom:1px solid var(--border);background:rgba(244,243,238,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);position:sticky;top:0;z-index:100}
+.header-left{display:flex;align-items:center;gap:20px}
+.back-btn{font-size:14px;font-weight:500;color:var(--mid);text-decoration:none;transition:color .2s;font-family:var(--font-body);white-space:nowrap}
+.back-btn:hover{color:var(--terracotta)}
+.header-divider{width:1px;height:28px;background:var(--border)}
+.header-brand{display:flex;flex-direction:column;gap:2px}
+.header-title{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--charcoal);line-height:1}
+.header-subtitle{font-size:12px;color:var(--mid);font-weight:500;letter-spacing:.02em}
+.header-right{display:flex;align-items:center;gap:12px}
+.badge-live{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--green);background:var(--green-light);padding:5px 12px;border-radius:100px;opacity:0;transition:opacity .4s}
+.badge-live.visible{opacity:1}
+.badge-live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse-dot 2s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
+
+.main{max-width:1080px;margin:0 auto;padding:0 32px}
+.section{margin-top:32px;opacity:0;transform:translateY(20px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
+.section.visible{opacity:1;transform:translateY(0)}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--mid);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--terracotta);color:var(--white);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+.sources-grid{display:flex;gap:16px;flex-wrap:wrap}
+.source-card{flex:1;min-width:280px;background:var(--white);border-radius:var(--radius-lg);border:2px solid var(--border);padding:24px;box-shadow:var(--shadow-sm);transition:border-color .5s,box-shadow .5s}
+.source-card.connected{border-color:var(--green);box-shadow:0 0 0 4px rgba(58,154,92,.1),0 0 20px rgba(58,154,92,.06),var(--shadow-sm)}
+.source-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.source-header-left{display:flex;align-items:center;gap:10px}
+.source-icon{font-size:24px}
+.source-name{font-size:16px;font-weight:700;color:var(--charcoal)}
+.source-status{font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;transition:all .3s}
+.source-status.connecting{background:var(--amber-light);color:var(--amber)}
+.source-status.status-connected{background:var(--green-light);color:var(--green)}
+.connecting-bar{height:4px;background:var(--border);border-radius:4px;margin-bottom:16px;overflow:hidden}
+.connecting-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--terracotta),var(--terracotta-light));border-radius:4px;transition:width 1.4s cubic-bezier(.22,1,.36,1)}
+.source-metrics{display:none;flex-wrap:wrap;gap:10px}
+.source-metrics.visible{display:flex;animation:metricsReveal .5s cubic-bezier(.16,1,.3,1)}
+@keyframes metricsReveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.source-metric{flex:1;min-width:90px;text-align:center;padding:12px 8px;background:var(--cream);border-radius:var(--radius-sm)}
+.source-metric-value{font-size:18px;font-weight:700;color:var(--charcoal);line-height:1.2}
+.source-metric-label{font-size:11px;color:var(--mid);margin-top:3px;font-weight:500}
+
+.analysis-status{display:flex;align-items:center;gap:10px;margin-bottom:20px;font-size:14px;font-weight:600;color:var(--charcoal)}
+.analysis-spinner{width:18px;height:18px;border:2.5px solid var(--terracotta-glow);border-top-color:var(--terracotta);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.analysis-progress{height:4px;background:var(--border);border-radius:4px;margin-bottom:24px;overflow:hidden;display:none}
+.analysis-progress.visible{display:block}
+.analysis-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--terracotta),var(--terracotta-light));border-radius:4px;transition:width 1.8s cubic-bezier(.22,1,.36,1)}
+.events-panel{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);padding:24px;box-shadow:var(--shadow-sm);display:none}
+.events-panel.visible{display:block}
+.events-panel h3{font-size:14px;font-weight:700;margin-bottom:16px;color:var(--charcoal)}
+.event-row{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--border);opacity:0;transform:translateX(-12px);transition:opacity .4s,transform .4s}
+.event-row.visible{opacity:1;transform:translateX(0)}
+.event-row:last-child{border-bottom:none}
+.event-label{width:150px;font-size:13px;font-weight:600;color:var(--charcoal);flex-shrink:0}
+.event-bar-track{flex:1;height:26px;background:var(--cream);border-radius:6px;overflow:hidden}
+.event-bar-fill{height:100%;width:0%;border-radius:6px;background:var(--blue);transition:width 1s cubic-bezier(.22,1,.36,1)}
+.event-bar-fill.highlight{background:linear-gradient(90deg,var(--terracotta),var(--terracotta-light))}
+.event-count{width:60px;font-size:13px;font-weight:700;color:var(--charcoal);text-align:right;flex-shrink:0}
+.event-opportunity{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;background:var(--terracotta-glow);color:var(--terracotta);padding:3px 8px;border-radius:4px;flex-shrink:0;animation:oppPulse 2s ease-in-out infinite}
+@keyframes oppPulse{0%,100%{opacity:1}50%{opacity:.7}}
+
+.analysis-row{display:none;gap:24px;margin-top:24px;flex-wrap:wrap}
+.analysis-row.visible{display:flex}
+.donut-container{width:200px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:12px}
+.donut-chart{width:160px;height:160px;border-radius:50%;position:relative}
+.donut-chart-inner{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80px;height:80px;border-radius:50%;background:var(--white);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut-total{font-size:20px;font-weight:700;color:var(--charcoal);line-height:1}
+.donut-label-text{font-size:10px;color:var(--mid);font-weight:500;margin-top:2px}
+.donut-legend{display:flex;flex-direction:column;gap:4px}
+.donut-legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mid);font-weight:500}
+.donut-legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+.segments-container{flex:1;min-width:280px}
+.segments-heading{font-size:14px;font-weight:700;margin-bottom:12px;color:var(--charcoal)}
+.segments-grid{display:flex;flex-wrap:wrap;gap:10px}
+.segment-card{flex:1;min-width:240px;background:var(--white);border-radius:var(--radius-md);border:1px solid var(--border);padding:14px 14px 14px 18px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;opacity:0;transform:translateY(10px);transition:opacity .4s,transform .4s,box-shadow .2s}
+.segment-card.visible{opacity:1;transform:translateY(0)}
+.segment-card:hover{box-shadow:var(--shadow-md)}
+.segment-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px}
+.segment-card[data-color="terracotta"]::before{background:var(--terracotta)}
+.segment-card[data-color="amber"]::before{background:var(--amber)}
+.segment-card[data-color="green"]::before{background:var(--green)}
+.segment-card[data-color="blue"]::before{background:var(--blue)}
+.segment-card[data-color="purple"]::before{background:var(--purple)}
+.segment-card[data-color="rose"]::before{background:var(--rose)}
+.segment-name{font-size:13px;font-weight:700;color:var(--charcoal);margin-bottom:5px}
+.segment-stats{display:flex;gap:14px;font-size:12px;color:var(--mid);font-weight:500}
+.segment-stat-value{font-weight:700;color:var(--charcoal)}
+
+.thinking-box{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);padding:32px;box-shadow:var(--shadow-sm);text-align:center;margin-bottom:20px}
+.thinking-brain{font-size:40px;display:inline-block;animation:brain-glow 1.5s ease-in-out infinite}
+@keyframes brain-glow{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.12)}}
+.thinking-title{font-size:16px;font-weight:700;color:var(--charcoal);margin-top:12px;margin-bottom:16px}
+.thinking-typewriter{font-size:13px;color:var(--mid);font-weight:500;min-height:20px;font-style:italic}
+.thinking-cursor{display:inline-block;width:2px;height:14px;background:var(--terracotta);margin-left:2px;vertical-align:text-bottom;animation:cursorBlink .6s ease-in-out infinite}
+@keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
+
+.campaigns-grid{display:none;flex-wrap:wrap;gap:16px}
+.campaigns-grid.visible{display:flex}
+.campaign-card{flex:1;min-width:280px;max-width:calc(50% - 8px);background:var(--white);border-radius:var(--radius-lg);border:1.5px solid var(--border);padding:24px;box-shadow:var(--shadow-sm);cursor:pointer;transition:border-color .2s,box-shadow .2s,transform .2s;opacity:0;transform:translateY(14px)}
+.campaign-card.visible{opacity:1;transform:translateY(0);transition:opacity .5s,transform .5s,border-color .2s,box-shadow .2s}
+.campaign-card:hover{border-color:var(--terracotta);box-shadow:0 0 0 3px var(--terracotta-glow),var(--shadow-md);transform:translateY(-3px)!important}
+.campaign-number{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--white);background:var(--terracotta);padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:10px}
+.campaign-name{font-size:17px;font-weight:700;color:var(--charcoal);margin-bottom:12px}
+.campaign-meta{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--mid);margin-bottom:14px}
+.campaign-meta span{display:flex;align-items:flex-start;gap:6px}
+.campaign-meta strong{color:var(--charcoal);font-weight:600}
+.campaign-brief{font-size:13px;line-height:1.55;color:#666;margin-bottom:16px}
+.campaign-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.campaign-roi{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--green);background:var(--green-light);padding:5px 14px;border-radius:20px}
+.campaign-click-hint{font-size:11px;color:var(--mid);font-weight:500;transition:color .2s}
+.campaign-card:hover .campaign-click-hint{color:var(--terracotta)}
+
+.briefing-overlay{position:fixed;top:0;right:0;bottom:0;left:0;background:rgba(20,20,19,.35);z-index:200;opacity:0;pointer-events:none;transition:opacity .3s}
+.briefing-overlay.visible{opacity:1;pointer-events:all}
+.briefing-panel{position:fixed;top:0;right:0;bottom:0;width:520px;max-width:100vw;background:var(--white);z-index:210;transform:translateX(100%);transition:transform .4s cubic-bezier(.16,1,.3,1);overflow-y:auto;box-shadow:-10px 0 40px rgba(20,20,19,.15)}
+.briefing-panel.visible{transform:translateX(0)}
+.briefing-close{position:absolute;top:20px;right:20px;width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--mid);transition:all .2s;z-index:5}
+.briefing-close:hover{color:var(--charcoal);border-color:var(--charcoal)}
+.briefing-content{padding:40px 32px}
+.briefing-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--terracotta);margin-bottom:4px}
+.briefing-sublabel{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--mid);margin-bottom:12px}
+.briefing-title{font-size:24px;font-weight:700;color:var(--charcoal);margin-bottom:28px;line-height:1.25}
+.briefing-section{margin-bottom:28px}
+.briefing-section h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--mid);margin-bottom:12px}
+.briefing-kv{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}
+.briefing-kv:last-child{border-bottom:none}
+.briefing-kv .kv-label{color:var(--mid);font-weight:500}
+.briefing-kv .kv-value{font-weight:600;color:var(--charcoal);text-align:right;max-width:60%}
+.briefing-timeline{display:flex;flex-direction:column;gap:0}
+.timeline-item{display:flex;gap:14px}
+.timeline-dot-wrap{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:14px}
+.timeline-dot{width:12px;height:12px;border-radius:50%;background:var(--terracotta);border:2px solid var(--white);box-shadow:0 0 0 2px var(--terracotta-glow);flex-shrink:0;margin-top:3px}
+.timeline-line{width:2px;flex:1;background:var(--border);margin-top:4px;min-height:12px}
+.timeline-text{font-size:13px;line-height:1.55;color:var(--charcoal);padding-bottom:14px}
+.timeline-text strong{font-weight:600;display:block;margin-bottom:2px}
+.timeline-text p{color:#666;margin:0}
+.briefing-pillars{display:flex;flex-wrap:wrap;gap:8px}
+.pillar-tag{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--charcoal);padding:8px 14px;background:var(--cream);border-radius:var(--radius-sm);border:1px solid var(--border);font-weight:500}
+.briefing-design{font-size:13px;line-height:1.65;color:#555}
+.validation-badge{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--green);background:var(--green-light);padding:10px 18px;border-radius:var(--radius-sm);margin-bottom:24px}
+.briefing-actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn-primary{padding:12px 24px;background:var(--terracotta);color:var(--white);border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;font-family:var(--font-body);cursor:pointer;transition:background .2s,transform .15s}
+.btn-primary:hover{background:var(--terracotta-dark)}
+.btn-primary:active{transform:scale(.97)}
+.btn-secondary{padding:12px 24px;background:var(--white);color:var(--charcoal);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-weight:600;font-family:var(--font-body);cursor:pointer;transition:all .2s}
+.btn-secondary:hover{border-color:var(--charcoal)}
+
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;justify-content:center;gap:32px;z-index:50;box-shadow:0 -4px 20px rgba(20,20,19,.06);opacity:0;transform:translateY(100%);transition:opacity .5s,transform .5s cubic-bezier(.16,1,.3,1)}
+.bottom-bar.visible{opacity:1;transform:translateY(0)}
+.bottom-stat{display:flex;align-items:center;gap:8px;font-size:13px}
+.bottom-stat-value{font-weight:700;color:var(--charcoal);font-size:15px}
+.bottom-stat-label{color:var(--mid);font-weight:500}
+.bottom-stat-icon{font-size:16px}
+.gauge-mini{width:36px;height:36px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center}
+.gauge-mini svg{position:absolute;top:0;left:0;transform:rotate(-90deg)}
+.gauge-track{fill:none;stroke:var(--border);stroke-width:3}
+.gauge-fill{fill:none;stroke:var(--terracotta);stroke-width:3;stroke-linecap:round;stroke-dasharray:100.53;stroke-dashoffset:100.53;transition:stroke-dashoffset 1.5s cubic-bezier(.22,1,.36,1)}
+.gauge-text{font-size:9px;font-weight:700;color:var(--charcoal);z-index:1}
+.replay-btn{display:flex;align-items:center;gap:6px;padding:8px 16px;background:var(--cream);color:var(--charcoal);border:1.5px solid var(--border);border-radius:20px;font-size:12px;font-weight:600;font-family:var(--font-body);cursor:pointer;transition:all .2s;white-space:nowrap}
+.replay-btn:hover{border-color:var(--terracotta);color:var(--terracotta);background:var(--terracotta-glow)}
+.replay-icon{display:inline-block;transition:transform .3s}
+.replay-btn:hover .replay-icon{transform:rotate(-180deg)}
+
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--charcoal);color:var(--white);padding:14px 28px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;box-shadow:var(--shadow-lg);opacity:0;transition:opacity .3s,transform .3s;z-index:300;pointer-events:none;white-space:nowrap}
+.toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:768px){
+  .header{padding:16px 20px;flex-wrap:wrap;gap:8px}
+  .main{padding:0 16px}
+  .sources-grid{flex-direction:column}
+  .campaign-card{max-width:100%}
+  .briefing-panel{width:100%}
+  .bottom-bar{gap:12px;padding:12px 16px;flex-wrap:wrap;justify-content:space-around}
+  .bottom-stat{font-size:12px}
+  .analysis-row{flex-direction:column;align-items:center}
+  .donut-container{width:100%;flex-direction:row;gap:16px;justify-content:center}
+  .segments-grid{flex-direction:column}
+  .segment-card{min-width:auto}
+  .event-label{width:110px;font-size:12px}
+}
+@media(max-width:480px){
+  .header-divider{display:none}
+  .header-subtitle{display:none}
+  .back-btn{font-size:13px}
+  .bottom-bar{gap:8px}
+  .bottom-stat-label{display:none}
+  .donut-container{flex-direction:column}
+}
 </style>
 </head>
 <body>
 
-<!-- Header -->
 <header class="header">
   <div class="header-left">
     <a href="/demo" class="back-btn" data-i18n="backBtn">&larr; Back to Demos</a>
@@ -946,175 +226,72 @@
     </div>
   </div>
   <div class="header-right">
-    <div class="badge-live" data-i18n="badgeLive">Connected</div>
+    <div class="badge-live" id="badgeLive" data-i18n="badgeLive">Connected</div>
   </div>
 </header>
 
-<!-- Main Content -->
 <div class="main">
 
   <!-- Step 1: Data Sources -->
   <div class="section" id="step1">
-    <div class="section-label">
-      <span class="step-num">1</span> <span data-i18n="step1Label">Data Sources</span>
-    </div>
+    <div class="section-label"><span class="step-num">1</span> <span data-i18n="step1Label">Data Sources</span></div>
     <div class="sources-grid">
-
-      <!-- Klaviyo Card -->
       <div class="source-card" id="klaviyoCard">
         <div class="source-header">
-          <div class="source-header-left">
-            <span class="source-icon">&#x1F4E7;</span>
-            <span class="source-name" data-i18n="klaviyo">Klaviyo</span>
-          </div>
+          <div class="source-header-left"><span class="source-icon">&#x1F4E7;</span><span class="source-name">Klaviyo</span></div>
           <span class="source-status connecting" id="klaviyoStatus" data-i18n="connecting">Connecting...</span>
         </div>
-        <div class="connecting-bar" id="klaviyoBar">
-          <div class="connecting-bar-fill" id="klaviyoBarFill"></div>
-        </div>
+        <div class="connecting-bar" id="klaviyoBar"><div class="connecting-bar-fill" id="klaviyoBarFill"></div></div>
         <div class="source-metrics" id="klaviyoMetrics">
-          <div class="source-metric">
-            <div class="source-metric-value">45,200</div>
-            <div class="source-metric-label" data-i18n="subscribers">Subscribers</div>
-          </div>
-          <div class="source-metric">
-            <div class="source-metric-value">12</div>
-            <div class="source-metric-label" data-i18n="activeFlows">Active Flows</div>
-          </div>
-          <div class="source-metric">
-            <div class="source-metric-value">34.2%</div>
-            <div class="source-metric-label" data-i18n="avgOpenRate">Avg Open Rate</div>
-          </div>
-          <div class="source-metric">
-            <div class="source-metric-value">8</div>
-            <div class="source-metric-label" data-i18n="segments">Segments</div>
-          </div>
+          <div class="source-metric"><div class="source-metric-value" data-counter="45200" data-format="int">0</div><div class="source-metric-label" data-i18n="subscribers">Subscribers</div></div>
+          <div class="source-metric"><div class="source-metric-value" data-counter="12" data-format="int">0</div><div class="source-metric-label" data-i18n="activeFlows">Active Flows</div></div>
+          <div class="source-metric"><div class="source-metric-value" data-counter="34.2" data-format="pct">0%</div><div class="source-metric-label" data-i18n="avgOpenRate">Avg Open Rate</div></div>
+          <div class="source-metric"><div class="source-metric-value" data-counter="8" data-format="int">0</div><div class="source-metric-label" data-i18n="segments">Segments</div></div>
         </div>
       </div>
-
-      <!-- Shopify Card -->
       <div class="source-card" id="shopifyCard">
         <div class="source-header">
-          <div class="source-header-left">
-            <span class="source-icon">&#x1F6CD;&#xFE0F;</span>
-            <span class="source-name" data-i18n="shopify">Shopify</span>
-          </div>
+          <div class="source-header-left"><span class="source-icon">&#x1F6CD;&#xFE0F;</span><span class="source-name">Shopify</span></div>
           <span class="source-status connecting" id="shopifyStatus" data-i18n="connecting">Connecting...</span>
         </div>
-        <div class="connecting-bar" id="shopifyBar">
-          <div class="connecting-bar-fill" id="shopifyBarFill"></div>
-        </div>
+        <div class="connecting-bar" id="shopifyBar"><div class="connecting-bar-fill" id="shopifyBarFill"></div></div>
         <div class="source-metrics" id="shopifyMetrics">
-          <div class="source-metric">
-            <div class="source-metric-value">12,450</div>
-            <div class="source-metric-label" data-i18n="orders90d">Orders (90d)</div>
-          </div>
-          <div class="source-metric">
-            <div class="source-metric-value">&#x20AC;89</div>
-            <div class="source-metric-label" data-i18n="aov">AOV</div>
-          </div>
-          <div class="source-metric">
-            <div class="source-metric-value">3,200</div>
-            <div class="source-metric-label" data-i18n="products">Products</div>
-          </div>
-          <div class="source-metric">
-            <div class="source-metric-value">28%</div>
-            <div class="source-metric-label" data-i18n="returnRate">Return Rate</div>
-          </div>
+          <div class="source-metric"><div class="source-metric-value" data-counter="12450" data-format="int">0</div><div class="source-metric-label" data-i18n="orders90d">Orders (90d)</div></div>
+          <div class="source-metric"><div class="source-metric-value" data-counter="89" data-format="eur">&euro;0</div><div class="source-metric-label">AOV</div></div>
+          <div class="source-metric"><div class="source-metric-value" data-counter="3200" data-format="int">0</div><div class="source-metric-label" data-i18n="products">Products</div></div>
+          <div class="source-metric"><div class="source-metric-value" data-counter="28" data-format="pct">0%</div><div class="source-metric-label" data-i18n="returnRate">Return Rate</div></div>
         </div>
       </div>
-
     </div>
   </div>
 
   <!-- Step 2: Event Analysis -->
   <div class="section" id="step2">
-    <div class="section-label">
-      <span class="step-num">2</span> <span data-i18n="step2Label">Event Analysis</span>
-    </div>
-
-    <div class="analysis-status" id="analysisStatus">
-      <div class="analysis-spinner"></div>
-      <span data-i18n="analyzingEvents">Analyzing Events...</span>
-    </div>
-
-    <div class="analysis-progress" id="analysisProgress">
-      <div class="analysis-progress-fill" id="analysisProgressFill"></div>
-    </div>
-
+    <div class="section-label"><span class="step-num">2</span> <span data-i18n="step2Label">Event Analysis</span></div>
+    <div class="analysis-status" id="analysisStatus"><div class="analysis-spinner"></div><span data-i18n="analyzingEvents">Analyzing Events...</span></div>
+    <div class="analysis-progress" id="analysisProgress"><div class="analysis-progress-fill" id="analysisProgressFill"></div></div>
     <div class="events-panel" id="eventsPanel">
       <h3 data-i18n="eventBreakdown">Event Breakdown</h3>
-      <div class="event-row" data-width="14" data-count="12,450">
-        <span class="event-label" data-i18n="purchaseEvents">Purchase Events</span>
-        <div class="event-bar-track"><div class="event-bar-fill"></div></div>
-        <span class="event-count">12,450</span>
-      </div>
-      <div class="event-row" data-width="100" data-count="89,200">
-        <span class="event-label" data-i18n="browseEvents">Browse Events</span>
-        <div class="event-bar-track"><div class="event-bar-fill"></div></div>
-        <span class="event-count">89,200</span>
-      </div>
-      <div class="event-row" data-width="4.3" data-count="3,800" data-highlight="true">
-        <span class="event-label" data-i18n="cartAbandonment">Cart Abandonment</span>
-        <div class="event-bar-track"><div class="event-bar-fill highlight"></div></div>
-        <span class="event-count">3,800</span>
-        <span class="event-opportunity" data-i18n="opportunity">Opportunity</span>
-      </div>
-      <div class="event-row" data-width="38" data-count="34,200">
-        <span class="event-label" data-i18n="emailOpens">Email Opens</span>
-        <div class="event-bar-track"><div class="event-bar-fill"></div></div>
-        <span class="event-count">34,200</span>
-      </div>
-      <div class="event-row" data-width="2.4" data-count="2,100">
-        <span class="event-label" data-i18n="wishlistAdds">Wishlist Adds</span>
-        <div class="event-bar-track"><div class="event-bar-fill"></div></div>
-        <span class="event-count">2,100</span>
-      </div>
+      <div class="event-row" data-width="14"><span class="event-label" data-i18n="purchaseEvents">Purchase Events</span><div class="event-bar-track"><div class="event-bar-fill"></div></div><span class="event-count">12,450</span></div>
+      <div class="event-row" data-width="100"><span class="event-label" data-i18n="browseEvents">Browse Events</span><div class="event-bar-track"><div class="event-bar-fill"></div></div><span class="event-count">89,200</span></div>
+      <div class="event-row" data-width="4.3"><span class="event-label" data-i18n="cartAbandonment">Cart Abandonment</span><div class="event-bar-track"><div class="event-bar-fill highlight"></div></div><span class="event-count">3,800</span><span class="event-opportunity" data-i18n="opportunity">Opportunity</span></div>
+      <div class="event-row" data-width="38"><span class="event-label" data-i18n="emailOpens">Email Opens</span><div class="event-bar-track"><div class="event-bar-fill"></div></div><span class="event-count">34,200</span></div>
+      <div class="event-row" data-width="2.4"><span class="event-label" data-i18n="wishlistAdds">Wishlist Adds</span><div class="event-bar-track"><div class="event-bar-fill"></div></div><span class="event-count">2,100</span></div>
     </div>
-
-    <!-- Segments -->
-    <h3 class="segments-heading" id="segmentsHeading" data-i18n="segmentsTitle">Segments</h3>
-    <div class="segments-grid" id="segmentsGrid">
-      <div class="segment-card">
-        <div class="segment-name" data-i18n="segVip">VIP Customers (LTV &gt; &#x20AC;200)</div>
-        <div class="segment-stats">
-          <span><span class="segment-stat-value">2,340</span> <span data-i18n="contacts">contacts</span></span>
-          <span><span class="segment-stat-value">52%</span> <span data-i18n="openRate">open rate</span></span>
-        </div>
+    <div class="analysis-row" id="analysisRow">
+      <div class="donut-container">
+        <div class="donut-chart" id="donutChart"><div class="donut-chart-inner"><span class="donut-total">26,440</span><span class="donut-label-text" data-i18n="contacts">contacts</span></div></div>
+        <div class="donut-legend" id="donutLegend"></div>
       </div>
-      <div class="segment-card">
-        <div class="segment-name" data-i18n="segCartAbandoners">Cart Abandoners</div>
-        <div class="segment-stats">
-          <span><span class="segment-stat-value">3,800</span> <span data-i18n="contacts">contacts</span></span>
-          <span><span class="segment-stat-value">&#x20AC;67</span> <span data-i18n="avgCart">avg cart</span></span>
-        </div>
-      </div>
-      <div class="segment-card">
-        <div class="segment-name" data-i18n="segNewSubscribers">New Subscribers (&lt; 30d)</div>
-        <div class="segment-stats">
-          <span><span class="segment-stat-value">1,230</span> <span data-i18n="contacts">contacts</span></span>
-          <span><span class="segment-stat-value">44%</span> <span data-i18n="openRate">open rate</span></span>
-        </div>
-      </div>
-      <div class="segment-card">
-        <div class="segment-name" data-i18n="segWinBack">Win-Back (90d inactive)</div>
-        <div class="segment-stats">
-          <span><span class="segment-stat-value">5,670</span> <span data-i18n="contacts">contacts</span></span>
-          <span><span class="segment-stat-value">12%</span> <span data-i18n="openRate">open rate</span></span>
-        </div>
-      </div>
-      <div class="segment-card">
-        <div class="segment-name" data-i18n="segEngagedReaders">Engaged Readers</div>
-        <div class="segment-stats">
-          <span><span class="segment-stat-value">8,900</span> <span data-i18n="contacts">contacts</span></span>
-          <span><span class="segment-stat-value">48%</span> <span data-i18n="openRate">open rate</span></span>
-        </div>
-      </div>
-      <div class="segment-card">
-        <div class="segment-name" data-i18n="segBrowseAbandoners">Browse Abandoners</div>
-        <div class="segment-stats">
-          <span><span class="segment-stat-value">4,500</span> <span data-i18n="contacts">contacts</span></span>
-          <span><span class="segment-stat-value">&#x20AC;45</span> <span data-i18n="avgBrowseValue">avg browse value</span></span>
+      <div class="segments-container">
+        <h3 class="segments-heading" data-i18n="segmentsTitle">Segments</h3>
+        <div class="segments-grid" id="segmentsGrid">
+          <div class="segment-card" data-color="terracotta"><div class="segment-name" data-i18n="segVip">VIP Customers (LTV &gt; &euro;200)</div><div class="segment-stats"><span><span class="segment-stat-value">2,340</span> <span data-i18n="contacts">contacts</span></span><span><span class="segment-stat-value">52%</span> <span data-i18n="openRate">open rate</span></span></div></div>
+          <div class="segment-card" data-color="amber"><div class="segment-name" data-i18n="segCartAbandoners">Cart Abandoners</div><div class="segment-stats"><span><span class="segment-stat-value">3,800</span> <span data-i18n="contacts">contacts</span></span><span><span class="segment-stat-value">&euro;67</span> <span data-i18n="avgCart">avg cart</span></span></div></div>
+          <div class="segment-card" data-color="green"><div class="segment-name" data-i18n="segNewSubscribers">New Subscribers (&lt; 30d)</div><div class="segment-stats"><span><span class="segment-stat-value">1,230</span> <span data-i18n="contacts">contacts</span></span><span><span class="segment-stat-value">44%</span> <span data-i18n="openRate">open rate</span></span></div></div>
+          <div class="segment-card" data-color="blue"><div class="segment-name" data-i18n="segWinBack">Win-Back (90d inactive)</div><div class="segment-stats"><span><span class="segment-stat-value">5,670</span> <span data-i18n="contacts">contacts</span></span><span><span class="segment-stat-value">12%</span> <span data-i18n="openRate">open rate</span></span></div></div>
+          <div class="segment-card" data-color="purple"><div class="segment-name" data-i18n="segEngagedReaders">Engaged Readers</div><div class="segment-stats"><span><span class="segment-stat-value">8,900</span> <span data-i18n="contacts">contacts</span></span><span><span class="segment-stat-value">48%</span> <span data-i18n="openRate">open rate</span></span></div></div>
+          <div class="segment-card" data-color="rose"><div class="segment-name" data-i18n="segBrowseAbandoners">Browse Abandoners</div><div class="segment-stats"><span><span class="segment-stat-value">4,500</span> <span data-i18n="contacts">contacts</span></span><span><span class="segment-stat-value">&euro;45</span> <span data-i18n="avgBrowseValue">avg browse value</span></span></div></div>
         </div>
       </div>
     </div>
@@ -1122,759 +299,494 @@
 
   <!-- Step 3: AI Strategy Generation -->
   <div class="section" id="step3">
-    <div class="section-label">
-      <span class="step-num">3</span> <span data-i18n="step3Label">AI Strategy Generation</span>
+    <div class="section-label"><span class="step-num">3</span> <span data-i18n="step3Label">AI Strategy Generation</span></div>
+    <div class="thinking-box" id="thinkingBox">
+      <div class="thinking-brain">&#x1F9E0;</div>
+      <div class="thinking-title" data-i18n="aiThinking">AI Strategist Thinking...</div>
+      <div class="thinking-typewriter" id="thinkingTypewriter"><span class="thinking-cursor"></span></div>
     </div>
-
-    <div class="thinking-status" id="thinkingStatus">
-      <span class="brain-pulse">&#x1F9E0;</span>
-      <span data-i18n="aiThinking">AI Strategist Thinking...</span>
-    </div>
-
     <div class="campaigns-grid" id="campaignsGrid">
-
-      <!-- Campaign 1 -->
       <div class="campaign-card" data-campaign="0" onclick="openBriefing(0)">
         <div class="campaign-number" data-i18n-template="campaign1"></div>
         <div class="campaign-name" data-i18n="c1Name">VIP Early Access</div>
-        <div class="campaign-meta">
-          <span>&#x1F465; <span data-i18n="segment">Segment</span>: <strong data-i18n="c1Segment">VIP Customers (2,340)</strong></span>
-          <span>&#x1F3AF; <span data-i18n="goal">Goal</span>: <strong data-i18n="c1Goal">Increase repeat purchase rate by 15%</strong></span>
-          <span>&#x1F552; <span data-i18n="timing">Timing</span>: <strong data-i18n="c1Timing">Tuesday 10:00 AM</strong></span>
-        </div>
+        <div class="campaign-meta"><span>&#x1F465; <span data-i18n="segment">Segment</span>: <strong data-i18n="c1Segment">VIP Customers (2,340)</strong></span><span>&#x1F3AF; <span data-i18n="goal">Goal</span>: <strong data-i18n="c1Goal">Increase repeat purchase rate by 15%</strong></span><span>&#x1F552; <span data-i18n="timing">Timing</span>: <strong data-i18n="c1Timing">Tuesday 10:00 AM</strong></span></div>
         <div class="campaign-brief" data-i18n="c1Brief">3-email sequence. Exclusive 48h early access to new collection, personalized recommendations, VIP-only discount code with urgency.</div>
-        <div class="campaign-roi">&#x2191; <span data-i18n="expectedRoi">Expected ROI</span>: <span data-i18n="c1Roi">340%</span></div>
-        <div class="campaign-click-hint" data-i18n="clickHint">Click for operational briefing &rarr;</div>
+        <div class="campaign-footer"><div class="campaign-roi">&#x2191; <span data-i18n="expectedRoi">Expected ROI</span>: <span data-i18n="c1Roi">340%</span></div><div class="campaign-click-hint" data-i18n="clickHint">Click for operational briefing &rarr;</div></div>
       </div>
-
-      <!-- Campaign 2 -->
       <div class="campaign-card" data-campaign="1" onclick="openBriefing(1)">
         <div class="campaign-number" data-i18n-template="campaign2"></div>
         <div class="campaign-name" data-i18n="c2Name">Cart Recovery Sequence</div>
-        <div class="campaign-meta">
-          <span>&#x1F465; <span data-i18n="segment">Segment</span>: <strong data-i18n="c2Segment">Cart Abandoners (3,800)</strong></span>
-          <span>&#x1F3AF; <span data-i18n="goal">Goal</span>: <strong data-i18n="c2Goal">Recover 25% of abandoned carts</strong></span>
-          <span>&#x1F552; <span data-i18n="timing">Timing</span>: <strong data-i18n="c2Timing">1h, 24h, 72h after abandonment</strong></span>
-        </div>
+        <div class="campaign-meta"><span>&#x1F465; <span data-i18n="segment">Segment</span>: <strong data-i18n="c2Segment">Cart Abandoners (3,800)</strong></span><span>&#x1F3AF; <span data-i18n="goal">Goal</span>: <strong data-i18n="c2Goal">Recover 25% of abandoned carts</strong></span><span>&#x1F552; <span data-i18n="timing">Timing</span>: <strong data-i18n="c2Timing">1h, 24h, 72h after abandonment</strong></span></div>
         <div class="campaign-brief" data-i18n="c2Brief">3-touch sequence. Cart reminder with social proof, scarcity messaging + related products, time-limited 10% discount.</div>
-        <div class="campaign-roi">&#x2191; <span data-i18n="expectedRoi">Expected ROI</span>: <span data-i18n="c2Roi">520%</span></div>
-        <div class="campaign-click-hint" data-i18n="clickHint">Click for operational briefing &rarr;</div>
+        <div class="campaign-footer"><div class="campaign-roi">&#x2191; <span data-i18n="expectedRoi">Expected ROI</span>: <span data-i18n="c2Roi">520%</span></div><div class="campaign-click-hint" data-i18n="clickHint">Click for operational briefing &rarr;</div></div>
       </div>
-
-      <!-- Campaign 3 -->
       <div class="campaign-card" data-campaign="2" onclick="openBriefing(2)">
         <div class="campaign-number" data-i18n-template="campaign3"></div>
         <div class="campaign-name" data-i18n="c3Name">Welcome Series</div>
-        <div class="campaign-meta">
-          <span>&#x1F465; <span data-i18n="segment">Segment</span>: <strong data-i18n="c3Segment">New Subscribers (1,230)</strong></span>
-          <span>&#x1F3AF; <span data-i18n="goal">Goal</span>: <strong data-i18n="c3Goal">40% activation within 14 days</strong></span>
-          <span>&#x1F552; <span data-i18n="timing">Timing</span>: <strong data-i18n="c3Timing">Immediate, Day 3, Day 7, Day 14</strong></span>
-        </div>
+        <div class="campaign-meta"><span>&#x1F465; <span data-i18n="segment">Segment</span>: <strong data-i18n="c3Segment">New Subscribers (1,230)</strong></span><span>&#x1F3AF; <span data-i18n="goal">Goal</span>: <strong data-i18n="c3Goal">40% activation within 14 days</strong></span><span>&#x1F552; <span data-i18n="timing">Timing</span>: <strong data-i18n="c3Timing">Immediate, Day 3, Day 7, Day 14</strong></span></div>
         <div class="campaign-brief" data-i18n="c3Brief">4-email onboarding. Brand story + welcome discount, best sellers showcase, social proof + reviews, personalized picks from browse data.</div>
-        <div class="campaign-roi">&#x2191; <span data-i18n="expectedRoi">Expected ROI</span>: <span data-i18n="c3Roi">280%</span></div>
-        <div class="campaign-click-hint" data-i18n="clickHint">Click for operational briefing &rarr;</div>
+        <div class="campaign-footer"><div class="campaign-roi">&#x2191; <span data-i18n="expectedRoi">Expected ROI</span>: <span data-i18n="c3Roi">280%</span></div><div class="campaign-click-hint" data-i18n="clickHint">Click for operational briefing &rarr;</div></div>
       </div>
-
-      <!-- Campaign 4 -->
       <div class="campaign-card" data-campaign="3" onclick="openBriefing(3)">
         <div class="campaign-number" data-i18n-template="campaign4"></div>
         <div class="campaign-name" data-i18n="c4Name">Win-Back Campaign</div>
-        <div class="campaign-meta">
-          <span>&#x1F465; <span data-i18n="segment">Segment</span>: <strong data-i18n="c4Segment">Win-Back (5,670)</strong></span>
-          <span>&#x1F3AF; <span data-i18n="goal">Goal</span>: <strong data-i18n="c4Goal">Re-engage 20% of lapsed customers</strong></span>
-          <span>&#x1F552; <span data-i18n="timing">Timing</span>: <strong data-i18n="c4Timing">Day 0, Day 7, Day 14</strong></span>
-        </div>
+        <div class="campaign-meta"><span>&#x1F465; <span data-i18n="segment">Segment</span>: <strong data-i18n="c4Segment">Win-Back (5,670)</strong></span><span>&#x1F3AF; <span data-i18n="goal">Goal</span>: <strong data-i18n="c4Goal">Re-engage 20% of lapsed customers</strong></span><span>&#x1F552; <span data-i18n="timing">Timing</span>: <strong data-i18n="c4Timing">Day 0, Day 7, Day 14</strong></span></div>
         <div class="campaign-brief" data-i18n="c4Brief">3-email re-engagement. "We miss you" + what's new, exclusive comeback offer, final reminder + last chance discount.</div>
-        <div class="campaign-roi">&#x2191; <span data-i18n="expectedRoi">Expected ROI</span>: <span data-i18n="c4Roi">180%</span></div>
-        <div class="campaign-click-hint" data-i18n="clickHint">Click for operational briefing &rarr;</div>
+        <div class="campaign-footer"><div class="campaign-roi">&#x2191; <span data-i18n="expectedRoi">Expected ROI</span>: <span data-i18n="c4Roi">180%</span></div><div class="campaign-click-hint" data-i18n="clickHint">Click for operational briefing &rarr;</div></div>
       </div>
-
     </div>
   </div>
 
 </div>
 
-<!-- Briefing Overlay -->
 <div class="briefing-overlay" id="briefingOverlay" onclick="closeBriefing()"></div>
-
-<!-- Briefing Panel -->
 <div class="briefing-panel" id="briefingPanel">
   <button class="briefing-close" onclick="closeBriefing()" aria-label="Close">&times;</button>
   <div class="briefing-content" id="briefingContent"></div>
 </div>
 
-<!-- Bottom Stats Bar -->
 <div class="bottom-bar" id="bottomBar">
+  <div class="bottom-stat"><span class="bottom-stat-icon">&#x1F4E8;</span><span class="bottom-stat-value" data-counter-bottom="4" data-format-bottom="int">0</span><span class="bottom-stat-label" data-i18n="campaignsGenerated">Campaigns Generated</span></div>
+  <div class="bottom-stat"><span class="bottom-stat-icon">&#x1F465;</span><span class="bottom-stat-value" data-counter-bottom="13040" data-format-bottom="int">0</span><span class="bottom-stat-label" data-i18n="totalReach">Total Reach</span></div>
+  <div class="bottom-stat"><span class="bottom-stat-icon">&#x1F4B0;</span><span class="bottom-stat-value" data-counter-bottom="45200" data-format-bottom="eur">&euro;0</span><span class="bottom-stat-label" data-i18n="projectedRevenue">Projected Revenue</span></div>
   <div class="bottom-stat">
-    <span class="bottom-stat-icon">&#x1F4E8;</span>
-    <span class="bottom-stat-value">4</span>
-    <span class="bottom-stat-label" data-i18n="campaignsGenerated">Campaigns Generated</span>
-  </div>
-  <div class="bottom-stat">
-    <span class="bottom-stat-icon">&#x1F465;</span>
-    <span class="bottom-stat-value">13,040</span>
-    <span class="bottom-stat-label" data-i18n="totalReach">Total Reach</span>
-  </div>
-  <div class="bottom-stat">
-    <span class="bottom-stat-icon">&#x1F4B0;</span>
-    <span class="bottom-stat-value">&#x20AC;45,200</span>
-    <span class="bottom-stat-label" data-i18n="projectedRevenue">Projected Revenue</span>
-  </div>
-  <div class="bottom-stat">
-    <span class="bottom-stat-icon">&#x1F9E0;</span>
-    <span class="bottom-stat-value">94%</span>
+    <div class="gauge-mini"><svg width="36" height="36" viewBox="0 0 36 36"><circle class="gauge-track" cx="18" cy="18" r="16"/><circle class="gauge-fill" id="gaugeFill" cx="18" cy="18" r="16"/></svg><span class="gauge-text" id="gaugeText">0%</span></div>
     <span class="bottom-stat-label" data-i18n="aiConfidence">AI Confidence</span>
   </div>
+  <button class="replay-btn" onclick="replayDemo()"><span class="replay-icon">&#x21BB;</span><span data-i18n="replayDemo">Replay Demo</span></button>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-(function() {
-  'use strict';
+(function(){
+'use strict';
 
-  // --- i18n ---
-  var LOCALE = window.__PRAXIS_LOCALE__ || 'it';
-  var T = {
-    en: {
-      // Header
-      backBtn: '\u2190 Back to Demos',
-      headerTitle: 'Email Strategy AI',
-      headerSubtitle: 'Klaviyo \u00D7 Shopify Intelligence',
-      badgeLive: 'Connected',
+var LOCALE = window.__PRAXIS_LOCALE__ || 'it';
 
-      // Step labels
-      step1Label: 'Data Sources',
-      step2Label: 'Event Analysis',
-      step3Label: 'AI Strategy Generation',
+var T_ALL = {
+en: {
+  backBtn:'\u2190 Back to Demos',headerTitle:'Email Strategy AI',headerSubtitle:'Klaviyo \u00D7 Shopify Intelligence',badgeLive:'Connected',
+  step1Label:'Data Sources',step2Label:'Event Analysis',step3Label:'AI Strategy Generation',
+  connecting:'Connecting...',connected:'Connected',
+  subscribers:'Subscribers',activeFlows:'Active Flows',avgOpenRate:'Avg Open Rate',segments:'Segments',
+  orders90d:'Orders (90d)',products:'Products',returnRate:'Return Rate',
+  analyzingEvents:'Analyzing Events...',eventBreakdown:'Event Breakdown',
+  purchaseEvents:'Purchase Events',browseEvents:'Browse Events',cartAbandonment:'Cart Abandonment',emailOpens:'Email Opens',wishlistAdds:'Wishlist Adds',opportunity:'Opportunity',
+  segmentsTitle:'Segments',contacts:'contacts',openRate:'open rate',avgCart:'avg cart',avgBrowseValue:'avg browse value',
+  segVip:'VIP Customers (LTV > \u20AC200)',segCartAbandoners:'Cart Abandoners',segNewSubscribers:'New Subscribers (< 30d)',segWinBack:'Win-Back (90d inactive)',segEngagedReaders:'Engaged Readers',segBrowseAbandoners:'Browse Abandoners',
+  donutSegNames:['VIP','Cart Ab.','New Sub.','Win-Back','Engaged','Browse Ab.'],
+  aiThinking:'AI Strategist Thinking...',
+  thinkingSteps:['Analyzing purchase patterns...','Cross-referencing segment behavior...','Calculating optimal send times...','Generating campaign strategies...'],
+  campaign:'Campaign',goal:'Goal',timing:'Timing',segment:'Segment',expectedRoi:'Expected ROI',clickHint:'Click for operational briefing \u2192',
+  c1Name:'VIP Early Access',c1Segment:'VIP Customers (2,340)',c1Goal:'Increase repeat purchase rate by 15%',c1Timing:'Tuesday 10:00 AM',
+  c1Brief:'3-email sequence. Exclusive 48h early access to new collection, personalized recommendations, VIP-only discount code with urgency.',c1Roi:'340%',
+  c2Name:'Cart Recovery Sequence',c2Segment:'Cart Abandoners (3,800)',c2Goal:'Recover 25% of abandoned carts',c2Timing:'1h, 24h, 72h after abandonment',
+  c2Brief:'3-touch sequence. Cart reminder with social proof, scarcity messaging + related products, time-limited 10% discount.',c2Roi:'520%',
+  c3Name:'Welcome Series',c3Segment:'New Subscribers (1,230)',c3Goal:'40% activation within 14 days',c3Timing:'Immediate, Day 3, Day 7, Day 14',
+  c3Brief:'4-email onboarding. Brand story + welcome discount, best sellers showcase, social proof + reviews, personalized picks from browse data.',c3Roi:'280%',
+  c4Name:'Win-Back Campaign',c4Segment:'Win-Back (5,670)',c4Goal:'Re-engage 20% of lapsed customers',c4Timing:'Day 0, Day 7, Day 14',
+  c4Brief:'3-email re-engagement. "We miss you" + what\'s new, exclusive comeback offer, final reminder + last chance discount.',c4Roi:'180%',
+  operationalBriefing:'Operational Briefing',targetObjective:'Target & Objective',segmentLabel:'Segment',sizeLabel:'Size',objectiveLabel:'Objective',kpisLabel:'KPIs',expectedRoiLabel:'Expected ROI',
+  emailSequence:'Email Sequence Timeline',contentPillars:'Content Pillars',designDirection:'Design Direction',
+  validatedBadge:'\u2705 Validated against source data',btnSendOps:'Send to AI Ops \u2192',btnApprove:'Approve Strategy',
+  b1Segment:'VIP Customers (LTV > \u20AC200)',b1Size:'2,340 contacts',b1Objective:'Increase repeat purchase rate by 15%',
+  b1Kpis:'Open Rate > 55%, Click Rate > 12%, Conversion Rate > 8%',b1Roi:'340%',
+  b1T1Title:'Email 1 \u2014 Day 0 (Tuesday 10:00 AM)',b1T1Desc:'Exclusive 48h early access to new collection. Hero image of new arrivals, personalized greeting by name, clear CTA to shop early.',
+  b1T2Title:'Email 2 \u2014 Day 2 (Thursday 10:00 AM)',b1T2Desc:'Personalized product recommendations based on purchase history. "Picked for you" layout, 3-4 products matched to past orders.',
+  b1T3Title:'Email 3 \u2014 Day 4 (Saturday 9:00 AM)',b1T3Desc:'VIP-only discount code (15% off) with 24h urgency timer. Countdown element, social proof showing "127 VIPs already shopped".',
+  b1Pillars:['Exclusivity & early access','Personalized recommendations','Urgency & scarcity'],
+  b1Design:'Premium, clean aesthetic. Dark background hero with gold accents. Minimal copy, large product imagery. CTA buttons in terracotta. Tone: sophisticated, appreciative, insider-access feel.',
+  b2Segment:'Cart Abandoners',b2Size:'3,800 contacts',b2Objective:'Recover 25% of abandoned carts (\u20AC63,650 potential revenue)',
+  b2Kpis:'Recovery Rate > 25%, Revenue per Email > \u20AC4.20, Unsubscribe Rate < 0.3%',b2Roi:'520%',
+  b2T1Title:'Email 1 \u2014 1 hour after abandonment',b2T1Desc:'Cart reminder with product images, star ratings, and "432 people viewed this today" social proof. Simple "Complete Your Order" CTA.',
+  b2T2Title:'Email 2 \u2014 24 hours after abandonment',b2T2Desc:'Scarcity messaging ("Only 3 left in stock"). Show 2-3 related products below cart items. "Still thinking?" headline.',
+  b2T3Title:'Email 3 \u2014 72 hours after abandonment',b2T3Desc:'Time-limited 10% discount code. "Your cart is about to expire" urgency. Final push with free shipping mention.',
+  b2Pillars:['Cart contents reminder','Social proof & scarcity','Progressive incentives'],
+  b2Design:'Clean, product-focused layout. White background with cart items prominently displayed. Star ratings in gold. CTA in terracotta. Tone: helpful, not pushy, building urgency gradually across sequence.',
+  b3Segment:'New Subscribers (< 30d)',b3Size:'1,230 contacts',b3Objective:'40% activation (first purchase) within 14 days',
+  b3Kpis:'Welcome Open Rate > 60%, Day-14 Conversion > 40%, List Churn < 5%',b3Roi:'280%',
+  b3T1Title:'Email 1 \u2014 Immediate (on signup)',b3T1Desc:'Brand story + welcome discount (10% off first order). Founder message, brand values, hero lifestyle image.',
+  b3T2Title:'Email 2 \u2014 Day 3',b3T2Desc:'Best sellers showcase. "What our community loves" \u2014 top 6 products with review counts. Social proof focus.',
+  b3T3Title:'Email 3 \u2014 Day 7',b3T3Desc:'Customer reviews & UGC spotlight. 3 detailed customer stories with photos. "Join 45,000+ happy customers" banner.',
+  b3T4Title:'Email 4 \u2014 Day 14',b3T4Desc:'Personalized picks based on browse data + reminder of welcome discount expiration. "Your 10% off expires tomorrow" urgency.',
+  b3Pillars:['Brand storytelling','Best sellers & social proof','Personalized browsing data','Discount urgency'],
+  b3Design:'Warm, welcoming aesthetic. Lifestyle photography. Cream and terracotta palette. Handwritten-style accents. CTA in terracotta. Tone: friendly, authentic, community-driven.',
+  b4Segment:'Win-Back (90d inactive)',b4Size:'5,670 contacts',b4Objective:'Re-engage 20% of lapsed customers',
+  b4Kpis:'Re-engagement Rate > 20%, Win-back Purchase Rate > 8%, Revenue Recovered > \u20AC12,000',b4Roi:'180%',
+  b4T1Title:'Email 1 \u2014 Day 0',b4T1Desc:'"We miss you" + showcase of what\'s new since they last visited. New arrivals grid, "Here\'s what you\'ve missed" headline.',
+  b4T2Title:'Email 2 \u2014 Day 7',b4T2Desc:'Exclusive comeback offer: 20% off any order. "Welcome back" discount code. Highlight top-rated new products.',
+  b4T3Title:'Email 3 \u2014 Day 14',b4T3Desc:'Final reminder + "Last chance" messaging. Discount expires in 48h. Option to update email preferences or unsubscribe gracefully.',
+  b4Pillars:['Nostalgia & reconnection','New product showcase','Escalating incentives'],
+  b4Design:'Emotional, reconnection-focused. Soft imagery. "We miss you" handwritten headline. Progressive discount reveal. CTA in terracotta. Tone: warm, personal, no-pressure but compelling.',
+  toastSentOps:'Strategy sent to AI Ops for execution',toastApproved:'Strategy approved and queued',
+  campaignsGenerated:'Campaigns Generated',totalReach:'Total Reach',projectedRevenue:'Projected Revenue',aiConfidence:'AI Confidence',replayDemo:'Replay Demo'
+},
+it: {
+  backBtn:'\u2190 Torna alle Demo',headerTitle:'Email Strategy AI',headerSubtitle:'Klaviyo \u00D7 Shopify Intelligence',badgeLive:'Connesso',
+  step1Label:'Fonti Dati',step2Label:'Analisi Eventi',step3Label:'Generazione Strategia AI',
+  connecting:'Connessione...',connected:'Connesso',
+  subscribers:'Iscritti',activeFlows:'Flow Attivi',avgOpenRate:'Tasso Apertura Medio',segments:'Segmenti',
+  orders90d:'Ordini (90gg)',products:'Prodotti',returnRate:'Tasso di Reso',
+  analyzingEvents:'Analisi Eventi in Corso...',eventBreakdown:'Dettaglio Eventi',
+  purchaseEvents:'Eventi Acquisto',browseEvents:'Eventi Navigazione',cartAbandonment:'Abbandono Carrello',emailOpens:'Aperture Email',wishlistAdds:'Aggiunte alla Wishlist',opportunity:'Opportunit\u00E0',
+  segmentsTitle:'Segmenti',contacts:'contatti',openRate:'tasso apertura',avgCart:'carrello medio',avgBrowseValue:'valore navigazione medio',
+  segVip:'Clienti VIP (LTV > \u20AC200)',segCartAbandoners:'Abbandono Carrello',segNewSubscribers:'Nuovi Iscritti (< 30gg)',segWinBack:'Win-Back (90gg inattivi)',segEngagedReaders:'Lettori Coinvolti',segBrowseAbandoners:'Abbandono Navigazione',
+  donutSegNames:['VIP','Carrello','Nuovi','Win-Back','Coinvolti','Navigaz.'],
+  aiThinking:'Lo Strategist AI sta Elaborando...',
+  thinkingSteps:['Analisi dei pattern d\'acquisto...','Incrocio comportamento segmenti...','Calcolo orari di invio ottimali...','Generazione strategie campagna...'],
+  campaign:'Campagna',goal:'Obiettivo',timing:'Tempistica',segment:'Segmento',expectedRoi:'ROI Previsto',clickHint:'Clicca per il briefing operativo \u2192',
+  c1Name:'Accesso Anticipato VIP',c1Segment:'Clienti VIP (2.340)',c1Goal:'Aumentare il tasso di riacquisto del 15%',c1Timing:'Marted\u00EC 10:00',
+  c1Brief:'Sequenza di 3 email. Accesso anticipato esclusivo 48h alla nuova collezione, raccomandazioni personalizzate, codice sconto riservato VIP con urgenza.',c1Roi:'340%',
+  c2Name:'Sequenza Recupero Carrello',c2Segment:'Abbandono Carrello (3.800)',c2Goal:'Recuperare il 25% dei carrelli abbandonati',c2Timing:'1h, 24h, 72h dopo l\'abbandono',
+  c2Brief:'Sequenza 3 touchpoint. Promemoria carrello con riprova sociale, messaggio di scarsit\u00E0 + prodotti correlati, sconto 10% a tempo limitato.',c2Roi:'520%',
+  c3Name:'Serie di Benvenuto',c3Segment:'Nuovi Iscritti (1.230)',c3Goal:'40% di attivazione entro 14 giorni',c3Timing:'Immediato, Giorno 3, Giorno 7, Giorno 14',
+  c3Brief:'Onboarding 4 email. Storia del brand + sconto benvenuto, vetrina bestseller, riprova sociale + recensioni, selezione personalizzata da dati di navigazione.',c3Roi:'280%',
+  c4Name:'Campagna Win-Back',c4Segment:'Win-Back (5.670)',c4Goal:'Riattivare il 20% dei clienti inattivi',c4Timing:'Giorno 0, Giorno 7, Giorno 14',
+  c4Brief:'Riattivazione 3 email. "Ci manchi" + novit\u00E0, offerta esclusiva di ritorno, ultimo promemoria + sconto finale.',c4Roi:'180%',
+  operationalBriefing:'Briefing Operativo',targetObjective:'Target e Obiettivo',segmentLabel:'Segmento',sizeLabel:'Dimensione',objectiveLabel:'Obiettivo',kpisLabel:'KPI',expectedRoiLabel:'ROI Previsto',
+  emailSequence:'Timeline Sequenza Email',contentPillars:'Pilastri di Contenuto',designDirection:'Direzione Creativa',
+  validatedBadge:'\u2705 Validato rispetto ai dati sorgente',btnSendOps:'Invia a AI Ops \u2192',btnApprove:'Approva Strategia',
+  b1Segment:'Clienti VIP (LTV > \u20AC200)',b1Size:'2.340 contatti',b1Objective:'Aumentare il tasso di riacquisto del 15%',
+  b1Kpis:'Tasso Apertura > 55%, Tasso Clic > 12%, Tasso Conversione > 8%',b1Roi:'340%',
+  b1T1Title:'Email 1 \u2014 Giorno 0 (Marted\u00EC 10:00)',b1T1Desc:'Accesso anticipato esclusivo 48h alla nuova collezione. Immagine hero dei nuovi arrivi, saluto personalizzato per nome, CTA chiara per acquistare in anticipo.',
+  b1T2Title:'Email 2 \u2014 Giorno 2 (Gioved\u00EC 10:00)',b1T2Desc:'Raccomandazioni prodotti personalizzate in base allo storico acquisti. Layout "Scelti per te", 3-4 prodotti abbinati agli ordini precedenti.',
+  b1T3Title:'Email 3 \u2014 Giorno 4 (Sabato 9:00)',b1T3Desc:'Codice sconto esclusivo VIP (15%) con timer urgenza 24h. Elemento countdown, riprova sociale "127 VIP hanno gi\u00E0 acquistato".',
+  b1Pillars:['Esclusivit\u00E0 e accesso anticipato','Raccomandazioni personalizzate','Urgenza e scarsit\u00E0'],
+  b1Design:'Estetica premium e pulita. Hero su sfondo scuro con accenti dorati. Copy minimale, grandi immagini prodotto. CTA in terracotta. Tono: sofisticato, riconoscente, sensazione da insider.',
+  b2Segment:'Abbandono Carrello',b2Size:'3.800 contatti',b2Objective:'Recuperare il 25% dei carrelli abbandonati (\u20AC63.650 di ricavo potenziale)',
+  b2Kpis:'Tasso Recupero > 25%, Ricavo per Email > \u20AC4,20, Tasso Disiscrizione < 0,3%',b2Roi:'520%',
+  b2T1Title:'Email 1 \u2014 1 ora dopo l\'abbandono',b2T1Desc:'Promemoria carrello con immagini prodotto, valutazioni a stelle e riprova sociale "432 persone l\'hanno visto oggi". CTA semplice "Completa il tuo Ordine".',
+  b2T2Title:'Email 2 \u2014 24 ore dopo l\'abbandono',b2T2Desc:'Messaggio di scarsit\u00E0 ("Solo 3 rimasti in magazzino"). 2-3 prodotti correlati sotto gli articoli del carrello. Titolo "Ci stai ancora pensando?".',
+  b2T3Title:'Email 3 \u2014 72 ore dopo l\'abbandono',b2T3Desc:'Codice sconto 10% a tempo limitato. Urgenza "Il tuo carrello sta per scadere". Spinta finale con menzione spedizione gratuita.',
+  b2Pillars:['Promemoria contenuto carrello','Riprova sociale e scarsit\u00E0','Incentivi progressivi'],
+  b2Design:'Layout pulito, focalizzato sul prodotto. Sfondo bianco con articoli del carrello in evidenza. Valutazioni a stelle in oro. CTA in terracotta. Tono: utile, non invadente, urgenza graduale nella sequenza.',
+  b3Segment:'Nuovi Iscritti (< 30gg)',b3Size:'1.230 contatti',b3Objective:'40% di attivazione (primo acquisto) entro 14 giorni',
+  b3Kpis:'Tasso Apertura Benvenuto > 60%, Conversione Giorno 14 > 40%, Abbandono Lista < 5%',b3Roi:'280%',
+  b3T1Title:'Email 1 \u2014 Immediata (alla registrazione)',b3T1Desc:'Storia del brand + sconto benvenuto (10% sul primo ordine). Messaggio del fondatore, valori del brand, immagine hero lifestyle.',
+  b3T2Title:'Email 2 \u2014 Giorno 3',b3T2Desc:'Vetrina bestseller. "Cosa ama la nostra community" \u2014 top 6 prodotti con numero di recensioni. Focus sulla riprova sociale.',
+  b3T3Title:'Email 3 \u2014 Giorno 7',b3T3Desc:'Recensioni clienti e UGC in evidenza. 3 storie dettagliate di clienti con foto. Banner "Unisciti a 45.000+ clienti soddisfatti".',
+  b3T4Title:'Email 4 \u2014 Giorno 14',b3T4Desc:'Selezione personalizzata da dati di navigazione + promemoria scadenza sconto benvenuto. Urgenza "Il tuo 10% scade domani".',
+  b3Pillars:['Storytelling del brand','Bestseller e riprova sociale','Dati di navigazione personalizzati','Urgenza sconto'],
+  b3Design:'Estetica calda e accogliente. Fotografia lifestyle. Palette crema e terracotta. Accenti stile manoscritto. CTA in terracotta. Tono: amichevole, autentico, orientato alla community.',
+  b4Segment:'Win-Back (90gg inattivi)',b4Size:'5.670 contatti',b4Objective:'Riattivare il 20% dei clienti inattivi',
+  b4Kpis:'Tasso Riattivazione > 20%, Tasso Acquisto Win-back > 8%, Ricavo Recuperato > \u20AC12.000',b4Roi:'180%',
+  b4T1Title:'Email 1 \u2014 Giorno 0',b4T1Desc:'"Ci manchi" + vetrina delle novit\u00E0 dalla loro ultima visita. Griglia nuovi arrivi, titolo "Ecco cosa ti sei perso".',
+  b4T2Title:'Email 2 \u2014 Giorno 7',b4T2Desc:'Offerta esclusiva di ritorno: 20% su qualsiasi ordine. Codice sconto "Bentornato". Prodotti nuovi pi\u00F9 votati in evidenza.',
+  b4T3Title:'Email 3 \u2014 Giorno 14',b4T3Desc:'Promemoria finale + messaggio "Ultima occasione". Sconto in scadenza tra 48h. Opzione per aggiornare preferenze email o disiscriversi con garbo.',
+  b4Pillars:['Nostalgia e riconnessione','Vetrina nuovi prodotti','Incentivi crescenti'],
+  b4Design:'Emotivo, focalizzato sulla riconnessione. Immagini morbide. Titolo manoscritto "Ci manchi". Rivelazione sconto progressiva. CTA in terracotta. Tono: caldo, personale, senza pressione ma coinvolgente.',
+  toastSentOps:'Strategia inviata a AI Ops per l\'esecuzione',toastApproved:'Strategia approvata e in coda',
+  campaignsGenerated:'Campagne Generate',totalReach:'Reach Totale',projectedRevenue:'Ricavo Previsto',aiConfidence:'Confidenza AI',replayDemo:'Ripeti Demo'
+}
+};
 
-      // Data source cards
-      klaviyo: 'Klaviyo',
-      shopify: 'Shopify',
-      connecting: 'Connecting...',
-      connected: 'Connected',
+var T = T_ALL[LOCALE] || T_ALL.it;
 
-      // Klaviyo metrics
-      subscribers: 'Subscribers',
-      activeFlows: 'Active Flows',
-      avgOpenRate: 'Avg Open Rate',
-      segments: 'Segments',
+var donutSegs = [
+  {pct:8.85,color:'var(--terracotta)'},{pct:14.37,color:'var(--amber)'},
+  {pct:4.65,color:'var(--green)'},{pct:21.45,color:'var(--blue)'},
+  {pct:33.66,color:'var(--purple)'},{pct:17.02,color:'var(--rose)'}
+];
 
-      // Shopify metrics
-      orders90d: 'Orders (90d)',
-      aov: 'AOV',
-      products: 'Products',
-      returnRate: 'Return Rate',
+function buildCampaigns(){
+  return [{
+    label:T.campaign+' 1',name:T.c1Name,segment:T.b1Segment,segmentSize:T.b1Size,objective:T.b1Objective,kpis:T.b1Kpis,roi:T.b1Roi,
+    timeline:[{title:T.b1T1Title,desc:T.b1T1Desc},{title:T.b1T2Title,desc:T.b1T2Desc},{title:T.b1T3Title,desc:T.b1T3Desc}],
+    pillars:T.b1Pillars,design:T.b1Design
+  },{
+    label:T.campaign+' 2',name:T.c2Name,segment:T.b2Segment,segmentSize:T.b2Size,objective:T.b2Objective,kpis:T.b2Kpis,roi:T.b2Roi,
+    timeline:[{title:T.b2T1Title,desc:T.b2T1Desc},{title:T.b2T2Title,desc:T.b2T2Desc},{title:T.b2T3Title,desc:T.b2T3Desc}],
+    pillars:T.b2Pillars,design:T.b2Design
+  },{
+    label:T.campaign+' 3',name:T.c3Name,segment:T.b3Segment,segmentSize:T.b3Size,objective:T.b3Objective,kpis:T.b3Kpis,roi:T.b3Roi,
+    timeline:[{title:T.b3T1Title,desc:T.b3T1Desc},{title:T.b3T2Title,desc:T.b3T2Desc},{title:T.b3T3Title,desc:T.b3T3Desc},{title:T.b3T4Title,desc:T.b3T4Desc}],
+    pillars:T.b3Pillars,design:T.b3Design
+  },{
+    label:T.campaign+' 4',name:T.c4Name,segment:T.b4Segment,segmentSize:T.b4Size,objective:T.b4Objective,kpis:T.b4Kpis,roi:T.b4Roi,
+    timeline:[{title:T.b4T1Title,desc:T.b4T1Desc},{title:T.b4T2Title,desc:T.b4T2Desc},{title:T.b4T3Title,desc:T.b4T3Desc}],
+    pillars:T.b4Pillars,design:T.b4Design
+  }];
+}
+var campaigns = buildCampaigns();
 
-      // Event analysis
-      analyzingEvents: 'Analyzing Events...',
-      eventBreakdown: 'Event Breakdown',
-      purchaseEvents: 'Purchase Events',
-      browseEvents: 'Browse Events',
-      cartAbandonment: 'Cart Abandonment',
-      emailOpens: 'Email Opens',
-      wishlistAdds: 'Wishlist Adds',
-      opportunity: 'Opportunity',
+/* Animated counter */
+function animateCounter(el, target, format, duration) {
+  duration = duration || 1200;
+  var startTime = null;
+  var isFloat = format === 'pct' && String(target).indexOf('.') !== -1;
+  function fmt(val) {
+    if (format === 'pct') return (isFloat ? val.toFixed(1) : Math.round(val)) + '%';
+    if (format === 'eur') return '\u20AC' + Math.round(val).toLocaleString('en-US');
+    return Math.round(val).toLocaleString('en-US');
+  }
+  function step(ts) {
+    if (!startTime) startTime = ts;
+    var p = Math.min((ts - startTime) / duration, 1);
+    var e = 1 - Math.pow(1 - p, 3);
+    el.textContent = fmt(target * e);
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
 
-      // Segments
-      segmentsTitle: 'Segments',
-      contacts: 'contacts',
-      openRate: 'open rate',
-      avgCart: 'avg cart',
-      avgBrowseValue: 'avg browse value',
-      segVip: 'VIP Customers (LTV > \u20AC200)',
-      segCartAbandoners: 'Cart Abandoners',
-      segNewSubscribers: 'New Subscribers (< 30d)',
-      segWinBack: 'Win-Back (90d inactive)',
-      segEngagedReaders: 'Engaged Readers',
-      segBrowseAbandoners: 'Browse Abandoners',
-
-      // AI Strategy / Thinking
-      aiThinking: 'AI Strategist Thinking...',
-
-      // Campaign cards
-      campaign: 'Campaign',
-      goal: 'Goal',
-      timing: 'Timing',
-      segment: 'Segment',
-      expectedRoi: 'Expected ROI',
-      clickHint: 'Click for operational briefing \u2192',
-
-      // Campaign 1
-      c1Name: 'VIP Early Access',
-      c1Segment: 'VIP Customers (2,340)',
-      c1Goal: 'Increase repeat purchase rate by 15%',
-      c1Timing: 'Tuesday 10:00 AM',
-      c1Brief: '3-email sequence. Exclusive 48h early access to new collection, personalized recommendations, VIP-only discount code with urgency.',
-      c1Roi: '340%',
-
-      // Campaign 2
-      c2Name: 'Cart Recovery Sequence',
-      c2Segment: 'Cart Abandoners (3,800)',
-      c2Goal: 'Recover 25% of abandoned carts',
-      c2Timing: '1h, 24h, 72h after abandonment',
-      c2Brief: '3-touch sequence. Cart reminder with social proof, scarcity messaging + related products, time-limited 10% discount.',
-      c2Roi: '520%',
-
-      // Campaign 3
-      c3Name: 'Welcome Series',
-      c3Segment: 'New Subscribers (1,230)',
-      c3Goal: '40% activation within 14 days',
-      c3Timing: 'Immediate, Day 3, Day 7, Day 14',
-      c3Brief: '4-email onboarding. Brand story + welcome discount, best sellers showcase, social proof + reviews, personalized picks from browse data.',
-      c3Roi: '280%',
-
-      // Campaign 4
-      c4Name: 'Win-Back Campaign',
-      c4Segment: 'Win-Back (5,670)',
-      c4Goal: 'Re-engage 20% of lapsed customers',
-      c4Timing: 'Day 0, Day 7, Day 14',
-      c4Brief: '3-email re-engagement. "We miss you" + what\'s new, exclusive comeback offer, final reminder + last chance discount.',
-      c4Roi: '180%',
-
-      // Briefing panel
-      operationalBriefing: 'Operational Briefing',
-      targetObjective: 'Target & Objective',
-      segmentLabel: 'Segment',
-      sizeLabel: 'Size',
-      objectiveLabel: 'Objective',
-      kpisLabel: 'KPIs',
-      expectedRoiLabel: 'Expected ROI',
-      emailSequence: 'Email Sequence Timeline',
-      contentPillars: 'Content Pillars',
-      designDirection: 'Design Direction',
-      validatedBadge: '\u2705 Validated against source data',
-      btnSendOps: 'Send to AI Ops \u2192',
-      btnApprove: 'Approve Strategy',
-
-      // Briefing data
-      b1Segment: 'VIP Customers (LTV > \u20AC200)',
-      b1Size: '2,340 contacts',
-      b1Objective: 'Increase repeat purchase rate by 15%',
-      b1Kpis: 'Open Rate > 55%, Click Rate > 12%, Conversion Rate > 8%',
-      b1Roi: '340%',
-      b1T1Title: 'Email 1 \u2014 Day 0 (Tuesday 10:00 AM)',
-      b1T1Desc: 'Exclusive 48h early access to new collection. Hero image of new arrivals, personalized greeting by name, clear CTA to shop early.',
-      b1T2Title: 'Email 2 \u2014 Day 2 (Thursday 10:00 AM)',
-      b1T2Desc: 'Personalized product recommendations based on purchase history. "Picked for you" layout, 3-4 products matched to past orders.',
-      b1T3Title: 'Email 3 \u2014 Day 4 (Saturday 9:00 AM)',
-      b1T3Desc: 'VIP-only discount code (15% off) with 24h urgency timer. Countdown element, social proof showing "127 VIPs already shopped".',
-      b1Pillars: ['Exclusivity & early access', 'Personalized recommendations', 'Urgency & scarcity'],
-      b1Design: 'Premium, clean aesthetic. Dark background hero with gold accents. Minimal copy, large product imagery. CTA buttons in terracotta. Tone: sophisticated, appreciative, insider-access feel.',
-
-      b2Segment: 'Cart Abandoners',
-      b2Size: '3,800 contacts',
-      b2Objective: 'Recover 25% of abandoned carts (\u20AC63,650 potential revenue)',
-      b2Kpis: 'Recovery Rate > 25%, Revenue per Email > \u20AC4.20, Unsubscribe Rate < 0.3%',
-      b2Roi: '520%',
-      b2T1Title: 'Email 1 \u2014 1 hour after abandonment',
-      b2T1Desc: 'Cart reminder with product images, star ratings, and "432 people viewed this today" social proof. Simple "Complete Your Order" CTA.',
-      b2T2Title: 'Email 2 \u2014 24 hours after abandonment',
-      b2T2Desc: 'Scarcity messaging ("Only 3 left in stock"). Show 2-3 related products below cart items. "Still thinking?" headline.',
-      b2T3Title: 'Email 3 \u2014 72 hours after abandonment',
-      b2T3Desc: 'Time-limited 10% discount code. "Your cart is about to expire" urgency. Final push with free shipping mention.',
-      b2Pillars: ['Cart contents reminder', 'Social proof & scarcity', 'Progressive incentives'],
-      b2Design: 'Clean, product-focused layout. White background with cart items prominently displayed. Star ratings in gold. CTA in terracotta. Tone: helpful, not pushy, building urgency gradually across sequence.',
-
-      b3Segment: 'New Subscribers (< 30d)',
-      b3Size: '1,230 contacts',
-      b3Objective: '40% activation (first purchase) within 14 days',
-      b3Kpis: 'Welcome Open Rate > 60%, Day-14 Conversion > 40%, List Churn < 5%',
-      b3Roi: '280%',
-      b3T1Title: 'Email 1 \u2014 Immediate (on signup)',
-      b3T1Desc: 'Brand story + welcome discount (10% off first order). Founder message, brand values, hero lifestyle image.',
-      b3T2Title: 'Email 2 \u2014 Day 3',
-      b3T2Desc: 'Best sellers showcase. "What our community loves" \u2014 top 6 products with review counts. Social proof focus.',
-      b3T3Title: 'Email 3 \u2014 Day 7',
-      b3T3Desc: 'Customer reviews & UGC spotlight. 3 detailed customer stories with photos. "Join 45,000+ happy customers" banner.',
-      b3T4Title: 'Email 4 \u2014 Day 14',
-      b3T4Desc: 'Personalized picks based on browse data + reminder of welcome discount expiration. "Your 10% off expires tomorrow" urgency.',
-      b3Pillars: ['Brand storytelling', 'Best sellers & social proof', 'Personalized browsing data', 'Discount urgency'],
-      b3Design: 'Warm, welcoming aesthetic. Lifestyle photography. Cream and terracotta palette. Handwritten-style accents. CTA in terracotta. Tone: friendly, authentic, community-driven.',
-
-      b4Segment: 'Win-Back (90d inactive)',
-      b4Size: '5,670 contacts',
-      b4Objective: 'Re-engage 20% of lapsed customers',
-      b4Kpis: 'Re-engagement Rate > 20%, Win-back Purchase Rate > 8%, Revenue Recovered > \u20AC12,000',
-      b4Roi: '180%',
-      b4T1Title: 'Email 1 \u2014 Day 0',
-      b4T1Desc: '"We miss you" + showcase of what\'s new since they last visited. New arrivals grid, "Here\'s what you\'ve missed" headline.',
-      b4T2Title: 'Email 2 \u2014 Day 7',
-      b4T2Desc: 'Exclusive comeback offer: 20% off any order. "Welcome back" discount code. Highlight top-rated new products.',
-      b4T3Title: 'Email 3 \u2014 Day 14',
-      b4T3Desc: 'Final reminder + "Last chance" messaging. Discount expires in 48h. Option to update email preferences or unsubscribe gracefully.',
-      b4Pillars: ['Nostalgia & reconnection', 'New product showcase', 'Escalating incentives'],
-      b4Design: 'Emotional, reconnection-focused. Soft imagery. "We miss you" handwritten headline. Progressive discount reveal. CTA in terracotta. Tone: warm, personal, no-pressure but compelling.',
-
-      // Toast messages
-      toastSentOps: 'Strategy sent to AI Ops for execution',
-      toastApproved: 'Strategy approved and queued',
-
-      // Bottom stats bar
-      campaignsGenerated: 'Campaigns Generated',
-      totalReach: 'Total Reach',
-      projectedRevenue: 'Projected Revenue',
-      aiConfidence: 'AI Confidence',
-    },
-    it: {
-      // Header
-      backBtn: '\u2190 Torna alle Demo',
-      headerTitle: 'Email Strategy AI',
-      headerSubtitle: 'Klaviyo \u00D7 Shopify Intelligence',
-      badgeLive: 'Connesso',
-
-      // Step labels
-      step1Label: 'Fonti Dati',
-      step2Label: 'Analisi Eventi',
-      step3Label: 'Generazione Strategia AI',
-
-      // Data source cards
-      klaviyo: 'Klaviyo',
-      shopify: 'Shopify',
-      connecting: 'Connessione...',
-      connected: 'Connesso',
-
-      // Klaviyo metrics
-      subscribers: 'Iscritti',
-      activeFlows: 'Flow Attivi',
-      avgOpenRate: 'Tasso Apertura Medio',
-      segments: 'Segmenti',
-
-      // Shopify metrics
-      orders90d: 'Ordini (90gg)',
-      aov: 'Scontrino Medio',
-      products: 'Prodotti',
-      returnRate: 'Tasso di Reso',
-
-      // Event analysis
-      analyzingEvents: 'Analisi Eventi in Corso...',
-      eventBreakdown: 'Dettaglio Eventi',
-      purchaseEvents: 'Eventi Acquisto',
-      browseEvents: 'Eventi Navigazione',
-      cartAbandonment: 'Abbandono Carrello',
-      emailOpens: 'Aperture Email',
-      wishlistAdds: 'Aggiunte alla Wishlist',
-      opportunity: 'Opportunit\u00E0',
-
-      // Segments
-      segmentsTitle: 'Segmenti',
-      contacts: 'contatti',
-      openRate: 'tasso apertura',
-      avgCart: 'carrello medio',
-      avgBrowseValue: 'valore navigazione medio',
-      segVip: 'Clienti VIP (LTV > \u20AC200)',
-      segCartAbandoners: 'Abbandono Carrello',
-      segNewSubscribers: 'Nuovi Iscritti (< 30gg)',
-      segWinBack: 'Win-Back (90gg inattivi)',
-      segEngagedReaders: 'Lettori Coinvolti',
-      segBrowseAbandoners: 'Abbandono Navigazione',
-
-      // AI Strategy / Thinking
-      aiThinking: 'Lo Strategist AI sta Elaborando...',
-
-      // Campaign cards
-      campaign: 'Campagna',
-      goal: 'Obiettivo',
-      timing: 'Tempistica',
-      segment: 'Segmento',
-      expectedRoi: 'ROI Previsto',
-      clickHint: 'Clicca per il briefing operativo \u2192',
-
-      // Campaign 1
-      c1Name: 'Accesso Anticipato VIP',
-      c1Segment: 'Clienti VIP (2.340)',
-      c1Goal: 'Aumentare il tasso di riacquisto del 15%',
-      c1Timing: 'Marted\u00EC 10:00',
-      c1Brief: 'Sequenza di 3 email. Accesso anticipato esclusivo 48h alla nuova collezione, raccomandazioni personalizzate, codice sconto riservato VIP con urgenza.',
-      c1Roi: '340%',
-
-      // Campaign 2
-      c2Name: 'Sequenza Recupero Carrello',
-      c2Segment: 'Abbandono Carrello (3.800)',
-      c2Goal: 'Recuperare il 25% dei carrelli abbandonati',
-      c2Timing: '1h, 24h, 72h dopo l\'abbandono',
-      c2Brief: 'Sequenza 3 touchpoint. Promemoria carrello con riprova sociale, messaggio di scarsit\u00E0 + prodotti correlati, sconto 10% a tempo limitato.',
-      c2Roi: '520%',
-
-      // Campaign 3
-      c3Name: 'Serie di Benvenuto',
-      c3Segment: 'Nuovi Iscritti (1.230)',
-      c3Goal: '40% di attivazione entro 14 giorni',
-      c3Timing: 'Immediato, Giorno 3, Giorno 7, Giorno 14',
-      c3Brief: 'Onboarding 4 email. Storia del brand + sconto benvenuto, vetrina bestseller, riprova sociale + recensioni, selezione personalizzata da dati di navigazione.',
-      c3Roi: '280%',
-
-      // Campaign 4
-      c4Name: 'Campagna Win-Back',
-      c4Segment: 'Win-Back (5.670)',
-      c4Goal: 'Riattivare il 20% dei clienti inattivi',
-      c4Timing: 'Giorno 0, Giorno 7, Giorno 14',
-      c4Brief: 'Riattivazione 3 email. "Ci manchi" + novit\u00E0, offerta esclusiva di ritorno, ultimo promemoria + sconto finale.',
-      c4Roi: '180%',
-
-      // Briefing panel
-      operationalBriefing: 'Briefing Operativo',
-      targetObjective: 'Target e Obiettivo',
-      segmentLabel: 'Segmento',
-      sizeLabel: 'Dimensione',
-      objectiveLabel: 'Obiettivo',
-      kpisLabel: 'KPI',
-      expectedRoiLabel: 'ROI Previsto',
-      emailSequence: 'Timeline Sequenza Email',
-      contentPillars: 'Pilastri di Contenuto',
-      designDirection: 'Direzione Creativa',
-      validatedBadge: '\u2705 Validato rispetto ai dati sorgente',
-      btnSendOps: 'Invia a AI Ops \u2192',
-      btnApprove: 'Approva Strategia',
-
-      // Briefing data
-      b1Segment: 'Clienti VIP (LTV > \u20AC200)',
-      b1Size: '2.340 contatti',
-      b1Objective: 'Aumentare il tasso di riacquisto del 15%',
-      b1Kpis: 'Tasso Apertura > 55%, Tasso Clic > 12%, Tasso Conversione > 8%',
-      b1Roi: '340%',
-      b1T1Title: 'Email 1 \u2014 Giorno 0 (Marted\u00EC 10:00)',
-      b1T1Desc: 'Accesso anticipato esclusivo 48h alla nuova collezione. Immagine hero dei nuovi arrivi, saluto personalizzato per nome, CTA chiara per acquistare in anticipo.',
-      b1T2Title: 'Email 2 \u2014 Giorno 2 (Gioved\u00EC 10:00)',
-      b1T2Desc: 'Raccomandazioni prodotti personalizzate in base allo storico acquisti. Layout "Scelti per te", 3-4 prodotti abbinati agli ordini precedenti.',
-      b1T3Title: 'Email 3 \u2014 Giorno 4 (Sabato 9:00)',
-      b1T3Desc: 'Codice sconto esclusivo VIP (15%) con timer urgenza 24h. Elemento countdown, riprova sociale "127 VIP hanno gi\u00E0 acquistato".',
-      b1Pillars: ['Esclusivit\u00E0 e accesso anticipato', 'Raccomandazioni personalizzate', 'Urgenza e scarsit\u00E0'],
-      b1Design: 'Estetica premium e pulita. Hero su sfondo scuro con accenti dorati. Copy minimale, grandi immagini prodotto. CTA in terracotta. Tono: sofisticato, riconoscente, sensazione da insider.',
-
-      b2Segment: 'Abbandono Carrello',
-      b2Size: '3.800 contatti',
-      b2Objective: 'Recuperare il 25% dei carrelli abbandonati (\u20AC63.650 di ricavo potenziale)',
-      b2Kpis: 'Tasso Recupero > 25%, Ricavo per Email > \u20AC4,20, Tasso Disiscrizione < 0,3%',
-      b2Roi: '520%',
-      b2T1Title: 'Email 1 \u2014 1 ora dopo l\'abbandono',
-      b2T1Desc: 'Promemoria carrello con immagini prodotto, valutazioni a stelle e riprova sociale "432 persone l\'hanno visto oggi". CTA semplice "Completa il tuo Ordine".',
-      b2T2Title: 'Email 2 \u2014 24 ore dopo l\'abbandono',
-      b2T2Desc: 'Messaggio di scarsit\u00E0 ("Solo 3 rimasti in magazzino"). 2-3 prodotti correlati sotto gli articoli del carrello. Titolo "Ci stai ancora pensando?".',
-      b2T3Title: 'Email 3 \u2014 72 ore dopo l\'abbandono',
-      b2T3Desc: 'Codice sconto 10% a tempo limitato. Urgenza "Il tuo carrello sta per scadere". Spinta finale con menzione spedizione gratuita.',
-      b2Pillars: ['Promemoria contenuto carrello', 'Riprova sociale e scarsit\u00E0', 'Incentivi progressivi'],
-      b2Design: 'Layout pulito, focalizzato sul prodotto. Sfondo bianco con articoli del carrello in evidenza. Valutazioni a stelle in oro. CTA in terracotta. Tono: utile, non invadente, urgenza graduale nella sequenza.',
-
-      b3Segment: 'Nuovi Iscritti (< 30gg)',
-      b3Size: '1.230 contatti',
-      b3Objective: '40% di attivazione (primo acquisto) entro 14 giorni',
-      b3Kpis: 'Tasso Apertura Benvenuto > 60%, Conversione Giorno 14 > 40%, Abbandono Lista < 5%',
-      b3Roi: '280%',
-      b3T1Title: 'Email 1 \u2014 Immediata (alla registrazione)',
-      b3T1Desc: 'Storia del brand + sconto benvenuto (10% sul primo ordine). Messaggio del fondatore, valori del brand, immagine hero lifestyle.',
-      b3T2Title: 'Email 2 \u2014 Giorno 3',
-      b3T2Desc: 'Vetrina bestseller. "Cosa ama la nostra community" \u2014 top 6 prodotti con numero di recensioni. Focus sulla riprova sociale.',
-      b3T3Title: 'Email 3 \u2014 Giorno 7',
-      b3T3Desc: 'Recensioni clienti e UGC in evidenza. 3 storie dettagliate di clienti con foto. Banner "Unisciti a 45.000+ clienti soddisfatti".',
-      b3T4Title: 'Email 4 \u2014 Giorno 14',
-      b3T4Desc: 'Selezione personalizzata da dati di navigazione + promemoria scadenza sconto benvenuto. Urgenza "Il tuo 10% scade domani".',
-      b3Pillars: ['Storytelling del brand', 'Bestseller e riprova sociale', 'Dati di navigazione personalizzati', 'Urgenza sconto'],
-      b3Design: 'Estetica calda e accogliente. Fotografia lifestyle. Palette crema e terracotta. Accenti stile manoscritto. CTA in terracotta. Tono: amichevole, autentico, orientato alla community.',
-
-      b4Segment: 'Win-Back (90gg inattivi)',
-      b4Size: '5.670 contatti',
-      b4Objective: 'Riattivare il 20% dei clienti inattivi',
-      b4Kpis: 'Tasso Riattivazione > 20%, Tasso Acquisto Win-back > 8%, Ricavo Recuperato > \u20AC12.000',
-      b4Roi: '180%',
-      b4T1Title: 'Email 1 \u2014 Giorno 0',
-      b4T1Desc: '"Ci manchi" + vetrina delle novit\u00E0 dalla loro ultima visita. Griglia nuovi arrivi, titolo "Ecco cosa ti sei perso".',
-      b4T2Title: 'Email 2 \u2014 Giorno 7',
-      b4T2Desc: 'Offerta esclusiva di ritorno: 20% su qualsiasi ordine. Codice sconto "Bentornato". Prodotti nuovi pi\u00F9 votati in evidenza.',
-      b4T3Title: 'Email 3 \u2014 Giorno 14',
-      b4T3Desc: 'Promemoria finale + messaggio "Ultima occasione". Sconto in scadenza tra 48h. Opzione per aggiornare preferenze email o disiscriversi con garbo.',
-      b4Pillars: ['Nostalgia e riconnessione', 'Vetrina nuovi prodotti', 'Incentivi crescenti'],
-      b4Design: 'Emotivo, focalizzato sulla riconnessione. Immagini morbide. Titolo manoscritto "Ci manchi". Rivelazione sconto progressiva. CTA in terracotta. Tono: caldo, personale, senza pressione ma coinvolgente.',
-
-      // Toast messages
-      toastSentOps: 'Strategia inviata a AI Ops per l\'esecuzione',
-      toastApproved: 'Strategia approvata e in coda',
-
-      // Bottom stats bar
-      campaignsGenerated: 'Campagne Generate',
-      totalReach: 'Reach Totale',
-      projectedRevenue: 'Ricavo Previsto',
-      aiConfidence: 'Confidenza AI',
-    },
-  }[LOCALE];
-
-  // ── Campaign briefing data (built from T) ──
-  var campaigns = [
-    {
-      label: T.campaign + ' 1',
-      name: T.c1Name,
-      segment: T.b1Segment,
-      segmentSize: T.b1Size,
-      objective: T.b1Objective,
-      kpis: T.b1Kpis,
-      roi: T.b1Roi,
-      timeline: [
-        { title: T.b1T1Title, desc: T.b1T1Desc },
-        { title: T.b1T2Title, desc: T.b1T2Desc },
-        { title: T.b1T3Title, desc: T.b1T3Desc }
-      ],
-      pillars: T.b1Pillars,
-      design: T.b1Design,
-    },
-    {
-      label: T.campaign + ' 2',
-      name: T.c2Name,
-      segment: T.b2Segment,
-      segmentSize: T.b2Size,
-      objective: T.b2Objective,
-      kpis: T.b2Kpis,
-      roi: T.b2Roi,
-      timeline: [
-        { title: T.b2T1Title, desc: T.b2T1Desc },
-        { title: T.b2T2Title, desc: T.b2T2Desc },
-        { title: T.b2T3Title, desc: T.b2T3Desc }
-      ],
-      pillars: T.b2Pillars,
-      design: T.b2Design,
-    },
-    {
-      label: T.campaign + ' 3',
-      name: T.c3Name,
-      segment: T.b3Segment,
-      segmentSize: T.b3Size,
-      objective: T.b3Objective,
-      kpis: T.b3Kpis,
-      roi: T.b3Roi,
-      timeline: [
-        { title: T.b3T1Title, desc: T.b3T1Desc },
-        { title: T.b3T2Title, desc: T.b3T2Desc },
-        { title: T.b3T3Title, desc: T.b3T3Desc },
-        { title: T.b3T4Title, desc: T.b3T4Desc }
-      ],
-      pillars: T.b3Pillars,
-      design: T.b3Design,
-    },
-    {
-      label: T.campaign + ' 4',
-      name: T.c4Name,
-      segment: T.b4Segment,
-      segmentSize: T.b4Size,
-      objective: T.b4Objective,
-      kpis: T.b4Kpis,
-      roi: T.b4Roi,
-      timeline: [
-        { title: T.b4T1Title, desc: T.b4T1Desc },
-        { title: T.b4T2Title, desc: T.b4T2Desc },
-        { title: T.b4T3Title, desc: T.b4T3Desc }
-      ],
-      pillars: T.b4Pillars,
-      design: T.b4Design,
-    }
-  ];
-
-  // ── Toast notification ──
-  window.showToast = function(message) {
-    var toast = document.getElementById('toast');
-    toast.textContent = message;
-    toast.classList.add('visible');
-    setTimeout(function() { toast.classList.remove('visible'); }, 2500);
-  };
-
-  // ── Briefing panel ──
-  window.openBriefing = function(index) {
-    var c = campaigns[index];
-    var contentEl = document.getElementById('briefingContent');
-
-    var timelineHTML = c.timeline.map(function(t) {
-      return '<div class="timeline-item">' +
-        '<div class="timeline-dot"></div>' +
-        '<div class="timeline-text"><strong>' + t.title + '</strong><br>' + t.desc + '</div>' +
-        '</div>';
-    }).join('');
-
-    var pillarsHTML = c.pillars.map(function(p) {
-      return '<div class="pillar-tag">&#x2022; ' + p + '</div>';
-    }).join('');
-
-    contentEl.innerHTML =
-      '<div class="briefing-label">' + c.label + ' \u2014 ' + T.operationalBriefing + '</div>' +
-      '<div class="briefing-title">' + c.name + '</div>' +
-
-      '<div class="briefing-section">' +
-        '<h4>' + T.targetObjective + '</h4>' +
-        '<div class="briefing-kv"><span class="kv-label">' + T.segmentLabel + '</span><span class="kv-value">' + c.segment + '</span></div>' +
-        '<div class="briefing-kv"><span class="kv-label">' + T.sizeLabel + '</span><span class="kv-value">' + c.segmentSize + '</span></div>' +
-        '<div class="briefing-kv"><span class="kv-label">' + T.objectiveLabel + '</span><span class="kv-value">' + c.objective + '</span></div>' +
-        '<div class="briefing-kv"><span class="kv-label">' + T.kpisLabel + '</span><span class="kv-value">' + c.kpis + '</span></div>' +
-        '<div class="briefing-kv"><span class="kv-label">' + T.expectedRoiLabel + '</span><span class="kv-value" style="color:var(--green);font-weight:700;">' + c.roi + '</span></div>' +
-      '</div>' +
-
-      '<div class="briefing-section">' +
-        '<h4>' + T.emailSequence + '</h4>' +
-        '<div class="briefing-timeline">' + timelineHTML + '</div>' +
-      '</div>' +
-
-      '<div class="briefing-section">' +
-        '<h4>' + T.contentPillars + '</h4>' +
-        '<div class="briefing-pillars">' + pillarsHTML + '</div>' +
-      '</div>' +
-
-      '<div class="briefing-section">' +
-        '<h4>' + T.designDirection + '</h4>' +
-        '<div class="briefing-design">' + c.design + '</div>' +
-      '</div>' +
-
-      '<div class="validation-badge">' + T.validatedBadge + '</div>' +
-
-      '<div class="briefing-actions">' +
-        '<button class="btn-primary" onclick="showToast(\'' + T.toastSentOps.replace(/'/g, "\\'") + '\'); closeBriefing();">' + T.btnSendOps + '</button>' +
-        '<button class="btn-secondary" onclick="showToast(\'' + T.toastApproved.replace(/'/g, "\\'") + '\'); closeBriefing();">' + T.btnApprove + '</button>' +
-      '</div>';
-
-    document.getElementById('briefingOverlay').classList.add('visible');
-    document.getElementById('briefingPanel').classList.add('visible');
-  };
-
-  window.closeBriefing = function() {
-    document.getElementById('briefingOverlay').classList.remove('visible');
-    document.getElementById('briefingPanel').classList.remove('visible');
-  };
-
-  // Close briefing on Escape key
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeBriefing();
+function runCounters(container) {
+  container.querySelectorAll('[data-counter]').forEach(function(el) {
+    animateCounter(el, parseFloat(el.getAttribute('data-counter')), el.getAttribute('data-format') || 'int', 1000);
   });
+}
 
-  // ── Orchestrate the step-by-step reveal flow ──
-  function runDemo() {
-    var step1 = document.getElementById('step1');
-    var step2 = document.getElementById('step2');
-    var step3 = document.getElementById('step3');
+function runBottomCounters() {
+  document.querySelectorAll('[data-counter-bottom]').forEach(function(el) {
+    animateCounter(el, parseFloat(el.getAttribute('data-counter-bottom')), el.getAttribute('data-format-bottom') || 'int', 1200);
+  });
+}
 
-    // Show Step 1 immediately
-    step1.classList.add('visible');
+/* Donut chart */
+function buildDonut() {
+  var chart = document.getElementById('donutChart');
+  var legend = document.getElementById('donutLegend');
+  var stops = [], cum = 0;
+  donutSegs.forEach(function(s) {
+    var sd = cum * 3.6; cum += s.pct; var ed = cum * 3.6;
+    stops.push(s.color + ' ' + sd.toFixed(1) + 'deg ' + ed.toFixed(1) + 'deg');
+  });
+  chart.style.background = 'conic-gradient(' + stops.join(',') + ')';
+  var names = T.donutSegNames || ['VIP','Cart','New','Win-Back','Engaged','Browse'];
+  var colors = ['var(--terracotta)','var(--amber)','var(--green)','var(--blue)','var(--purple)','var(--rose)'];
+  legend.innerHTML = names.map(function(n, i) {
+    return '<div class="donut-legend-item"><span class="donut-legend-dot" style="background:' + colors[i] + '"></span>' + n + '</div>';
+  }).join('');
+}
 
-    // Start Klaviyo connection animation
-    setTimeout(function() {
-      document.getElementById('klaviyoBarFill').style.width = '100%';
-    }, 300);
-
-    // Klaviyo connected
-    setTimeout(function() {
-      var card = document.getElementById('klaviyoCard');
-      var status = document.getElementById('klaviyoStatus');
-      card.classList.add('connected');
-      status.textContent = T.connected;
-      status.classList.remove('connecting');
-      status.classList.add('connected');
-      document.getElementById('klaviyoBar').style.display = 'none';
-      document.getElementById('klaviyoMetrics').classList.add('visible');
-    }, 1600);
-
-    // Start Shopify connection (staggered by 500ms)
-    setTimeout(function() {
-      document.getElementById('shopifyBarFill').style.width = '100%';
-    }, 800);
-
-    // Shopify connected
-    setTimeout(function() {
-      var card = document.getElementById('shopifyCard');
-      var status = document.getElementById('shopifyStatus');
-      card.classList.add('connected');
-      status.textContent = T.connected;
-      status.classList.remove('connecting');
-      status.classList.add('connected');
-      document.getElementById('shopifyBar').style.display = 'none';
-      document.getElementById('shopifyMetrics').classList.add('visible');
-    }, 2100);
-
-    // Show Step 2: Event Analysis
-    setTimeout(function() {
-      step2.classList.add('visible');
-      var progress = document.getElementById('analysisProgress');
-      progress.classList.add('visible');
-      setTimeout(function() {
-        document.getElementById('analysisProgressFill').style.width = '100%';
-      }, 100);
-    }, 2800);
-
-    // Reveal events panel with staggered bar animations
-    setTimeout(function() {
-      document.getElementById('analysisStatus').style.display = 'none';
-      document.getElementById('analysisProgress').style.display = 'none';
-      var panel = document.getElementById('eventsPanel');
-      panel.classList.add('visible');
-
-      var rows = panel.querySelectorAll('.event-row');
-      rows.forEach(function(row, i) {
-        setTimeout(function() {
-          row.classList.add('visible');
-          var fill = row.querySelector('.event-bar-fill');
-          var width = row.getAttribute('data-width');
-          fill.style.width = width + '%';
-        }, i * 200);
-      });
-    }, 5000);
-
-    // Reveal segments
-    setTimeout(function() {
-      document.getElementById('segmentsHeading').classList.add('visible');
-      var grid = document.getElementById('segmentsGrid');
-      grid.classList.add('visible');
-
-      var cards = grid.querySelectorAll('.segment-card');
-      cards.forEach(function(card, i) {
-        setTimeout(function() {
-          card.classList.add('visible');
-        }, i * 120);
-      });
-    }, 6500);
-
-    // Show Step 3: AI Strategy
-    setTimeout(function() {
-      step3.classList.add('visible');
-    }, 8000);
-
-    // Reveal campaign cards
-    setTimeout(function() {
-      document.getElementById('thinkingStatus').style.display = 'none';
-      var grid = document.getElementById('campaignsGrid');
-      grid.classList.add('visible');
-
-      var cards = grid.querySelectorAll('.campaign-card');
-      cards.forEach(function(card, i) {
-        setTimeout(function() {
-          card.classList.add('visible');
-        }, i * 250);
-      });
-    }, 10500);
-
-    // Show bottom bar
-    setTimeout(function() {
-      document.getElementById('bottomBar').classList.add('visible');
-    }, 12000);
+/* Typewriter effect */
+function typewriterSequence(steps, container, callback) {
+  var si = 0;
+  function typeStep() {
+    if (si >= steps.length) { if (callback) callback(); return; }
+    var text = steps[si], ci = 0;
+    container.innerHTML = '<span class="thinking-cursor"></span>';
+    function typeChar() {
+      if (ci <= text.length) {
+        container.innerHTML = text.substring(0, ci) + '<span class="thinking-cursor"></span>';
+        ci++; setTimeout(typeChar, 25 + Math.random() * 15);
+      } else { si++; setTimeout(typeStep, 400); }
+    }
+    typeChar();
   }
+  typeStep();
+}
 
-  // ── Apply i18n to static HTML ──
-  function applyI18n() {
-    document.querySelectorAll('[data-i18n]').forEach(function(el) {
-      var key = el.getAttribute('data-i18n');
-      if (T[key] !== undefined) {
-        el.textContent = T[key];
-      }
+/* Toast */
+window.showToast = function(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('visible');
+  setTimeout(function() { t.classList.remove('visible'); }, 2800);
+};
+
+/* Briefing panel */
+window.openBriefing = function(index) {
+  var c = campaigns[index];
+  var el = document.getElementById('briefingContent');
+  var tlHTML = c.timeline.map(function(t, i) {
+    var last = i === c.timeline.length - 1;
+    return '<div class="timeline-item"><div class="timeline-dot-wrap"><div class="timeline-dot"></div>' +
+      (last ? '' : '<div class="timeline-line"></div>') +
+      '</div><div class="timeline-text"><strong>' + t.title + '</strong><p>' + t.desc + '</p></div></div>';
+  }).join('');
+  var plHTML = c.pillars.map(function(p) {
+    return '<div class="pillar-tag">\u2022 ' + p + '</div>';
+  }).join('');
+  el.innerHTML =
+    '<div class="briefing-label">' + c.label + '</div>' +
+    '<div class="briefing-sublabel">' + T.operationalBriefing + '</div>' +
+    '<div class="briefing-title">' + c.name + '</div>' +
+    '<div class="briefing-section"><h4>' + T.targetObjective + '</h4>' +
+    '<div class="briefing-kv"><span class="kv-label">' + T.segmentLabel + '</span><span class="kv-value">' + c.segment + '</span></div>' +
+    '<div class="briefing-kv"><span class="kv-label">' + T.sizeLabel + '</span><span class="kv-value">' + c.segmentSize + '</span></div>' +
+    '<div class="briefing-kv"><span class="kv-label">' + T.objectiveLabel + '</span><span class="kv-value">' + c.objective + '</span></div>' +
+    '<div class="briefing-kv"><span class="kv-label">' + T.kpisLabel + '</span><span class="kv-value">' + c.kpis + '</span></div>' +
+    '<div class="briefing-kv"><span class="kv-label">' + T.expectedRoiLabel + '</span><span class="kv-value" style="color:var(--green);font-weight:700">' + c.roi + '</span></div></div>' +
+    '<div class="briefing-section"><h4>' + T.emailSequence + '</h4><div class="briefing-timeline">' + tlHTML + '</div></div>' +
+    '<div class="briefing-section"><h4>' + T.contentPillars + '</h4><div class="briefing-pillars">' + plHTML + '</div></div>' +
+    '<div class="briefing-section"><h4>' + T.designDirection + '</h4><div class="briefing-design">' + c.design + '</div></div>' +
+    '<div class="validation-badge">' + T.validatedBadge + '</div>' +
+    '<div class="briefing-actions">' +
+    '<button class="btn-primary" onclick="showToast(\'' + T.toastSentOps.replace(/'/g, "\\'") + '\');closeBriefing();">' + T.btnSendOps + '</button>' +
+    '<button class="btn-secondary" onclick="showToast(\'' + T.toastApproved.replace(/'/g, "\\'") + '\');closeBriefing();">' + T.btnApprove + '</button></div>';
+  document.getElementById('briefingOverlay').classList.add('visible');
+  document.getElementById('briefingPanel').classList.add('visible');
+};
+
+window.closeBriefing = function() {
+  document.getElementById('briefingOverlay').classList.remove('visible');
+  document.getElementById('briefingPanel').classList.remove('visible');
+};
+
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeBriefing(); });
+
+/* Gauge animation */
+function animateGauge(pct) {
+  var circ = 2 * Math.PI * 16;
+  document.getElementById('gaugeFill').style.strokeDashoffset = circ * (1 - pct / 100);
+  animateCounter(document.getElementById('gaugeText'), pct, 'pct', 1500);
+}
+
+/* i18n */
+function applyI18n() {
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var k = el.getAttribute('data-i18n');
+    if (T[k] !== undefined) el.textContent = T[k];
+  });
+  document.querySelectorAll('[data-i18n-template]').forEach(function(el) {
+    var n = el.getAttribute('data-i18n-template').replace('campaign', '');
+    el.textContent = T.campaign + ' ' + n;
+  });
+  document.documentElement.lang = LOCALE;
+}
+
+/* Timer management */
+var demoTimers = [];
+function dt(fn, ms) { var id = setTimeout(fn, ms); demoTimers.push(id); return id; }
+function clearDT() { demoTimers.forEach(clearTimeout); demoTimers = []; }
+
+/* Reset for replay */
+function resetDemo() {
+  clearDT(); closeBriefing();
+  document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('visible'); });
+  ['klaviyo', 'shopify'].forEach(function(src) {
+    var card = document.getElementById(src + 'Card');
+    var st = document.getElementById(src + 'Status');
+    var bf = document.getElementById(src + 'BarFill');
+    var bar = document.getElementById(src + 'Bar');
+    var met = document.getElementById(src + 'Metrics');
+    card.classList.remove('connected');
+    st.textContent = T.connecting;
+    st.className = 'source-status connecting';
+    bf.style.width = '0%';
+    bar.style.display = '';
+    met.classList.remove('visible');
+    met.querySelectorAll('[data-counter]').forEach(function(el) { el.textContent = '0'; });
+  });
+  document.getElementById('analysisStatus').style.display = '';
+  document.getElementById('analysisProgress').classList.remove('visible');
+  document.getElementById('analysisProgress').style.display = '';
+  document.getElementById('analysisProgressFill').style.width = '0%';
+  var ep = document.getElementById('eventsPanel');
+  ep.classList.remove('visible');
+  ep.querySelectorAll('.event-row').forEach(function(r) {
+    r.classList.remove('visible');
+    r.querySelector('.event-bar-fill').style.width = '0%';
+  });
+  var ar = document.getElementById('analysisRow');
+  ar.classList.remove('visible');
+  document.querySelectorAll('.segment-card').forEach(function(c) { c.classList.remove('visible'); });
+  document.getElementById('thinkingBox').style.display = '';
+  document.getElementById('thinkingTypewriter').innerHTML = '<span class="thinking-cursor"></span>';
+  var cg = document.getElementById('campaignsGrid');
+  cg.classList.remove('visible');
+  cg.querySelectorAll('.campaign-card').forEach(function(c) {
+    c.classList.remove('visible');
+    c.style.opacity = '0';
+    c.style.transform = 'translateY(14px)';
+  });
+  document.getElementById('bottomBar').classList.remove('visible');
+  document.querySelectorAll('[data-counter-bottom]').forEach(function(el) { el.textContent = '0'; });
+  document.getElementById('gaugeFill').style.strokeDashoffset = (2 * Math.PI * 16).toString();
+  document.getElementById('gaugeText').textContent = '0%';
+  document.getElementById('badgeLive').classList.remove('visible');
+}
+
+/* Main demo orchestration */
+function runDemo() {
+  var s1 = document.getElementById('step1');
+  var s2 = document.getElementById('step2');
+  var s3 = document.getElementById('step3');
+
+  dt(function() { s1.classList.add('visible'); }, 200);
+
+  dt(function() { document.getElementById('klaviyoBarFill').style.width = '100%'; }, 500);
+  dt(function() { document.getElementById('shopifyBarFill').style.width = '100%'; }, 800);
+
+  dt(function() {
+    var c = document.getElementById('klaviyoCard'), s = document.getElementById('klaviyoStatus');
+    c.classList.add('connected'); s.textContent = T.connected;
+    s.classList.remove('connecting'); s.classList.add('status-connected');
+    document.getElementById('klaviyoBar').style.display = 'none';
+    var m = document.getElementById('klaviyoMetrics'); m.classList.add('visible'); runCounters(m);
+  }, 1900);
+
+  dt(function() {
+    var c = document.getElementById('shopifyCard'), s = document.getElementById('shopifyStatus');
+    c.classList.add('connected'); s.textContent = T.connected;
+    s.classList.remove('connecting'); s.classList.add('status-connected');
+    document.getElementById('shopifyBar').style.display = 'none';
+    var m = document.getElementById('shopifyMetrics'); m.classList.add('visible'); runCounters(m);
+    document.getElementById('badgeLive').classList.add('visible');
+  }, 2400);
+
+  dt(function() {
+    s2.classList.add('visible');
+    document.getElementById('analysisProgress').classList.add('visible');
+    dt(function() { document.getElementById('analysisProgressFill').style.width = '100%'; }, 100);
+  }, 3200);
+
+  dt(function() {
+    document.getElementById('analysisStatus').style.display = 'none';
+    document.getElementById('analysisProgress').style.display = 'none';
+    var p = document.getElementById('eventsPanel'); p.classList.add('visible');
+    p.querySelectorAll('.event-row').forEach(function(r, i) {
+      dt(function() {
+        r.classList.add('visible');
+        r.querySelector('.event-bar-fill').style.width = r.getAttribute('data-width') + '%';
+      }, i * 220);
     });
-    // Campaign number templates
-    document.querySelectorAll('[data-i18n-template]').forEach(function(el) {
-      var tpl = el.getAttribute('data-i18n-template');
-      if (tpl === 'campaign1') el.textContent = T.campaign + ' 1';
-      if (tpl === 'campaign2') el.textContent = T.campaign + ' 2';
-      if (tpl === 'campaign3') el.textContent = T.campaign + ' 3';
-      if (tpl === 'campaign4') el.textContent = T.campaign + ' 4';
+  }, 5200);
+
+  dt(function() {
+    var ar = document.getElementById('analysisRow');
+    ar.classList.add('visible');
+    buildDonut();
+    document.querySelectorAll('#segmentsGrid .segment-card').forEach(function(c, i) {
+      dt(function() { c.classList.add('visible'); }, i * 140);
     });
-    // Update html lang attribute
-    document.documentElement.lang = LOCALE;
-  }
+  }, 6800);
 
-  applyI18n();
+  dt(function() {
+    s3.classList.add('visible');
+    typewriterSequence(T.thinkingSteps, document.getElementById('thinkingTypewriter'), function() {
+      dt(function() {
+        document.getElementById('thinkingBox').style.display = 'none';
+        var g = document.getElementById('campaignsGrid'); g.classList.add('visible');
+        var cards = g.querySelectorAll('.campaign-card');
+        cards.forEach(function(c, i) {
+          dt(function() {
+            c.classList.add('visible');
+            c.style.opacity = '';
+            c.style.transform = '';
+          }, i * 280);
+        });
+        dt(function() {
+          document.getElementById('bottomBar').classList.add('visible');
+          runBottomCounters();
+          animateGauge(94);
+        }, cards.length * 280 + 400);
+      }, 300);
+    });
+  }, 8500);
+}
 
-  // Start the demo
-  runDemo();
+/* Replay */
+window.replayDemo = function() {
+  resetDemo();
+  dt(function() { applyI18n(); runDemo(); }, 300);
+};
+
+/* Init */
+applyI18n();
+buildDonut();
+runDemo();
 
 })();
 </script>
