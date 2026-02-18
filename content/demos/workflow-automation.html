@@ -3,1313 +3,557 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Workflow Automation Demo &mdash; Praxis AI</title>
+<title>Gestione Buste Paga e Adempimenti &mdash; Praxis AI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --terracotta: #C15F3C;
-    --terracotta-light: #d4805f;
-    --terracotta-glow: rgba(193, 95, 60, 0.35);
-    --cream: #F4F3EE;
-    --charcoal: #141413;
-    --mid: #b0aea5;
-    --border: #e8e6dc;
-    --green: #3a9a5c;
-    --green-light: #e6f5ec;
-    --yellow: #c9a227;
-    --yellow-light: #fdf6e0;
-    --blue: #3b7dd8;
-    --blue-light: #e8f0fc;
-    --purple: #7c5cbf;
-    --purple-light: #f0ebf8;
-    --node-shadow: 0 2px 12px rgba(20, 20, 19, 0.06), 0 1px 3px rgba(20, 20, 19, 0.08);
-    --node-shadow-active: 0 4px 24px rgba(20, 20, 19, 0.10), 0 2px 8px rgba(20, 20, 19, 0.12);
-  }
-
-  body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background: var(--cream);
-    color: var(--charcoal);
-    line-height: 1.5;
-    overflow-x: hidden;
-    min-height: 100vh;
-  }
-
-  /* === HEADER === */
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 40px;
-    border-bottom: 1px solid var(--border);
-    background: rgba(244, 243, 238, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-
-  .logo {
-    font-family: 'Caveat', cursive;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--terracotta);
-    letter-spacing: -0.5px;
-  }
-
-  .header-divider {
-    width: 1px;
-    height: 28px;
-    background: var(--border);
-  }
-
-  .header-title {
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--mid);
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .badge-live {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--green);
-    background: var(--green-light);
-    padding: 5px 12px;
-    border-radius: 100px;
-  }
-
-  .badge-live::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--green);
-    animation: pulse-dot 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse-dot {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  /* === TEMPLATE SELECTOR === */
-  .template-bar {
-    padding: 20px 40px;
-    border-bottom: 1px solid var(--border);
-    background: #fff;
-  }
-
-  .template-bar-label {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--mid);
-    margin-bottom: 12px;
-  }
-
-  .template-cards {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  .template-card {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 18px;
-    border-radius: 10px;
-    border: 1.5px solid var(--border);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    background: #fff;
-    position: relative;
-    user-select: none;
-  }
-
-  .template-card:hover {
-    border-color: var(--mid);
-  }
-
-  .template-card.active {
-    border-color: var(--terracotta);
-    background: rgba(193, 95, 60, 0.04);
-    box-shadow: 0 0 0 3px rgba(193, 95, 60, 0.08);
-  }
-
-  .template-card .t-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    flex-shrink: 0;
-  }
-
-  .template-card.active .t-icon { background: rgba(193, 95, 60, 0.12); }
-  .template-card:not(.active) .t-icon { background: rgba(176, 174, 165, 0.12); }
-
-  .template-card .t-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--charcoal);
-  }
-
-  .template-card:not(.active) .t-label { color: var(--mid); }
-
-  .coming-soon {
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    background: var(--border);
-    color: var(--mid);
-    padding: 2px 7px;
-    border-radius: 4px;
-    margin-left: 2px;
-  }
-
-  /* === MAIN CANVAS === */
-  .canvas-wrapper {
-    padding: 40px;
-    overflow-x: auto;
-    min-height: 520px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .canvas {
-    position: relative;
-    width: 1100px;
-    min-height: 460px;
-    flex-shrink: 0;
-  }
-
-  /* === WORKFLOW NODES === */
-  .node {
-    position: absolute;
-    background: #fff;
-    border-radius: 14px;
-    box-shadow: var(--node-shadow);
-    border: 1.5px solid var(--border);
-    padding: 16px 18px;
-    width: 190px;
-    transition: all 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
-    z-index: 2;
-    cursor: default;
-  }
-
-  .node:hover {
-    box-shadow: var(--node-shadow-active);
-    transform: translateY(-1px);
-  }
-
-  .node.executing {
-    border-color: var(--terracotta);
-    box-shadow: 0 0 0 3px var(--terracotta-glow), var(--node-shadow-active);
-  }
-
-  .node.completed {
-    border-color: var(--green);
-    box-shadow: 0 0 0 3px rgba(58, 154, 92, 0.15), var(--node-shadow);
-  }
-
-  .node-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-
-  .node-title {
-    font-size: 13px;
-    font-weight: 650;
-    margin-bottom: 3px;
-    color: var(--charcoal);
-  }
-
-  .node-desc {
-    font-size: 11px;
-    color: var(--mid);
-    line-height: 1.45;
-  }
-
-  .node-status {
-    margin-top: 8px;
-    font-size: 11px;
-    font-weight: 600;
-    display: none;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .node.executing .node-status,
-  .node.completed .node-status {
-    display: flex;
-  }
-
-  .node.executing .node-status {
-    color: var(--terracotta);
-  }
-
-  .node.completed .node-status {
-    color: var(--green);
-  }
-
-  .status-spinner {
-    width: 12px;
-    height: 12px;
-    border: 2px solid var(--terracotta-glow);
-    border-top-color: var(--terracotta);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    display: none;
-  }
-
-  .node.executing .status-spinner { display: block; }
-  .node.completed .status-spinner { display: none; }
-
-  /* Decision node special shape */
-  .node.decision {
-    width: 170px;
-    text-align: center;
-    background: linear-gradient(135deg, #fffef8, #fff);
-  }
-
-  .node.decision .node-icon { margin: 0 auto 10px; }
-
-  /* Node accent colors */
-  .accent-green .node-icon { background: var(--green-light); }
-  .accent-terracotta .node-icon { background: rgba(193, 95, 60, 0.1); }
-  .accent-yellow .node-icon { background: var(--yellow-light); }
-  .accent-blue .node-icon { background: var(--blue-light); }
-  .accent-purple .node-icon { background: var(--purple-light); }
-
-  .accent-green.executing { border-color: var(--green); box-shadow: 0 0 0 3px rgba(58, 154, 92, 0.2), var(--node-shadow-active); }
-  .accent-terracotta.executing { border-color: var(--terracotta); box-shadow: 0 0 0 3px var(--terracotta-glow), var(--node-shadow-active); }
-  .accent-yellow.executing { border-color: var(--yellow); box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.2), var(--node-shadow-active); }
-  .accent-blue.executing { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59, 125, 216, 0.2), var(--node-shadow-active); }
-  .accent-purple.executing { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(124, 92, 191, 0.2), var(--node-shadow-active); }
-
-  /* === SVG CONNECTIONS === */
-  .connections-svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .connection-line {
-    fill: none;
-    stroke: var(--border);
-    stroke-width: 2;
-    stroke-dasharray: 8 4;
-    animation: dash-flow 1s linear infinite;
-  }
-
-  .connection-line.active {
-    stroke: var(--terracotta);
-    stroke-width: 2.5;
-    filter: drop-shadow(0 0 4px var(--terracotta-glow));
-  }
-
-  .connection-line.completed {
-    stroke: var(--green);
-    stroke-width: 2;
-    stroke-dasharray: none;
-    animation: none;
-  }
-
-  .connection-line.no-path {
-    stroke: var(--mid);
-    opacity: 0.5;
-  }
-
-  .connection-line.no-path.active {
-    stroke: var(--mid);
-    opacity: 0.6;
-    filter: none;
-  }
-
-  @keyframes dash-flow {
-    to { stroke-dashoffset: -12; }
-  }
-
-  .connection-arrow {
-    fill: var(--border);
-    transition: fill 0.3s ease;
-  }
-
-  .connection-arrow.active { fill: var(--terracotta); }
-  .connection-arrow.completed { fill: var(--green); }
-
-  /* Branch labels */
-  .branch-label {
-    position: absolute;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 4px;
-    z-index: 3;
-    letter-spacing: 0.3px;
-  }
-
-  .branch-label.yes {
-    color: var(--green);
-    background: var(--green-light);
-  }
-
-  .branch-label.no {
-    color: #c0392b;
-    background: #fdecea;
-  }
-
-  /* === TRAVELLING PULSE === */
-  .travel-pulse {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--terracotta);
-    box-shadow: 0 0 12px var(--terracotta-glow), 0 0 24px rgba(193, 95, 60, 0.2);
-    z-index: 10;
-    display: none;
-    pointer-events: none;
-    transform: translate(-50%, -50%);
-  }
-
-  .travel-pulse.visible { display: block; }
-
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-
-  /* === RUN BUTTON === */
-  .run-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px 40px;
-    gap: 16px;
-  }
-
-  .btn-run {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 32px;
-    background: var(--terracotta);
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 650;
-    font-family: inherit;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(193, 95, 60, 0.25);
-  }
-
-  .btn-run:hover:not(:disabled) {
-    background: var(--terracotta-light);
-    box-shadow: 0 4px 16px rgba(193, 95, 60, 0.3);
-    transform: translateY(-1px);
-  }
-
-  .btn-run:active:not(:disabled) {
-    transform: translateY(0);
-  }
-
-  .btn-run:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  .btn-run .play-icon {
-    width: 0;
-    height: 0;
-    border-left: 8px solid #fff;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
-    flex-shrink: 0;
-  }
-
-  .run-result {
-    display: none;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 20px;
-    border-radius: 10px;
-    background: var(--green-light);
-    border: 1px solid rgba(58, 154, 92, 0.2);
-    font-size: 13px;
-    font-weight: 500;
-    color: #2d7a47;
-    animation: fadeSlideUp 0.5s ease;
-  }
-
-  .run-result.visible { display: flex; }
-
-  @keyframes fadeSlideUp {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .result-icon {
-    width: 28px;
-    height: 28px;
-    background: var(--green);
-    color: #fff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-
-  /* === STATS PANEL === */
-  .stats-panel {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    padding: 24px 40px 40px;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  .stat-card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 20px;
-    border: 1px solid var(--border);
-    text-align: center;
-    transition: box-shadow 0.2s ease;
-  }
-
-  .stat-card:hover {
-    box-shadow: var(--node-shadow-active);
-  }
-
-  .stat-value {
-    font-size: 26px;
-    font-weight: 700;
-    color: var(--charcoal);
-    letter-spacing: -0.5px;
-  }
-
-  .stat-label {
-    font-size: 12px;
-    color: var(--mid);
-    margin-top: 4px;
-    font-weight: 500;
-  }
-
-  .stat-card:nth-child(1) .stat-value { color: var(--terracotta); }
-  .stat-card:nth-child(2) .stat-value { color: var(--charcoal); }
-  .stat-card:nth-child(3) .stat-value { color: var(--green); }
-  .stat-card:nth-child(4) .stat-value { color: var(--blue); }
-
-  /* === RESPONSIVE === */
-  @media (max-width: 1200px) {
-    .canvas-wrapper {
-      align-items: flex-start;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .header {
-      padding: 16px 20px;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .template-bar { padding: 16px 20px; }
-    .canvas-wrapper { padding: 20px; }
-
-    .stats-panel {
-      grid-template-columns: repeat(2, 1fr);
-      padding: 20px;
-    }
-
-    .run-bar {
-      flex-direction: column;
-      padding: 20px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .stats-panel { grid-template-columns: 1fr; }
-    .header-divider { display: none; }
-    .header-title { display: none; }
-  }
-
-  /* === DECISION THINKING ANIMATION === */
-  .thinking-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 14px;
-    background: rgba(201, 162, 39, 0.05);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 5;
-  }
-
-  .thinking-overlay.visible {
-    display: flex;
-  }
-
-  .thinking-dots {
-    display: flex;
-    gap: 4px;
-  }
-
-  .thinking-dots span {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--yellow);
-    animation: thinking-bounce 1.2s ease-in-out infinite;
-  }
-
-  .thinking-dots span:nth-child(2) { animation-delay: 0.15s; }
-  .thinking-dots span:nth-child(3) { animation-delay: 0.3s; }
-
-  @keyframes thinking-bounce {
-    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-    30% { transform: translateY(-6px); opacity: 1; }
-  }
-
-  /* === FOOTER === */
-  .footer {
-    text-align: center;
-    padding: 20px 40px 32px;
-    font-size: 12px;
-    color: var(--mid);
-  }
-
-  .footer a {
-    color: var(--terracotta);
-    text-decoration: none;
-    font-weight: 600;
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0f172a;--navy-light:#1e3a5f;--navy-muted:#334155;
+  --silver:#94a3b8;--surface:#f0f4f8;--surface-light:#f8fafc;
+  --surface-dark:#e2e8f0;--ice:#fafbfd;--border:#cbd5e1;
+  --white:#ffffff;--accent-green:#16a34a;--accent-amber:#d97706;--accent-red:#dc2626;
+  --font-body:'Inter',system-ui,-apple-system,sans-serif;
+  --font-display:'Caveat',cursive;
+  --shadow-sm:0 1px 3px rgba(15,23,42,0.06);
+  --shadow-md:0 4px 12px rgba(15,23,42,0.08);
+  --shadow-lg:0 8px 30px rgba(15,23,42,0.12);
+  --radius-sm:8px;--radius-md:12px;--radius-lg:16px;
+}
+html{font-size:16px}
+body{font-family:var(--font-body);background:var(--surface-light);color:var(--navy);min-height:100vh;-webkit-font-smoothing:antialiased;padding-bottom:80px;line-height:1.5}
+
+/* ── Header ── */
+.header{display:flex;align-items:center;justify-content:space-between;padding:20px 40px;border-bottom:1px solid var(--border);background:rgba(248,250,252,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);position:sticky;top:0;z-index:100}
+.header-left{display:flex;align-items:center;gap:20px}
+.header-brand{display:flex;flex-direction:column;gap:2px}
+.header-title{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--navy);line-height:1}
+.header-subtitle{font-size:12px;color:var(--silver);font-weight:500;letter-spacing:.02em}
+.header-right{display:flex;align-items:center;gap:12px}
+.badge-live{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--accent-green);background:rgba(22,163,74,0.1);padding:5px 12px;border-radius:100px;opacity:0;transition:opacity .4s}
+.badge-live.visible{opacity:1}
+.badge-live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent-green);animation:pulse-dot 2s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── Main ── */
+.main{max-width:1080px;margin:0 auto;padding:0 32px}
+.section{margin-top:32px;opacity:0;transform:translateY(20px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
+.section.visible{opacity:1;transform:translateY(0)}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--silver);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--navy);color:var(--white);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* ── Step 1: Employee Grid ── */
+.employee-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.employee-count{font-size:15px;font-weight:700;color:var(--navy)}
+.employee-count span{color:var(--navy-light);font-weight:600}
+.employee-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.emp-card{background:var(--white);border-radius:var(--radius-md);border:1px solid var(--border);padding:18px 20px;box-shadow:var(--shadow-sm);opacity:0;transform:translateY(16px);transition:all .5s cubic-bezier(.16,1,.3,1);position:relative;cursor:default}
+.emp-card.visible{opacity:1;transform:translateY(0)}
+.emp-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.emp-name{font-size:15px;font-weight:700;color:var(--navy)}
+.ccnl-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.ccnl-commercio{background:rgba(30,58,95,0.1);color:var(--navy-light)}
+.ccnl-metalmeccanico{background:rgba(22,163,74,0.1);color:var(--accent-green)}
+.ccnl-studi{background:rgba(217,119,6,0.1);color:var(--accent-amber)}
+.emp-details{font-size:13px;color:var(--silver);line-height:1.6}
+.emp-details strong{color:var(--navy-muted);font-weight:600}
+.emp-tipo{display:inline-block;margin-top:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;background:var(--surface);color:var(--navy-muted)}
+
+/* Warning badge */
+.warning-badge{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;background:rgba(217,119,6,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;animation:pulse-warn 2s ease-in-out infinite;font-size:14px;border:none;outline:none;z-index:5}
+@keyframes pulse-warn{0%,100%{box-shadow:0 0 0 0 rgba(217,119,6,0.3)}50%{box-shadow:0 0 0 8px rgba(217,119,6,0)}}
+
+/* Alert Panel */
+.alert-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.5);display:none;align-items:center;justify-content:center;z-index:200;padding:20px}
+.alert-overlay.visible{display:flex}
+.alert-panel{background:var(--white);border-radius:var(--radius-lg);max-width:520px;width:100%;padding:28px;box-shadow:var(--shadow-lg);border-left:4px solid var(--accent-amber);animation:slideUp .4s cubic-bezier(.16,1,.3,1)}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.alert-panel h3{font-size:16px;font-weight:700;color:var(--accent-amber);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.alert-panel p{font-size:14px;color:var(--navy-muted);line-height:1.7;margin-bottom:8px}
+.alert-panel ul{margin:8px 0 12px 20px;font-size:14px;color:var(--navy-muted);line-height:1.8}
+.alert-panel .note{font-size:13px;color:var(--silver);font-style:italic;border-top:1px solid var(--border);padding-top:12px;margin-top:12px}
+.alert-close{margin-top:16px;background:var(--navy);color:var(--white);border:none;padding:10px 24px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;transition:background .2s}
+.alert-close:hover{background:var(--navy-light)}
+
+/* ── Step 2: Payroll ── */
+.payroll-card{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);padding:28px;box-shadow:var(--shadow-md);overflow:hidden}
+.payroll-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid var(--navy)}
+.payroll-title{font-size:18px;font-weight:700;color:var(--navy)}
+.payroll-period{font-size:13px;color:var(--silver);font-weight:500}
+.payroll-employee{font-size:14px;color:var(--navy-muted);margin-bottom:16px}
+.payroll-employee strong{color:var(--navy)}
+.payroll-lines{display:flex;flex-direction:column;gap:0}
+.payroll-line{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--surface-dark);opacity:0;transform:translateX(-12px);transition:opacity .4s,transform .4s}
+.payroll-line.visible{opacity:1;transform:translateX(0)}
+.payroll-line:last-child{border-bottom:none}
+.payroll-line-label{font-size:13px;color:var(--navy-muted);font-weight:500}
+.payroll-line-value{font-size:14px;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums}
+.payroll-line-value.negative{color:var(--accent-red)}
+.payroll-line-value.positive{color:var(--accent-green)}
+.payroll-line.total{border-top:2px solid var(--navy);border-bottom:none;margin-top:4px;padding-top:14px}
+.payroll-line.total .payroll-line-label{font-weight:700;color:var(--navy);font-size:15px}
+.payroll-line.total .payroll-line-value{font-size:18px;color:var(--navy)}
+.payroll-line.tfr{background:var(--surface);margin:8px -28px -28px;padding:12px 28px;border-bottom:none}
+.payroll-line.tfr .payroll-line-label{font-size:12px;font-style:italic;color:var(--silver)}
+.payroll-line.tfr .payroll-line-value{font-size:13px;color:var(--silver)}
+.payroll-spinner{display:flex;align-items:center;gap:10px;margin-bottom:16px;font-size:13px;font-weight:600;color:var(--navy-muted)}
+.spinner{width:16px;height:16px;border:2.5px solid var(--surface-dark);border-top-color:var(--navy);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Step 3: Compliance ── */
+.compliance-card{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);padding:28px;box-shadow:var(--shadow-sm)}
+.compliance-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--surface-dark);opacity:0;transform:translateX(-10px);transition:opacity .4s,transform .4s}
+.compliance-item.visible{opacity:1;transform:translateX(0)}
+.compliance-item:last-child{border-bottom:none}
+.compliance-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:1px;background:var(--surface);color:var(--silver);transition:all .4s}
+.compliance-icon.ok{background:rgba(22,163,74,0.1);color:var(--accent-green)}
+.compliance-icon.warn{background:rgba(217,119,6,0.1);color:var(--accent-amber)}
+.compliance-text{font-size:13px;color:var(--navy-muted);line-height:1.5}
+.compliance-text strong{color:var(--navy);font-weight:600}
+.compliance-stats{margin-top:16px;padding-top:16px;border-top:1px solid var(--border);font-size:14px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px;opacity:0;transition:opacity .4s}
+.compliance-stats.visible{opacity:1}
+
+/* ── Step 4: UniLav ── */
+.unilav-card{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);padding:28px;box-shadow:var(--shadow-sm)}
+.unilav-header{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.unilav-sub{font-size:13px;color:var(--silver);margin-bottom:20px}
+.unilav-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.unilav-row{display:flex;flex-direction:column;padding:10px 14px;border-bottom:1px solid var(--surface-dark);opacity:0;transition:opacity .4s,background .3s}
+.unilav-row.visible{opacity:1;background:rgba(22,163,74,0.03)}
+.unilav-row-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--silver);margin-bottom:2px}
+.unilav-row-value{font-size:14px;font-weight:600;color:var(--navy)}
+.unilav-validation{margin-top:20px;padding:16px;background:rgba(22,163,74,0.06);border-radius:var(--radius-sm);border:1px solid rgba(22,163,74,0.15);font-size:14px;font-weight:600;color:var(--accent-green);text-align:center;opacity:0;transition:opacity .4s}
+.unilav-validation.visible{opacity:1}
+
+/* ── CTA ── */
+.cta-bar{margin-top:32px;text-align:center;opacity:0;transform:translateY(16px);transition:all .6s cubic-bezier(.16,1,.3,1)}
+.cta-bar.visible{opacity:1;transform:translateY(0)}
+.cta-button{display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:var(--white);border:none;padding:14px 32px;border-radius:var(--radius-md);font-size:15px;font-weight:700;cursor:pointer;transition:background .2s,transform .15s}
+.cta-button:hover{background:var(--navy-light);transform:translateY(-1px)}
+.replay-btn{margin-top:16px;display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--border);color:var(--silver);padding:8px 18px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.replay-btn:hover{border-color:var(--navy);color:var(--navy)}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .header{padding:16px 20px}
+  .main{padding:0 16px}
+  .employee-grid{grid-template-columns:1fr}
+  .unilav-grid{grid-template-columns:1fr}
+  .payroll-card{padding:20px}
+  .payroll-line.tfr{margin:8px -20px -20px;padding:12px 20px}
+}
+@media(max-width:480px){
+  .header-title{font-size:22px}
+  .header-subtitle{display:none}
+}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header class="header">
+<div class="header">
   <div class="header-left">
-    <div class="logo">Praxis AI</div>
-    <div class="header-divider"></div>
-    <div class="header-title" data-i18n="headerTitle">Workflow Automation &mdash; Demo</div>
+    <div class="header-brand">
+      <div class="header-title" data-i18n="headerTitle">Praxis AI</div>
+      <div class="header-subtitle" data-i18n="headerSubtitle">Gestione Buste Paga e Adempimenti</div>
+    </div>
   </div>
   <div class="header-right">
-    <div class="badge-live" data-i18n="badgeLive">Live Preview</div>
-  </div>
-</header>
-
-<!-- TEMPLATE SELECTOR -->
-<div class="template-bar">
-  <div class="template-bar-label" data-i18n="templateBarLabel">Workflow Templates</div>
-  <div class="template-cards">
-    <div class="template-card active" data-template="lead">
-      <div class="t-icon">&#x1F3AF;</div>
-      <div class="t-label" data-i18n="tplLeadQualification">Lead Qualification</div>
-    </div>
-    <div class="template-card" data-template="invoice">
-      <div class="t-icon">&#x1F4C4;</div>
-      <div class="t-label" data-i18n="tplInvoiceProcessing">Invoice Processing</div>
-      <span class="coming-soon" data-i18n="comingSoon">Soon</span>
-    </div>
-    <div class="template-card" data-template="support">
-      <div class="t-icon">&#x1F3AB;</div>
-      <div class="t-label" data-i18n="tplSupportTicketRouting">Support Ticket Routing</div>
-      <span class="coming-soon" data-i18n="comingSoon">Soon</span>
-    </div>
+    <div class="badge-live" id="badgeLive" data-i18n="badgeLive">Attivo</div>
   </div>
 </div>
 
-<!-- WORKFLOW CANVAS -->
-<div class="canvas-wrapper">
-  <div class="canvas" id="canvas">
-    <!-- SVG connections drawn by JS -->
-    <svg class="connections-svg" id="connectionsSvg">
-      <defs>
-        <marker id="arrow-default" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <polygon points="0 0, 8 3, 0 6" class="connection-arrow" />
-        </marker>
-        <marker id="arrow-active" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <polygon points="0 0, 8 3, 0 6" class="connection-arrow active" />
-        </marker>
-        <marker id="arrow-completed" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <polygon points="0 0, 8 3, 0 6" class="connection-arrow completed" />
-        </marker>
-      </defs>
-    </svg>
+<div class="main">
 
-    <!-- NODES -->
-    <!-- Row 1: Trigger -->
-    <div class="node accent-green" id="node-trigger" style="left: 0px; top: 60px;">
-      <div class="node-icon">&#x26A1;</div>
-      <div class="node-title" data-i18n="nodeNewLead">New Lead Received</div>
-      <div class="node-desc" data-i18n="nodeNewLeadDesc">From website form, email, or CRM</div>
-      <div class="node-status"><div class="status-spinner"></div><span class="status-text">Processing...</span></div>
+  <!-- Step 1: Employee Dashboard -->
+  <div class="section" id="step1">
+    <div class="section-label"><span class="step-num">1</span> <span data-i18n="step1Label">Anagrafica Dipendenti</span></div>
+    <div class="employee-header">
+      <div class="employee-count"><span data-i18n="employeeCount">6 dipendenti attivi</span></div>
     </div>
-
-    <!-- Row 1: AI Scoring -->
-    <div class="node accent-terracotta" id="node-ai" style="left: 240px; top: 60px;">
-      <div class="node-icon">&#x1F9E0;</div>
-      <div class="node-title" data-i18n="nodeAIScoring">AI Lead Scoring</div>
-      <div class="node-desc" data-i18n="nodeAIScoringDesc">Analyze company size, industry, intent signals</div>
-      <div class="node-status"><div class="status-spinner"></div><span class="status-text">Processing...</span></div>
-    </div>
-
-    <!-- Row 1: Decision -->
-    <div class="node decision accent-yellow" id="node-decision" style="left: 480px; top: 55px;">
-      <div class="node-icon">&#x2696;&#xFE0F;</div>
-      <div class="node-title" data-i18n="nodeScoreThreshold">Score &gt; 70?</div>
-      <div class="node-desc" data-i18n="nodeScoreThresholdDesc">AI confidence threshold</div>
-      <div class="node-status"><div class="status-spinner"></div><span class="status-text">Processing...</span></div>
-      <div class="thinking-overlay" id="thinkingOverlay">
-        <div class="thinking-dots"><span></span><span></span><span></span></div>
+    <div class="employee-grid" id="empGrid">
+      <div class="emp-card" data-idx="0">
+        <div class="emp-card-top">
+          <div class="emp-name">Mario Rossi</div>
+          <span class="ccnl-badge ccnl-commercio">CCNL Commercio</span>
+        </div>
+        <div class="emp-details"><span data-i18n="hiredLabel">Assunto</span>: 15/12/2025</div>
+        <div class="emp-tipo" data-i18n="tipo0">Periodo di prova</div>
+        <button class="warning-badge" id="warningBadge" title="Attenzione">&#9888;</button>
+      </div>
+      <div class="emp-card" data-idx="1">
+        <div class="emp-card-top">
+          <div class="emp-name">Laura Bianchi</div>
+          <span class="ccnl-badge ccnl-metalmeccanico">CCNL Metalmeccanico</span>
+        </div>
+        <div class="emp-details"><span data-i18n="hiredLabelF">Assunta</span>: 03/05/2023</div>
+        <div class="emp-tipo" data-i18n="tipo1">Tempo indeterminato</div>
+      </div>
+      <div class="emp-card" data-idx="2">
+        <div class="emp-card-top">
+          <div class="emp-name">Giuseppe Verdi</div>
+          <span class="ccnl-badge ccnl-commercio">CCNL Commercio</span>
+        </div>
+        <div class="emp-details"><span data-i18n="hiredLabel">Assunto</span>: 01/09/2024</div>
+        <div class="emp-tipo" data-i18n="tipo2">Tempo determinato</div>
+      </div>
+      <div class="emp-card" data-idx="3">
+        <div class="emp-card-top">
+          <div class="emp-name">Anna Colombo</div>
+          <span class="ccnl-badge ccnl-studi">CCNL Studi Prof.</span>
+        </div>
+        <div class="emp-details"><span data-i18n="hiredLabelF">Assunta</span>: 10/01/2024</div>
+        <div class="emp-tipo" data-i18n="tipo3">Part-time 50%</div>
+      </div>
+      <div class="emp-card" data-idx="4">
+        <div class="emp-card-top">
+          <div class="emp-name">Marco Ferrari</div>
+          <span class="ccnl-badge ccnl-metalmeccanico">CCNL Metalmeccanico</span>
+        </div>
+        <div class="emp-details"><span data-i18n="hiredLabel">Assunto</span>: 22/03/2022</div>
+        <div class="emp-tipo" data-i18n="tipo4">Tempo indeterminato</div>
+      </div>
+      <div class="emp-card" data-idx="5">
+        <div class="emp-card-top">
+          <div class="emp-name">Elena Russo</div>
+          <span class="ccnl-badge ccnl-commercio">CCNL Commercio</span>
+        </div>
+        <div class="emp-details"><span data-i18n="hiredLabelF">Assunta</span>: 01/11/2025</div>
+        <div class="emp-tipo" data-i18n="tipo5">Apprendistato</div>
       </div>
     </div>
-
-    <!-- Branch labels -->
-    <div class="branch-label yes" id="label-yes" style="left: 632px; top: 34px;" data-i18n="branchYes">YES</div>
-    <div class="branch-label no" id="label-no" style="left: 632px; top: 210px;" data-i18n="branchNo">NO</div>
-
-    <!-- YES PATH -->
-    <div class="node accent-blue" id="node-enrich" style="left: 700px; top: 0px;">
-      <div class="node-icon">&#x1F50D;</div>
-      <div class="node-title" data-i18n="nodeEnrichData">Enrich Data</div>
-      <div class="node-desc" data-i18n="nodeEnrichDataDesc">Pull company info from LinkedIn, Clearbit</div>
-      <div class="node-status"><div class="status-spinner"></div><span class="status-text">Processing...</span></div>
-    </div>
-
-    <div class="node accent-blue" id="node-assign" style="left: 700px; top: 130px;">
-      <div class="node-icon">&#x1F464;</div>
-      <div class="node-title" data-i18n="nodeAssignSalesRep">Assign to Sales Rep</div>
-      <div class="node-desc" data-i18n="nodeAssignSalesRepDesc">Route to available rep by territory</div>
-      <div class="node-status"><div class="status-spinner"></div><span class="status-text">Processing...</span></div>
-    </div>
-
-    <div class="node accent-purple" id="node-email" style="left: 930px; top: 65px;">
-      <div class="node-icon">&#x2709;&#xFE0F;</div>
-      <div class="node-title" data-i18n="nodeSendWelcomeEmail">Send Welcome Email</div>
-      <div class="node-desc" data-i18n="nodeSendWelcomeEmailDesc">Personalized email via template</div>
-      <div class="node-status"><div class="status-spinner"></div><span class="status-text">Processing...</span></div>
-    </div>
-
-    <!-- NO PATH -->
-    <div class="node accent-blue" id="node-nurture" style="left: 700px; top: 270px;">
-      <div class="node-icon">&#x1F4E7;</div>
-      <div class="node-title" data-i18n="nodeNurtureCampaign">Add to Nurture Campaign</div>
-      <div class="node-desc" data-i18n="nodeNurtureCampaignDesc">Automated drip email sequence</div>
-      <div class="node-status"><div class="status-spinner"></div><span class="status-text">Processing...</span></div>
-    </div>
-
-    <div class="node accent-purple" id="node-rescore" style="left: 930px; top: 270px;">
-      <div class="node-icon">&#x1F504;</div>
-      <div class="node-title" data-i18n="nodeRescore">Re-score in 30 Days</div>
-      <div class="node-desc" data-i18n="nodeRescoreDesc">Schedule re-evaluation</div>
-      <div class="node-status"><div class="status-spinner"></div><span class="status-text">Processing...</span></div>
-    </div>
-
-    <!-- Travelling pulse -->
-    <div class="travel-pulse" id="travelPulse"></div>
   </div>
+
+  <!-- Step 2: Payroll Processing -->
+  <div class="section" id="step2">
+    <div class="section-label"><span class="step-num">2</span> <span data-i18n="step2Label">Elaborazione Busta Paga</span></div>
+    <div class="payroll-spinner" id="payrollSpinner"><div class="spinner"></div><span data-i18n="payrollProcessing">Elaborazione in corso...</span></div>
+    <div class="payroll-card" id="payrollCard" style="display:none">
+      <div class="payroll-header">
+        <div class="payroll-title" data-i18n="payslipTitle">Cedolino Paga</div>
+        <div class="payroll-period" data-i18n="payslipPeriod">Periodo: Gennaio 2026</div>
+      </div>
+      <div class="payroll-employee"><strong>Mario Rossi</strong> &mdash; <span data-i18n="payslipCcnl">CCNL Commercio &mdash; Livello IV</span></div>
+      <div class="payroll-lines" id="payrollLines">
+        <div class="payroll-line" data-anim-val="1750.00" data-prefix=""><span class="payroll-line-label" data-i18n="pl0">Retribuzione Base</span><span class="payroll-line-value">&euro;0,00</span></div>
+        <div class="payroll-line" data-anim-val="156.00" data-prefix=""><span class="payroll-line-label" data-i18n="pl1">Straordinari (12h)</span><span class="payroll-line-value">&euro;0,00</span></div>
+        <div class="payroll-line" data-anim-val="1906.00" data-prefix=""><span class="payroll-line-label" data-i18n="pl2">Totale Lordo</span><span class="payroll-line-value" style="font-weight:800">&euro;0,00</span></div>
+        <div class="payroll-line" data-anim-val="175.16" data-prefix="-"><span class="payroll-line-label" data-i18n="pl3">INPS (9,19%)</span><span class="payroll-line-value negative">&euro;0,00</span></div>
+        <div class="payroll-line" data-anim-val="380.94" data-prefix="-"><span class="payroll-line-label" data-i18n="pl4">IRPEF</span><span class="payroll-line-value negative">&euro;0,00</span></div>
+        <div class="payroll-line" data-anim-val="120.00" data-prefix="+"><span class="payroll-line-label" data-i18n="pl5">Detrazioni lavoro dipendente</span><span class="payroll-line-value positive">&euro;0,00</span></div>
+        <div class="payroll-line" data-anim-val="28.59" data-prefix="-"><span class="payroll-line-label" data-i18n="pl6">Addizionale Regionale</span><span class="payroll-line-value negative">&euro;0,00</span></div>
+        <div class="payroll-line" data-anim-val="14.29" data-prefix="-"><span class="payroll-line-label" data-i18n="pl7">Addizionale Comunale</span><span class="payroll-line-value negative">&euro;0,00</span></div>
+        <div class="payroll-line total" data-anim-val="1427.02" data-prefix=""><span class="payroll-line-label" data-i18n="pl8">Netto in busta</span><span class="payroll-line-value">&euro;0,00</span></div>
+        <div class="payroll-line tfr" data-anim-val="145.72" data-prefix=""><span class="payroll-line-label" data-i18n="pl9">TFR accantonato</span><span class="payroll-line-value">&euro;0,00</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Compliance Check -->
+  <div class="section" id="step3">
+    <div class="section-label"><span class="step-num">3</span> <span data-i18n="step3Label">Verifica Conformit&agrave;</span></div>
+    <div class="compliance-card" id="complianceCard">
+      <div class="compliance-item" data-status="ok">
+        <div class="compliance-icon">&#10003;</div>
+        <div class="compliance-text"><strong data-i18n="c0title">Aggiornamento CCNL:</strong> <span data-i18n="c0desc">Tabelle retributive Commercio aggiornate al 01/01/2026</span></div>
+      </div>
+      <div class="compliance-item" data-status="ok">
+        <div class="compliance-icon">&#10003;</div>
+        <div class="compliance-text"><strong data-i18n="c1title">Minimali INPS:</strong> <span data-i18n="c1desc">Contributi conformi ai minimali 2026</span></div>
+      </div>
+      <div class="compliance-item" data-status="warn">
+        <div class="compliance-icon">&#9888;</div>
+        <div class="compliance-text"><strong data-i18n="c2title">Conguaglio fiscale:</strong> <span data-i18n="c2desc">Conguaglio IRPEF di fine anno: differenza di &euro;234,00 da regolarizzare</span></div>
+      </div>
+      <div class="compliance-item" data-status="ok">
+        <div class="compliance-icon">&#10003;</div>
+        <div class="compliance-text"><strong data-i18n="c3title">Autoliquidazione INAIL:</strong> <span data-i18n="c3desc">Premio INAIL calcolato &mdash; Scadenza: 16/02/2026</span></div>
+      </div>
+      <div class="compliance-item" data-status="ok">
+        <div class="compliance-icon">&#10003;</div>
+        <div class="compliance-text"><strong data-i18n="c4title">TFR:</strong> <span data-i18n="c4desc">Accantonamento TFR conforme all'Art. 2120 c.c.</span></div>
+      </div>
+      <div class="compliance-stats" id="complianceStats" data-i18n="complianceResult">4/5 conformi &mdash; 1 da verificare</div>
+    </div>
+  </div>
+
+  <!-- Step 4: UniLav Generation -->
+  <div class="section" id="step4">
+    <div class="section-label"><span class="step-num">4</span> <span data-i18n="step4Label">Generazione Comunicazione UniLav</span></div>
+    <div class="unilav-card" id="unilavCard">
+      <div class="unilav-header" data-i18n="unilavTitle">Comunicazione Obbligatoria</div>
+      <div class="unilav-sub" data-i18n="unilavSub">Modello UniLav &mdash; Assunzione</div>
+      <div class="unilav-grid" id="unilavGrid">
+        <div class="unilav-row"><div class="unilav-row-label" data-i18n="u0label">Tipo comunicazione</div><div class="unilav-row-value" data-i18n="u0val">Assunzione</div></div>
+        <div class="unilav-row"><div class="unilav-row-label" data-i18n="u1label">Lavoratore</div><div class="unilav-row-value">Elena Russo</div></div>
+        <div class="unilav-row"><div class="unilav-row-label" data-i18n="u2label">Data assunzione</div><div class="unilav-row-value">01/11/2025</div></div>
+        <div class="unilav-row"><div class="unilav-row-label" data-i18n="u3label">Tipologia contratto</div><div class="unilav-row-value" data-i18n="u3val">Apprendistato professionalizzante</div></div>
+        <div class="unilav-row"><div class="unilav-row-label">CCNL</div><div class="unilav-row-value" data-i18n="u4val">Commercio</div></div>
+        <div class="unilav-row"><div class="unilav-row-label" data-i18n="u5label">Qualifica</div><div class="unilav-row-value" data-i18n="u5val">Impiegata di III livello</div></div>
+        <div class="unilav-row"><div class="unilav-row-label" data-i18n="u6label">Orario</div><div class="unilav-row-value" data-i18n="u6val">Full-time (40h)</div></div>
+        <div class="unilav-row"><div class="unilav-row-label" data-i18n="u7label">Sede di lavoro</div><div class="unilav-row-value">Milano (MI)</div></div>
+        <div class="unilav-row"><div class="unilav-row-label" data-i18n="u8label">Centro per l'Impiego</div><div class="unilav-row-value">Milano</div></div>
+      </div>
+      <div class="unilav-validation" id="unilavValidation" data-i18n="unilavOk">&#10004; Comunicazione pronta per l'invio</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-bar" id="ctaBar">
+    <div><button class="cta-button" data-i18n="ctaText">Vuoi automatizzare le buste paga?</button></div>
+    <div><button class="replay-btn" onclick="replayDemo()"><span>&#x21BB;</span> <span data-i18n="replayLabel">Rivedi demo</span></button></div>
+  </div>
+
 </div>
 
-<!-- RUN BUTTON & RESULT -->
-<div class="run-bar">
-  <button class="btn-run" id="btnRun">
-    <span class="play-icon"></span>
-    <span data-i18n="btnRunWorkflow">Run Workflow</span>
-  </button>
-  <div class="run-result" id="runResult">
-    <div class="result-icon">&#x2713;</div>
-    <span id="runResultText"></span>
+<!-- Alert Overlay -->
+<div class="alert-overlay" id="alertOverlay">
+  <div class="alert-panel">
+    <h3 data-i18n="alertTitle">&#9888; Scadenza Periodo di Prova</h3>
+    <p data-i18n="alertP1">Il periodo di prova di Mario Rossi (3 mesi, CCNL Commercio Art. 108) scade il 15/03/2026.</p>
+    <p data-i18n="alertP2">Azione richiesta entro il 14/03/2026:</p>
+    <ul>
+      <li data-i18n="alertLi1">Conferma assunzione definitiva, oppure</li>
+      <li data-i18n="alertLi2">Comunicazione di recesso durante il periodo di prova</li>
+    </ul>
+    <div class="note" data-i18n="alertNote">Nota: Il recesso durante il periodo di prova non richiede preavviso (Art. 2096 c.c.)</div>
+    <button class="alert-close" id="alertClose" data-i18n="alertClose">Chiudi</button>
   </div>
-</div>
-
-<!-- STATS PANEL -->
-<div class="stats-panel">
-  <div class="stat-card">
-    <div class="stat-value" id="statTime">2.3s</div>
-    <div class="stat-label" data-i18n="statAvgTime">Avg. processing time</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-value" id="statLeads">847</div>
-    <div class="stat-label" data-i18n="statLeadsToday">Leads processed today</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-value" id="statRate">94%</div>
-    <div class="stat-label" data-i18n="statAutomationRate">Automation rate</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-value" id="statSavings">$12,400/mo</div>
-    <div class="stat-label" data-i18n="statCostSavings">Cost savings</div>
-  </div>
-</div>
-
-<div class="footer" id="footerText">
-  Built with <a href="#">Praxis AI</a> &mdash; No-code workflow automation powered by artificial intelligence.
 </div>
 
 <script>
-(function() {
-  'use strict';
+(function(){
+'use strict';
 
-  // --- i18n ---
-  const LOCALE = window.__PRAXIS_LOCALE__ || 'it';
-  const T = {
-    en: {
-      // Header
-      headerTitle: 'Workflow Automation \u2014 Demo',
-      badgeLive: 'Live Preview',
-      // Template bar
-      templateBarLabel: 'Workflow Templates',
-      tplLeadQualification: 'Lead Qualification',
-      tplInvoiceProcessing: 'Invoice Processing',
-      tplSupportTicketRouting: 'Support Ticket Routing',
-      comingSoon: 'Soon',
-      // Node titles
-      nodeNewLead: 'New Lead Received',
-      nodeNewLeadDesc: 'From website form, email, or CRM',
-      nodeAIScoring: 'AI Lead Scoring',
-      nodeAIScoringDesc: 'Analyze company size, industry, intent signals',
-      nodeScoreThreshold: 'Score > 70?',
-      nodeScoreThresholdDesc: 'AI confidence threshold',
-      nodeEnrichData: 'Enrich Data',
-      nodeEnrichDataDesc: 'Pull company info from LinkedIn, Clearbit',
-      nodeAssignSalesRep: 'Assign to Sales Rep',
-      nodeAssignSalesRepDesc: 'Route to available rep by territory',
-      nodeSendWelcomeEmail: 'Send Welcome Email',
-      nodeSendWelcomeEmailDesc: 'Personalized email via template',
-      nodeNurtureCampaign: 'Add to Nurture Campaign',
-      nodeNurtureCampaignDesc: 'Automated drip email sequence',
-      nodeRescore: 'Re-score in 30 Days',
-      nodeRescoreDesc: 'Schedule re-evaluation',
-      // Branch labels
-      branchYes: 'YES',
-      branchNo: 'NO',
-      // Button
-      btnRunWorkflow: 'Run Workflow',
-      btnRunAgain: 'Run Again',
-      btnRunning: 'Running...',
-      // Status
-      statusProcessing: 'Processing...',
-      statusComplete: 'Complete \u2713',
-      statusAnalyzing: 'Analyzing...',
-      statusDecisionResult: 'Score: 85 \u2192 YES',
-      // Result
-      runResultText: 'Lead qualified! Score: <strong>85/100</strong> \u2192 Assigned to <strong>Sarah M.</strong> \u2014 Welcome email sent.',
-      // Stats
-      statAvgTime: 'Avg. processing time',
-      statLeadsToday: 'Leads processed today',
-      statAutomationRate: 'Automation rate',
-      statCostSavings: 'Cost savings',
-      // Footer
-      footerText: 'Built with <a href="#">Praxis AI</a> \u2014 No-code workflow automation powered by artificial intelligence.',
-      // Back button
-      backToDemos: '\u2190 Back to Demos',
-    },
-    it: {
-      // Header
-      headerTitle: 'Automazione Workflow \u2014 Demo',
-      badgeLive: 'Anteprima Live',
-      // Template bar
-      templateBarLabel: 'Template Workflow',
-      tplLeadQualification: 'Qualificazione Lead',
-      tplInvoiceProcessing: 'Gestione Fatture',
-      tplSupportTicketRouting: 'Smistamento Ticket',
-      comingSoon: 'Presto',
-      // Node titles
-      nodeNewLead: 'Nuovo Lead Ricevuto',
-      nodeNewLeadDesc: 'Da form web, email o CRM',
-      nodeAIScoring: 'Scoring AI del Lead',
-      nodeAIScoringDesc: 'Analisi dimensione azienda, settore, segnali di interesse',
-      nodeScoreThreshold: 'Score > 70?',
-      nodeScoreThresholdDesc: 'Soglia di confidenza AI',
-      nodeEnrichData: 'Arricchimento Dati',
-      nodeEnrichDataDesc: 'Recupera info aziendali da LinkedIn, Clearbit',
-      nodeAssignSalesRep: 'Assegna al Commerciale',
-      nodeAssignSalesRepDesc: 'Instrada al commerciale disponibile per zona',
-      nodeSendWelcomeEmail: 'Invia Email di Benvenuto',
-      nodeSendWelcomeEmailDesc: 'Email personalizzata da template',
-      nodeNurtureCampaign: 'Aggiungi a Campagna Nurture',
-      nodeNurtureCampaignDesc: 'Sequenza email automatica drip',
-      nodeRescore: 'Rivaluta tra 30 Giorni',
-      nodeRescoreDesc: 'Pianifica rivalutazione',
-      // Branch labels
-      branchYes: 'S\u00CC',
-      branchNo: 'NO',
-      // Button
-      btnRunWorkflow: 'Avvia Workflow',
-      btnRunAgain: 'Esegui di Nuovo',
-      btnRunning: 'In esecuzione...',
-      // Status
-      statusProcessing: 'Elaborazione...',
-      statusComplete: 'Completato \u2713',
-      statusAnalyzing: 'Analisi in corso...',
-      statusDecisionResult: 'Score: 85 \u2192 S\u00CC',
-      // Result
-      runResultText: 'Lead qualificato! Score: <strong>85/100</strong> \u2192 Assegnato a <strong>Sarah M.</strong> \u2014 Email di benvenuto inviata.',
-      // Stats
-      statAvgTime: 'Tempo medio elaborazione',
-      statLeadsToday: 'Lead elaborati oggi',
-      statAutomationRate: 'Tasso di automazione',
-      statCostSavings: 'Risparmio sui costi',
-      // Footer
-      footerText: 'Costruito con <a href="#">Praxis AI</a> \u2014 Automazione workflow no-code basata sull\'intelligenza artificiale.',
-      // Back button
-      backToDemos: '\u2190 Torna alle Demo',
-    },
-  }[LOCALE];
+var LOCALE = window.__PRAXIS_LOCALE__ || 'it';
 
-  // Apply i18n to static HTML elements
-  document.querySelectorAll('[data-i18n]').forEach(function(el) {
-    var key = el.getAttribute('data-i18n');
-    if (T[key]) el.textContent = T[key];
+var T_ALL = {
+en:{
+  headerTitle:'Praxis AI',headerSubtitle:'Payroll & Compliance Management',badgeLive:'Active',
+  step1Label:'Employee Registry',step2Label:'Payroll Processing',step3Label:'Compliance Check',step4Label:'UniLav Communication Generation',
+  employeeCount:'6 active employees',
+  hiredLabel:'Hired',hiredLabelF:'Hired',
+  tipo0:'Probation period',tipo1:'Permanent contract',tipo2:'Fixed-term contract',tipo3:'Part-time 50%',tipo4:'Permanent contract',tipo5:'Apprenticeship',
+  payrollProcessing:'Processing payroll...',payslipTitle:'Payslip',payslipPeriod:'Period: January 2026',payslipCcnl:'CCNL Commerce \u2014 Level IV',
+  pl0:'Base Salary',pl1:'Overtime (12h)',pl2:'Gross Total',pl3:'INPS (9.19%)',pl4:'IRPEF',pl5:'Employment tax deductions',pl6:'Regional Surtax',pl7:'Municipal Surtax',pl8:'Net Pay',pl9:'TFR accrued',
+  c0title:'CCNL Update:',c0desc:'Commerce pay tables updated to 01/01/2026',
+  c1title:'INPS Minimums:',c1desc:'Contributions compliant with 2026 minimums',
+  c2title:'Tax Adjustment:',c2desc:'Year-end IRPEF adjustment: \u20AC234.00 difference to be settled',
+  c3title:'INAIL Self-Assessment:',c3desc:'INAIL premium calculated \u2014 Deadline: 16/02/2026',
+  c4title:'TFR:',c4desc:'TFR accrual compliant with Art. 2120 Civil Code',
+  complianceResult:'4/5 compliant \u2014 1 to verify',
+  unilavTitle:'Mandatory Communication',unilavSub:'UniLav Form \u2014 Hiring',
+  u0label:'Communication type',u0val:'Hiring',
+  u1label:'Worker',u2label:'Hire date',u3label:'Contract type',u3val:'Professional apprenticeship',
+  u5label:'Qualification',u5val:'Level III Employee',
+  u6label:'Working hours',u6val:'Full-time (40h)',
+  u7label:'Workplace',u8label:'Employment Center',
+  u4val:'Commerce',
+  unilavOk:'\u2714 Communication ready for submission',
+  ctaText:'Want to automate payroll?',replayLabel:'Replay demo',
+  alertTitle:'\u26A0 Probation Period Expiration',
+  alertP1:'Mario Rossi\'s probation period (3 months, CCNL Commerce Art. 108) expires on 15/03/2026.',
+  alertP2:'Action required by 14/03/2026:',
+  alertLi1:'Confirm permanent hiring, or',
+  alertLi2:'Issue probation period termination notice',
+  alertNote:'Note: Termination during probation period does not require notice (Art. 2096 Civil Code)',
+  alertClose:'Close'
+},
+it:{
+  headerTitle:'Praxis AI',headerSubtitle:'Gestione Buste Paga e Adempimenti',badgeLive:'Attivo',
+  step1Label:'Anagrafica Dipendenti',step2Label:'Elaborazione Busta Paga',step3Label:'Verifica Conformit\u00E0',step4Label:'Generazione Comunicazione UniLav',
+  employeeCount:'6 dipendenti attivi',
+  hiredLabel:'Assunto',hiredLabelF:'Assunta',
+  tipo0:'Periodo di prova',tipo1:'Tempo indeterminato',tipo2:'Tempo determinato',tipo3:'Part-time 50%',tipo4:'Tempo indeterminato',tipo5:'Apprendistato',
+  payrollProcessing:'Elaborazione in corso...',payslipTitle:'Cedolino Paga',payslipPeriod:'Periodo: Gennaio 2026',payslipCcnl:'CCNL Commercio \u2014 Livello IV',
+  pl0:'Retribuzione Base',pl1:'Straordinari (12h)',pl2:'Totale Lordo',pl3:'INPS (9,19%)',pl4:'IRPEF',pl5:'Detrazioni lavoro dipendente',pl6:'Addizionale Regionale',pl7:'Addizionale Comunale',pl8:'Netto in busta',pl9:'TFR accantonato',
+  c0title:'Aggiornamento CCNL:',c0desc:'Tabelle retributive Commercio aggiornate al 01/01/2026',
+  c1title:'Minimali INPS:',c1desc:'Contributi conformi ai minimali 2026',
+  c2title:'Conguaglio fiscale:',c2desc:'Conguaglio IRPEF di fine anno: differenza di \u20AC234,00 da regolarizzare',
+  c3title:'Autoliquidazione INAIL:',c3desc:'Premio INAIL calcolato \u2014 Scadenza: 16/02/2026',
+  c4title:'TFR:',c4desc:'Accantonamento TFR conforme all\'Art. 2120 c.c.',
+  complianceResult:'4/5 conformi \u2014 1 da verificare',
+  unilavTitle:'Comunicazione Obbligatoria',unilavSub:'Modello UniLav \u2014 Assunzione',
+  u0label:'Tipo comunicazione',u0val:'Assunzione',
+  u1label:'Lavoratore',u2label:'Data assunzione',u3label:'Tipologia contratto',u3val:'Apprendistato professionalizzante',
+  u5label:'Qualifica',u5val:'Impiegata di III livello',
+  u6label:'Orario',u6val:'Full-time (40h)',
+  u7label:'Sede di lavoro',u8label:'Centro per l\'Impiego',
+  u4val:'Commercio',
+  unilavOk:'\u2714 Comunicazione pronta per l\'invio',
+  ctaText:'Vuoi automatizzare le buste paga?',replayLabel:'Rivedi demo',
+  alertTitle:'\u26A0 Scadenza Periodo di Prova',
+  alertP1:'Il periodo di prova di Mario Rossi (3 mesi, CCNL Commercio Art. 108) scade il 15/03/2026.',
+  alertP2:'Azione richiesta entro il 14/03/2026:',
+  alertLi1:'Conferma assunzione definitiva, oppure',
+  alertLi2:'Comunicazione di recesso durante il periodo di prova',
+  alertNote:'Nota: Il recesso durante il periodo di prova non richiede preavviso (Art. 2096 c.c.)',
+  alertClose:'Chiudi'
+}
+};
+
+var T = T_ALL[LOCALE] || T_ALL.it;
+
+/* ── Apply i18n ── */
+function applyI18n(){
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var k = el.getAttribute('data-i18n');
+    if(T[k] !== undefined) el.textContent = T[k];
   });
+}
+applyI18n();
 
-  // Set result text (contains HTML)
-  var runResultTextEl = document.getElementById('runResultText');
-  if (runResultTextEl) runResultTextEl.innerHTML = T.runResultText;
+/* ── Helpers ── */
+function $(s){ return document.querySelector(s); }
+function $$(s){ return document.querySelectorAll(s); }
+function delay(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
 
-  // Set footer text (contains HTML)
-  var footerEl = document.getElementById('footerText');
-  if (footerEl) footerEl.innerHTML = T.footerText;
+function formatEur(val, prefix){
+  var p = prefix || '';
+  var parts = val.toFixed(2).split('.');
+  var intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return p + '\u20AC' + intPart + ',' + parts[1];
+}
 
-  // --- NODE POSITIONS HELPER ---
-  // Returns center point of a node element
-  function getNodeCenter(id) {
-    const el = document.getElementById(id);
-    if (!el) return { x: 0, y: 0 };
-    const left = parseFloat(el.style.left);
-    const top = parseFloat(el.style.top);
-    const w = el.offsetWidth;
-    const h = el.offsetHeight;
-    return { x: left + w / 2, y: top + h / 2 };
-  }
-
-  function getNodeRight(id) {
-    const el = document.getElementById(id);
-    const left = parseFloat(el.style.left);
-    const top = parseFloat(el.style.top);
-    return { x: left + el.offsetWidth, y: top + el.offsetHeight / 2 };
-  }
-
-  function getNodeLeft(id) {
-    const el = document.getElementById(id);
-    const left = parseFloat(el.style.left);
-    const top = parseFloat(el.style.top);
-    return { x: left, y: top + el.offsetHeight / 2 };
-  }
-
-  function getNodeBottom(id) {
-    const el = document.getElementById(id);
-    const left = parseFloat(el.style.left);
-    const top = parseFloat(el.style.top);
-    return { x: left + el.offsetWidth / 2, y: top + el.offsetHeight };
-  }
-
-  function getNodeTop(id) {
-    const el = document.getElementById(id);
-    const left = parseFloat(el.style.left);
-    const top = parseFloat(el.style.top);
-    return { x: left + el.offsetWidth / 2, y: top };
-  }
-
-  // --- DRAW CONNECTIONS ---
-  const connections = [];
-
-  function createPath(from, to, type) {
-    const svg = document.getElementById('connectionsSvg');
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-
-    const dx = to.x - from.x;
-    const dy = to.y - from.y;
-
-    // Cubic bezier for smooth curves
-    let cx1, cy1, cx2, cy2;
-    if (Math.abs(dx) > Math.abs(dy)) {
-      // Primarily horizontal
-      cx1 = from.x + dx * 0.5;
-      cy1 = from.y;
-      cx2 = from.x + dx * 0.5;
-      cy2 = to.y;
-    } else {
-      cx1 = from.x;
-      cy1 = from.y + dy * 0.5;
-      cx2 = to.x;
-      cy2 = from.y + dy * 0.5;
-    }
-
-    const d = `M ${from.x} ${from.y} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${to.x} ${to.y}`;
-    path.setAttribute('d', d);
-    path.setAttribute('class', 'connection-line' + (type === 'no' ? ' no-path' : ''));
-    path.setAttribute('marker-end', 'url(#arrow-default)');
-    svg.appendChild(path);
-
-    return { path, from, to, type: type || 'default' };
-  }
-
-  function drawAllConnections() {
-    // Clear existing
-    const svg = document.getElementById('connectionsSvg');
-    while (svg.children.length > 1) {
-      svg.removeChild(svg.lastChild);
-    }
-    connections.length = 0;
-
-    // Wait for layout
-    requestAnimationFrame(function() {
-      // Trigger -> AI
-      connections.push({
-        ...createPath(getNodeRight('node-trigger'), getNodeLeft('node-ai'), 'yes'),
-        id: 'trigger-ai'
-      });
-
-      // AI -> Decision
-      connections.push({
-        ...createPath(getNodeRight('node-ai'), getNodeLeft('node-decision'), 'yes'),
-        id: 'ai-decision'
-      });
-
-      // Decision -> Enrich (YES path, up-right)
-      const decRight = getNodeRight('node-decision');
-      const enrichLeft = getNodeLeft('node-enrich');
-      connections.push({
-        ...createPath(
-          { x: decRight.x, y: decRight.y - 15 },
-          enrichLeft,
-          'yes'
-        ),
-        id: 'decision-enrich'
-      });
-
-      // Decision -> Assign (YES path, right)
-      const assignLeft = getNodeLeft('node-assign');
-      connections.push({
-        ...createPath(
-          { x: decRight.x, y: decRight.y + 5 },
-          assignLeft,
-          'yes'
-        ),
-        id: 'decision-assign'
-      });
-
-      // Enrich -> Email
-      connections.push({
-        ...createPath(getNodeRight('node-enrich'), getNodeLeft('node-email'),  'yes'),
-        id: 'enrich-email'
-      });
-
-      // Assign -> Email
-      connections.push({
-        ...createPath(getNodeRight('node-assign'), { x: getNodeLeft('node-email').x, y: getNodeLeft('node-email').y + 10 }, 'yes'),
-        id: 'assign-email'
-      });
-
-      // Decision -> Nurture (NO path, down-right)
-      const nurtureLeft = getNodeLeft('node-nurture');
-      connections.push({
-        ...createPath(
-          { x: decRight.x, y: decRight.y + 20 },
-          nurtureLeft,
-          'no'
-        ),
-        id: 'decision-nurture'
-      });
-
-      // Nurture -> Rescore
-      connections.push({
-        ...createPath(getNodeRight('node-nurture'), getNodeLeft('node-rescore'), 'no'),
-        id: 'nurture-rescore'
-      });
-    });
-  }
-
-  drawAllConnections();
-  window.addEventListener('resize', drawAllConnections);
-
-  // --- TEMPLATE SELECTOR ---
-  document.querySelectorAll('.template-card').forEach(function(card) {
-    card.addEventListener('click', function() {
-      if (card.dataset.template !== 'lead') return;
-      document.querySelectorAll('.template-card').forEach(function(c) { c.classList.remove('active'); });
-      card.classList.add('active');
-    });
-  });
-
-  // --- EXECUTION ANIMATION ---
-  const btnRun = document.getElementById('btnRun');
-  const runResult = document.getElementById('runResult');
-  const travelPulse = document.getElementById('travelPulse');
-  let isRunning = false;
-
-  // Execution sequence for YES path
-  const yesPathSequence = [
-    { node: 'node-trigger', duration: 600, connections: [] },
-    { node: 'node-ai', duration: 1200, connections: ['trigger-ai'] },
-    { node: 'node-decision', duration: 1500, connections: ['ai-decision'], thinking: true },
-    { node: 'node-enrich', duration: 800, connections: ['decision-enrich'], parallel: 'node-assign', parallelConn: 'decision-assign' },
-    { node: 'node-email', duration: 700, connections: ['enrich-email', 'assign-email'] },
-  ];
-
-  function resetAllNodes() {
-    document.querySelectorAll('.node').forEach(function(n) {
-      n.classList.remove('executing', 'completed');
-      n.querySelector('.status-text').textContent = T.statusProcessing;
-    });
-    connections.forEach(function(c) {
-      c.path.classList.remove('active', 'completed');
-      c.path.setAttribute('marker-end', 'url(#arrow-default)');
-    });
-    runResult.classList.remove('visible');
-    travelPulse.classList.remove('visible');
-    document.getElementById('thinkingOverlay').classList.remove('visible');
-  }
-
-  function setNodeExecuting(nodeId) {
-    const el = document.getElementById(nodeId);
-    el.classList.add('executing');
-    el.querySelector('.status-text').textContent = T.statusProcessing;
-  }
-
-  function setNodeComplete(nodeId) {
-    const el = document.getElementById(nodeId);
-    el.classList.remove('executing');
-    el.classList.add('completed');
-    el.querySelector('.status-text').textContent = T.statusComplete;
-  }
-
-  function activateConnection(connId) {
-    const conn = connections.find(function(c) { return c.id === connId; });
-    if (conn) {
-      conn.path.classList.add('active');
-      conn.path.setAttribute('marker-end', 'url(#arrow-active)');
-    }
-  }
-
-  function completeConnection(connId) {
-    const conn = connections.find(function(c) { return c.id === connId; });
-    if (conn) {
-      conn.path.classList.remove('active');
-      conn.path.classList.add('completed');
-      conn.path.setAttribute('marker-end', 'url(#arrow-completed)');
-    }
-  }
-
-  // Animate pulse travelling along a path
-  function animatePulseAlongPath(connId, duration) {
-    return new Promise(function(resolve) {
-      const conn = connections.find(function(c) { return c.id === connId; });
-      if (!conn) { resolve(); return; }
-
-      const pathEl = conn.path;
-      const totalLength = pathEl.getTotalLength();
-      travelPulse.classList.add('visible');
-
-      const startTime = performance.now();
-
-      function step(timestamp) {
-        const elapsed = timestamp - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-
-        // Ease in-out
-        const eased = progress < 0.5
-          ? 2 * progress * progress
-          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-
-        const point = pathEl.getPointAtLength(eased * totalLength);
-        travelPulse.style.left = point.x + 'px';
-        travelPulse.style.top = point.y + 'px';
-
-        if (progress < 1) {
-          requestAnimationFrame(step);
-        } else {
-          travelPulse.classList.remove('visible');
-          resolve();
-        }
+function animateNumber(el, target, prefix, duration){
+  return new Promise(function(resolve){
+    var start = performance.now();
+    var dur = duration || 600;
+    function tick(now){
+      var t = Math.min((now - start) / dur, 1);
+      var ease = 1 - Math.pow(1 - t, 3);
+      var current = target * ease;
+      el.textContent = formatEur(current, prefix);
+      if(t < 1) requestAnimationFrame(tick);
+      else{
+        el.textContent = formatEur(target, prefix);
+        resolve();
       }
+    }
+    requestAnimationFrame(tick);
+  });
+}
 
-      requestAnimationFrame(step);
-    });
+/* ── State ── */
+var running = false;
+
+/* ── Main sequence ── */
+async function runDemo(){
+  if(running) return;
+  running = true;
+
+  /* Reset */
+  $$('.section').forEach(function(s){ s.classList.remove('visible'); });
+  $$('.emp-card').forEach(function(c){ c.classList.remove('visible'); });
+  $$('.payroll-line').forEach(function(l){ l.classList.remove('visible'); l.querySelector('.payroll-line-value').textContent = '\u20AC0,00'; });
+  $$('.compliance-item').forEach(function(i){ i.classList.remove('visible'); i.querySelector('.compliance-icon').className = 'compliance-icon'; });
+  $$('.unilav-row').forEach(function(r){ r.classList.remove('visible'); });
+  $('#complianceStats').classList.remove('visible');
+  $('#unilavValidation').classList.remove('visible');
+  $('#ctaBar').classList.remove('visible');
+  $('#badgeLive').classList.remove('visible');
+  $('#payrollCard').style.display = 'none';
+  $('#payrollSpinner').style.display = 'flex';
+  $('#alertOverlay').classList.remove('visible');
+
+  await delay(400);
+  $('#badgeLive').classList.add('visible');
+
+  /* ── STEP 1: Employee Dashboard ── */
+  $('#step1').classList.add('visible');
+  await delay(300);
+
+  var cards = $$('.emp-card');
+  for(var i = 0; i < cards.length; i++){
+    cards[i].classList.add('visible');
+    await delay(180);
   }
 
-  function delay(ms) {
-    return new Promise(function(resolve) { setTimeout(resolve, ms); });
-  }
+  await delay(1200);
 
-  async function runWorkflow() {
-    if (isRunning) return;
-    isRunning = true;
-    btnRun.disabled = true;
-    btnRun.innerHTML = '<div class="status-spinner" style="display:block;border-color:rgba(255,255,255,0.3);border-top-color:#fff;width:14px;height:14px;"></div> ' + T.btnRunning;
-    resetAllNodes();
+  /* ── STEP 2: Payroll Processing ── */
+  $('#step2').classList.add('visible');
+  await delay(600);
 
-    await delay(300);
+  $('#payrollSpinner').style.display = 'flex';
+  await delay(1200);
+  $('#payrollSpinner').style.display = 'none';
+  $('#payrollCard').style.display = 'block';
+  await delay(300);
 
-    // Step 1: Trigger
-    setNodeExecuting('node-trigger');
-    await delay(600);
-    setNodeComplete('node-trigger');
-
-    // Step 2: AI Scoring (with pulse travel)
-    activateConnection('trigger-ai');
-    await animatePulseAlongPath('trigger-ai', 500);
-    completeConnection('trigger-ai');
-    setNodeExecuting('node-ai');
-    await delay(1200);
-    setNodeComplete('node-ai');
-
-    // Step 3: Decision (with thinking animation)
-    activateConnection('ai-decision');
-    await animatePulseAlongPath('ai-decision', 500);
-    completeConnection('ai-decision');
-    setNodeExecuting('node-decision');
-    document.getElementById('thinkingOverlay').classList.add('visible');
-    document.getElementById('node-decision').querySelector('.status-text').textContent = T.statusAnalyzing;
-    await delay(1500);
-    document.getElementById('thinkingOverlay').classList.remove('visible');
-    document.getElementById('node-decision').querySelector('.status-text').textContent = T.statusDecisionResult;
-    await delay(400);
-    setNodeComplete('node-decision');
-
-    // Step 4: Parallel - Enrich + Assign (YES path)
-    activateConnection('decision-enrich');
-    activateConnection('decision-assign');
-
-    // Animate pulses in parallel
-    await Promise.all([
-      animatePulseAlongPath('decision-enrich', 450),
-      (async function() { await delay(100); await animatePulseAlongPath('decision-assign', 500); })()
-    ]);
-
-    completeConnection('decision-enrich');
-    completeConnection('decision-assign');
-
-    setNodeExecuting('node-enrich');
-    setNodeExecuting('node-assign');
-    await delay(800);
-    setNodeComplete('node-enrich');
+  var lines = $$('.payroll-line');
+  for(var j = 0; j < lines.length; j++){
+    var line = lines[j];
+    var val = parseFloat(line.getAttribute('data-anim-val'));
+    var prefix = line.getAttribute('data-prefix');
+    line.classList.add('visible');
+    await animateNumber(line.querySelector('.payroll-line-value'), val, prefix, 500);
     await delay(200);
-    setNodeComplete('node-assign');
+  }
 
-    // Step 5: Send Email
-    activateConnection('enrich-email');
-    activateConnection('assign-email');
-    await animatePulseAlongPath('enrich-email', 400);
-    completeConnection('enrich-email');
-    completeConnection('assign-email');
-    setNodeExecuting('node-email');
-    await delay(700);
-    setNodeComplete('node-email');
+  await delay(1500);
 
-    // Show result
+  /* ── STEP 3: Compliance Check ── */
+  $('#step3').classList.add('visible');
+  await delay(400);
+
+  var checks = $$('.compliance-item');
+  for(var k = 0; k < checks.length; k++){
+    var item = checks[k];
+    var status = item.getAttribute('data-status');
+    item.classList.add('visible');
+    await delay(400);
+    var icon = item.querySelector('.compliance-icon');
+    icon.classList.add(status);
+    await delay(500);
+  }
+
+  await delay(300);
+  $('#complianceStats').classList.add('visible');
+
+  await delay(1500);
+
+  /* ── STEP 4: UniLav Generation ── */
+  $('#step4').classList.add('visible');
+  await delay(400);
+
+  var rows = $$('.unilav-row');
+  for(var m = 0; m < rows.length; m++){
+    rows[m].classList.add('visible');
     await delay(300);
-    runResult.classList.add('visible');
-
-    // Increment stats
-    const leadsEl = document.getElementById('statLeads');
-    const currentLeads = parseInt(leadsEl.textContent);
-    leadsEl.textContent = (currentLeads + 1).toLocaleString();
-
-    btnRun.innerHTML = '<span class="play-icon"></span> ' + T.btnRunAgain;
-    btnRun.disabled = false;
-    isRunning = false;
   }
 
-  btnRun.addEventListener('click', function() {
-    resetAllNodes();
-    runWorkflow();
-  });
+  await delay(400);
+  $('#unilavValidation').classList.add('visible');
 
-  // --- COUNTER ANIMATIONS ---
-  function animateCounter(el, target, suffix, duration) {
-    suffix = suffix || '';
-    duration = duration || 1200;
-    const start = 0;
-    const startTime = performance.now();
+  await delay(600);
+  $('#ctaBar').classList.add('visible');
 
-    function step(timestamp) {
-      const elapsed = timestamp - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const current = Math.round(start + (target - start) * eased);
+  running = false;
+}
 
-      if (suffix === '$') {
-        el.textContent = '$' + current.toLocaleString() + '/mo';
-      } else if (suffix === '%') {
-        el.textContent = current + '%';
-      } else if (suffix === 's') {
-        el.textContent = (current / 10).toFixed(1) + 's';
-      } else {
-        el.textContent = current.toLocaleString();
-      }
+/* ── Interactive: Warning Badge ── */
+$('#warningBadge').addEventListener('click', function(e){
+  e.stopPropagation();
+  $('#alertOverlay').classList.add('visible');
+});
 
-      if (progress < 1) requestAnimationFrame(step);
-    }
+$('#alertClose').addEventListener('click', function(){
+  $('#alertOverlay').classList.remove('visible');
+});
 
-    requestAnimationFrame(step);
-  }
+$('#alertOverlay').addEventListener('click', function(e){
+  if(e.target === this) this.classList.remove('visible');
+});
 
-  // IntersectionObserver for stats
-  const statsObserver = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        animateCounter(document.getElementById('statTime'), 23, 's');
-        animateCounter(document.getElementById('statLeads'), 847, '');
-        animateCounter(document.getElementById('statRate'), 94, '%');
-        animateCounter(document.getElementById('statSavings'), 12400, '$');
-        statsObserver.disconnect();
-      }
-    });
-  }, { threshold: 0.3 });
+/* ── Replay ── */
+window.replayDemo = function(){
+  runDemo();
+};
 
-  statsObserver.observe(document.querySelector('.stats-panel'));
+/* ── Start ── */
+runDemo();
+
 })();
 </script>
 </body>

@@ -11,6 +11,10 @@ const VALID_SLUGS = [
   "knowledge-systems",
   "email-strategist",
   "email-designer",
+  "klaviyo-ai-strategist",
+  "klaviyo-ai-ops",
+  "shopify-ai-strategist",
+  "shopify-ai-ops",
 ];
 
 export default async function DemoSlugPage({

@@ -4,19 +4,33 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LogoMark } from "@/components/ui/logo";
+import { useLocale } from "@/lib/i18n";
+import { getProfessionByDemoSlug, PROFESSIONS } from "@/lib/professions";
+import { useProfilingContext } from "@/lib/profiling-context";
 
 /* ------------------------------------------------------------------ */
-/*  Demo ordering                                                      */
+/*  Demo ordering (derived from PROFESSIONS + other demos)            */
 /* ------------------------------------------------------------------ */
+
+const OTHER_DEMO_ORDER = [
+  { slug: "klaviyo-ai-strategist", professionSlug: "" },
+  { slug: "klaviyo-ai-ops", professionSlug: "" },
+  { slug: "shopify-ai-strategist", professionSlug: "" },
+  { slug: "shopify-ai-ops", professionSlug: "" },
+];
 
 const DEMO_ORDER = [
-  { slug: "customer-agents", title: "Demo Avvocati" },
-  { slug: "document-intelligence", title: "Demo Commercialisti" },
-  { slug: "workflow-automation", title: "Demo Consulenti del Lavoro" },
-  { slug: "knowledge-systems", title: "Demo Odontoiatri" },
-  { slug: "email-strategist", title: "Demo Architetti e Ingegneri" },
-  { slug: "email-designer", title: "Demo Geometri" },
-] as const;
+  ...PROFESSIONS.map((p) => ({ slug: p.demoSlug, professionSlug: p.slug })),
+  ...OTHER_DEMO_ORDER,
+];
+
+/** Human-readable titles for the "other" demos (not backed by PROFESSIONS). */
+const OTHER_DEMO_TITLES: Record<string, string> = {
+  "klaviyo-ai-strategist": "Klaviyo AI Strategist",
+  "klaviyo-ai-ops": "Klaviyo AI Ops",
+  "shopify-ai-strategist": "Shopify AI Strategist",
+  "shopify-ai-ops": "Shopify AI Ops",
+};
 
 /* ------------------------------------------------------------------ */
 /*  Icons                                                               */
@@ -141,12 +155,40 @@ function Tooltip({
 
 export function DemoViewer({ html, slug }: { html: string; slug: string }) {
   const router = useRouter();
+  const { t } = useLocale();
+  const profiling = useProfilingContext();
+
+  /* ---------- profession-derived data ---------- */
+  const profession = getProfessionByDemoSlug(slug);
+  const professionSlug = profession?.slug ?? "";
+  const isOtherDemo = !profession && slug in OTHER_DEMO_TITLES;
 
   /* ---------- demo index & neighbours ---------- */
   const currentIndex = DEMO_ORDER.findIndex((d) => d.slug === slug);
   const prevDemo = DEMO_ORDER[(currentIndex - 1 + DEMO_ORDER.length) % DEMO_ORDER.length];
   const nextDemo = DEMO_ORDER[(currentIndex + 1) % DEMO_ORDER.length];
-  const currentTitle = DEMO_ORDER[currentIndex]?.title ?? slug;
+
+  const currentProfessionSlug = DEMO_ORDER[currentIndex]?.professionSlug;
+  const currentCard = t.simulation.cards.find((c) => c.slug === currentProfessionSlug);
+  const currentTitle = currentCard
+    ? `Demo ${currentCard.title}`
+    : (OTHER_DEMO_TITLES[slug] ?? slug);
+
+  /* ---------- prev/next titles for tooltips ---------- */
+  const prevCard = t.simulation.cards.find((c) => c.slug === prevDemo?.professionSlug);
+  const prevTitle = prevCard
+    ? `Demo ${prevCard.title}`
+    : (OTHER_DEMO_TITLES[prevDemo?.slug ?? ""] ?? prevDemo?.slug ?? "");
+  const nextCard = t.simulation.cards.find((c) => c.slug === nextDemo?.professionSlug);
+  const nextTitle = nextCard
+    ? `Demo ${nextCard.title}`
+    : (OTHER_DEMO_TITLES[nextDemo?.slug ?? ""] ?? nextDemo?.slug ?? "");
+
+  /* ---------- profession intro text ---------- */
+  const professionData = professionSlug
+    ? (t.professions as Record<string, { demoIntro?: string }>)[professionSlug]
+    : null;
+  const demoIntroText = professionData?.demoIntro ?? "";
 
   /* ---------- state ---------- */
   const [loaded, setLoaded] = React.useState(false);
@@ -163,6 +205,13 @@ export function DemoViewer({ html, slug }: { html: string; slug: string }) {
     setShowIntro(true);
     setLoaded(false);
     setProgress(0);
+  }, [slug]);
+
+  /* ---------- track demo viewed in profiling ---------- */
+  React.useEffect(() => {
+    if (profiling && slug) {
+      profiling.addDemoViewed(slug);
+    }
   }, [slug]);
 
   /* ---------- srcDoc injection (preserved from original) ---------- */
@@ -305,11 +354,11 @@ export function DemoViewer({ html, slug }: { html: string; slug: string }) {
 
             <div className="w-px h-4 bg-white/[0.08] mx-1" />
 
-            <Tooltip label={prevDemo.title}>
+            <Tooltip label={prevTitle}>
               <Link
                 href={`/demo/${prevDemo.slug}`}
                 className="flex items-center justify-center w-7 h-7 rounded-md text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all"
-                aria-label={`Previous demo: ${prevDemo.title}`}
+                aria-label={`Previous demo: ${prevTitle}`}
               >
                 <ChevronLeftIcon className="w-4 h-4" />
               </Link>
@@ -327,35 +376,41 @@ export function DemoViewer({ html, slug }: { html: string; slug: string }) {
 
             {/* Carousel dots */}
             <div className="flex items-center gap-1.5">
-              {DEMO_ORDER.map((demo, i) => (
-                <Link
-                  key={demo.slug}
-                  href={`/demo/${demo.slug}`}
-                  aria-label={demo.title}
-                  className="group/dot"
-                >
-                  <div
-                    className={`
-                      rounded-full transition-all duration-300 ease-out
-                      ${
-                        i === currentIndex
-                          ? "w-5 h-1.5 bg-accent"
-                          : "w-1.5 h-1.5 bg-white/20 group-hover/dot:bg-white/40"
-                      }
-                    `}
-                  />
-                </Link>
-              ))}
+              {DEMO_ORDER.map((demo, i) => {
+                const dotCard = t.simulation.cards.find((c) => c.slug === demo.professionSlug);
+                const dotTitle = dotCard
+                  ? `Demo ${dotCard.title}`
+                  : (OTHER_DEMO_TITLES[demo.slug] ?? demo.slug);
+                return (
+                  <Link
+                    key={demo.slug}
+                    href={`/demo/${demo.slug}`}
+                    aria-label={dotTitle}
+                    className="group/dot"
+                  >
+                    <div
+                      className={`
+                        rounded-full transition-all duration-300 ease-out
+                        ${
+                          i === currentIndex
+                            ? "w-5 h-1.5 bg-accent"
+                            : "w-1.5 h-1.5 bg-white/20 group-hover/dot:bg-white/40"
+                        }
+                      `}
+                    />
+                  </Link>
+                );
+              })}
             </div>
           </div>
 
           {/* --- Right: Next nav + Fullscreen --- */}
           <div className="flex items-center gap-1 min-w-[180px] justify-end">
-            <Tooltip label={nextDemo.title}>
+            <Tooltip label={nextTitle}>
               <Link
                 href={`/demo/${nextDemo.slug}`}
                 className="flex items-center justify-center w-7 h-7 rounded-md text-white/40 hover:text-white/90 hover:bg-white/[0.06] transition-all"
-                aria-label={`Next demo: ${nextDemo.title}`}
+                aria-label={`Next demo: ${nextTitle}`}
               >
                 <ChevronRightIcon className="w-4 h-4" />
               </Link>
@@ -435,21 +490,19 @@ export function DemoViewer({ html, slug }: { html: string; slug: string }) {
 
         {/* --- Intro overlay --- */}
         {loaded && showIntro && (
-          <div className="absolute inset-0 z-15 flex items-center justify-center bg-navy/80 backdrop-blur-sm transition-opacity duration-500">
-            <div className="text-center max-w-md px-6">
-              <h3 className="text-lg font-sans font-semibold text-white mb-3">
-                {currentTitle}
-              </h3>
-              <p className="text-sm font-sans text-white/70 mb-6">
-                {/* Brief description of what the demo shows */}
-              </p>
-              <button
-                onClick={() => setShowIntro(false)}
-                className="px-6 py-2.5 rounded-xl bg-white text-navy font-sans font-medium text-sm hover:bg-white/90 transition-colors"
-              >
-                Inizia Demo
-              </button>
-            </div>
+          <div className="absolute inset-0 z-15 flex flex-col items-center justify-center bg-navy/80 backdrop-blur-sm">
+            <h3 className="text-2xl font-[family-name:var(--font-caveat)] font-bold text-white mb-3">
+              {t.demoViewer.introOverlayTitle}
+            </h3>
+            <p className="text-base text-white/80 max-w-md text-center mb-6 px-4">
+              {demoIntroText}
+            </p>
+            <button
+              onClick={() => setShowIntro(false)}
+              className="px-6 py-3 bg-white text-navy font-semibold rounded-xl hover:bg-white/90 transition-colors"
+            >
+              {t.demoViewer.introOverlayCta}
+            </button>
           </div>
         )}
 
@@ -465,21 +518,28 @@ export function DemoViewer({ html, slug }: { html: string; slug: string }) {
 
         {/* --- Post-demo CTA --- */}
         {loaded && !showIntro && (
-          <div className="absolute bottom-0 left-0 right-0 z-15 transform translate-y-full hover:translate-y-0 transition-transform duration-300 ease-out group/cta">
-            <div className="bg-navy-light/95 backdrop-blur-sm border-t border-white/10 px-4 py-3 flex items-center justify-between">
-              <span className="text-sm font-sans text-white/70">Ti piace quello che hai visto?</span>
-              <div className="flex items-center gap-3">
-                <Link href="/soluzioni" className="text-xs font-sans text-white/50 hover:text-white/80 transition-colors">
-                  Soluzioni
-                </Link>
-                <Link href="/contact" className="px-4 py-1.5 rounded-lg bg-white text-navy text-sm font-sans font-medium hover:bg-white/90 transition-colors">
-                  Prenota una Consulenza
-                </Link>
-              </div>
-            </div>
+          <div className="group/cta absolute bottom-0 left-0 right-0 z-15 transition-transform duration-300 translate-y-full hover:translate-y-0">
             {/* Hover trigger tab */}
             <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-3 py-1 rounded-t-lg bg-navy-light/80 text-[10px] font-sans text-white/40 group-hover/cta:text-white/60 transition-colors cursor-default">
               ↑
+            </div>
+
+            <div className="bg-navy-light/95 backdrop-blur-sm border-t border-white/10 px-6 py-4 flex items-center justify-between">
+              <span className="text-white/80 text-sm">{t.demoViewer.postDemoTitle}</span>
+              <div className="flex items-center gap-3">
+                <Link
+                  href={isOtherDemo ? "/contact" : `/soluzioni/${professionSlug}`}
+                  className="text-white/70 text-sm hover:text-white transition-colors"
+                >
+                  {t.demoViewer.postDemoBack}
+                </Link>
+                <Link
+                  href="/contact"
+                  className="px-4 py-2 bg-white text-navy text-sm font-semibold rounded-lg hover:bg-white/90 transition-colors"
+                >
+                  {t.demoViewer.postDemoCta}
+                </Link>
+              </div>
             </div>
           </div>
         )}

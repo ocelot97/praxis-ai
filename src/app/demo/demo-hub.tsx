@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useCallback, useMemo, useState } from "react";
 import { LogoMark } from "@/components/ui/logo";
 import { logout } from "./login/actions";
+import { useLocale } from "@/lib/i18n";
+import { PROFESSIONS } from "@/lib/professions";
 
 /* ------------------------------------------------------------------ */
 /*  Data                                                               */
@@ -12,68 +14,13 @@ import { logout } from "./login/actions";
 
 interface Demo {
   slug: string;
+  professionSlug: string;
   title: string;
   description: string;
   tag: string;
-  icon?: string;
+  iconPaths: string[];
   preview?: string;
-  group: "professions";
 }
-
-const demos: Demo[] = [
-  {
-    slug: "customer-agents",
-    title: "Demo per Avvocati",
-    tag: "Studi Legali",
-    description:
-      "Analisi contrattuale intelligente, ricerca giurisprudenziale e gestione automatica delle scadenze processuali.",
-    preview: "/demo/previews/customer-agents.webm",
-    group: "professions",
-  },
-  {
-    slug: "document-intelligence",
-    title: "Demo per Commercialisti",
-    tag: "Studi Commercialisti",
-    description:
-      "Elaborazione automatica delle fatture, estrazione dati fiscali e automazione degli adempimenti tributari.",
-    preview: "/demo/previews/document-intelligence.webm",
-    group: "professions",
-  },
-  {
-    slug: "workflow-automation",
-    title: "Demo per Consulenti del Lavoro",
-    tag: "Consulenti del Lavoro",
-    description:
-      "Automazione delle buste paga, monitoraggio normativo e gestione delle comunicazioni obbligatorie.",
-    preview: "/demo/previews/workflow-automation.webm",
-    group: "professions",
-  },
-  {
-    slug: "knowledge-systems",
-    title: "Demo per Odontoiatri",
-    tag: "Studi Odontoiatrici",
-    description:
-      "Gestione intelligente degli appuntamenti, documentazione clinica e comunicazione automatica con i pazienti.",
-    preview: "/demo/previews/knowledge-systems.webm",
-    group: "professions",
-  },
-  {
-    slug: "email-strategist",
-    title: "Demo per Architetti e Ingegneri",
-    tag: "Architettura e Ingegneria",
-    description:
-      "Generazione documentazione progettuale, gestione pratiche edilizie e coordinamento multi-commessa.",
-    group: "professions",
-  },
-  {
-    slug: "email-designer",
-    title: "Demo per Geometri",
-    tag: "Geometri",
-    description:
-      "Automazione pratiche catastali, compilazione DOCFA/PREGEO e integrazione con Agenzia del Territorio.",
-    group: "professions",
-  },
-];
 
 /* ------------------------------------------------------------------ */
 /*  Formatted date                                                     */
@@ -132,6 +79,9 @@ interface DemoCardProps {
   globalIndex: number;
   total: number;
   focused: boolean;
+  highlighted: boolean;
+  recommendedBadge: string;
+  launchDemo: string;
   cardRef: (el: HTMLAnchorElement | null) => void;
   onFocus: () => void;
 }
@@ -141,6 +91,9 @@ function DemoCard({
   globalIndex,
   total,
   focused,
+  highlighted,
+  recommendedBadge,
+  launchDemo,
   cardRef,
   onFocus,
 }: DemoCardProps) {
@@ -157,12 +110,24 @@ function DemoCard({
         focused
           ? "ring-2 ring-navy-light/60 ring-offset-2 ring-offset-ice shadow-soft-lg -translate-y-0.5"
           : "",
+        highlighted
+          ? "border-navy-light shadow-soft-lg"
+          : "",
       ].join(" ")}
       style={{
         opacity: 0,
         animation: `demoFadeUp 0.5s ease-out ${globalIndex * 0.08}s forwards`,
       }}
     >
+      {/* Recommended badge */}
+      {highlighted && (
+        <div className="absolute -top-3 left-4 z-20">
+          <span className="text-[10px] font-sans font-semibold tracking-wider uppercase px-2.5 py-1 rounded-full bg-navy-light text-white select-none shadow-sm">
+            {recommendedBadge}
+          </span>
+        </div>
+      )}
+
       {/* Category pill */}
       <span className="absolute top-4 right-4 md:top-5 md:right-5 z-10 text-[10px] font-sans font-semibold tracking-wider uppercase px-2.5 py-1 rounded-full bg-navy/[0.04] text-silver/80 border border-navy/[0.06] select-none">
         {demo.tag}
@@ -202,12 +167,19 @@ function DemoCard({
                 animation: "demoShimmer 3s ease-in-out infinite",
               }}
             />
-            <span
-              className="text-5xl select-none relative z-10"
+            {/* Profession SVG icon */}
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              className="w-16 h-16 text-navy-light/40 relative z-10"
               style={{ animation: "demoPulseIcon 2.8s ease-in-out infinite" }}
             >
-              {demo.icon}
-            </span>
+              {demo.iconPaths.map((d, i) => (
+                <path key={i} d={d} />
+              ))}
+            </svg>
           </div>
         )}
       </div>
@@ -225,7 +197,7 @@ function DemoCard({
       {/* Card footer */}
       <div className="mt-5 flex items-center justify-between">
         <div className="flex items-center gap-1.5 text-navy-light font-sans font-semibold text-sm">
-          Avvia Demo
+          {launchDemo}
           <svg
             className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1"
             viewBox="0 0 24 24"
@@ -267,19 +239,112 @@ function DemoCard({
 /*  Main component                                                     */
 /* ------------------------------------------------------------------ */
 
-export function DemoHub({ userEmail }: { userEmail: string }) {
+export function DemoHub({
+  userEmail,
+  profession,
+}: {
+  userEmail: string;
+  profession?: string;
+}) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { t } = useLocale();
   const cardRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const focusedRef = useRef(-1);
+  const highlightedCardRef = useRef<HTMLAnchorElement | null>(null);
 
   const dateStr = useMemo(() => formattedDate(), []);
+
+  /* ------ Derive demos from PROFESSIONS + translations ------ */
+
+  const demos: Demo[] = useMemo(
+    () =>
+      PROFESSIONS.map((p, i) => ({
+        slug: p.demoSlug,
+        professionSlug: p.slug,
+        title: t.simulation.cards[i].title,
+        description: t.simulation.cards[i].tagline,
+        tag: t.simulation.cards[i].title,
+        iconPaths: p.iconPaths,
+        preview: `/demo/previews/${p.demoSlug}.webm`,
+      })),
+    [t],
+  );
+
+  /* ------ Other demos (Klaviyo / Shopify) ------ */
+
+  const otherDemos: Demo[] = useMemo(
+    () => [
+      {
+        slug: "klaviyo-ai-strategist",
+        professionSlug: "",
+        title: t.demoHub.otherDemos.klaviyoStrategist.title,
+        description: t.demoHub.otherDemos.klaviyoStrategist.description,
+        tag: "Klaviyo",
+        iconPaths: ["M3 8l4-4 4 4M7 4v13a4 4 0 004 4h9", "M21 12l-4 4-4-4M17 16V3"],
+        preview: undefined,
+      },
+      {
+        slug: "klaviyo-ai-ops",
+        professionSlug: "",
+        title: t.demoHub.otherDemos.klaviyoOps.title,
+        description: t.demoHub.otherDemos.klaviyoOps.description,
+        tag: "Klaviyo",
+        iconPaths: ["M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z", "M22 6l-10 7L2 6"],
+        preview: undefined,
+      },
+      {
+        slug: "shopify-ai-strategist",
+        professionSlug: "",
+        title: t.demoHub.otherDemos.shopifyStrategist.title,
+        description: t.demoHub.otherDemos.shopifyStrategist.description,
+        tag: "Shopify",
+        iconPaths: ["M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z", "M3 6h18", "M16 10a4 4 0 01-8 0"],
+        preview: undefined,
+      },
+      {
+        slug: "shopify-ai-ops",
+        professionSlug: "",
+        title: t.demoHub.otherDemos.shopifyOps.title,
+        description: t.demoHub.otherDemos.shopifyOps.description,
+        tag: "Shopify",
+        iconPaths: ["M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2", "M12 7a4 4 0 100-8 4 4 0 000 8z", "M16 3.13a4 4 0 010 7.75", "M21 21v-2a4 4 0 00-3-3.87"],
+        preview: undefined,
+      },
+    ],
+    [t],
+  );
+
+  /* ------ All demos combined (for keyboard nav) ------ */
+
+  const allDemos = useMemo(() => [...demos, ...otherDemos], [demos, otherDemos]);
+
+  /* ------ Resolve which profession (if any) is highlighted ------ */
+
+  const highlightProfession =
+    searchParams?.get("profession") ?? profession ?? null;
+
+  const highlightedIndex = useMemo(() => {
+    if (!highlightProfession) return -1;
+    return demos.findIndex((d) => d.professionSlug === highlightProfession);
+  }, [demos, highlightProfession]);
+
+  /* ------ Auto-scroll to highlighted card on mount ------ */
+
+  useEffect(() => {
+    if (highlightedIndex < 0) return;
+    const el = cardRefs.current[highlightedIndex];
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [highlightedIndex]);
 
   /* ------ Focus helpers ------ */
 
   const moveFocus = useCallback(
     (idx: number) => {
-      if (idx < 0 || idx >= demos.length) return;
+      if (idx < 0 || idx >= allDemos.length) return;
       focusedRef.current = idx;
       setFocusedIndex(idx);
       cardRefs.current[idx]?.focus({ preventScroll: false });
@@ -288,7 +353,7 @@ export function DemoHub({ userEmail }: { userEmail: string }) {
         block: "nearest",
       });
     },
-    [],
+    [allDemos.length],
   );
 
   /* ------ Global keyboard handler ------ */
@@ -305,7 +370,7 @@ export function DemoHub({ userEmail }: { userEmail: string }) {
         case "ArrowRight": {
           e.preventDefault();
           const next = cur + 1;
-          if (next < demos.length) moveFocus(next);
+          if (next < allDemos.length) moveFocus(next);
           break;
         }
         case "ArrowLeft": {
@@ -317,7 +382,7 @@ export function DemoHub({ userEmail }: { userEmail: string }) {
         case "ArrowDown": {
           e.preventDefault();
           const down = cur + cols;
-          if (down < demos.length) moveFocus(down);
+          if (down < allDemos.length) moveFocus(down);
           break;
         }
         case "ArrowUp": {
@@ -327,9 +392,9 @@ export function DemoHub({ userEmail }: { userEmail: string }) {
           break;
         }
         case "Enter": {
-          if (cur >= 0 && cur < demos.length) {
+          if (cur >= 0 && cur < allDemos.length) {
             e.preventDefault();
-            router.push(`/demo/${demos[cur].slug}`);
+            router.push(`/demo/${allDemos[cur].slug}`);
           }
           break;
         }
@@ -350,7 +415,7 @@ export function DemoHub({ userEmail }: { userEmail: string }) {
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [moveFocus, router]);
+  }, [moveFocus, router, allDemos, demos.length]);
 
   /* ------ Card focus callback factory ------ */
 
@@ -406,7 +471,7 @@ export function DemoHub({ userEmail }: { userEmail: string }) {
                   type="submit"
                   className="text-sm font-sans font-medium text-navy-light hover:text-navy transition-colors"
                 >
-                  Sign Out
+                  {t.demoHub.signOut}
                 </button>
               </form>
               <span className="text-[10px] font-sans text-silver/40 hidden sm:inline-flex items-center gap-1 select-none">
@@ -425,28 +490,57 @@ export function DemoHub({ userEmail }: { userEmail: string }) {
         {/* Page heading */}
         <div className="text-center mb-14">
           <h1 className="text-4xl md:text-5xl font-[family-name:var(--font-caveat)] font-bold text-navy mb-3">
-            Demo AI per Studi Professionali
+            {t.demoHub.title}
           </h1>
           <p className="text-lg font-sans text-silver">
-            Demo interattive delle nostre soluzioni AI
+            {t.demoHub.subtitle}
           </p>
         </div>
 
         <div className="max-w-4xl mx-auto space-y-14">
           {/* ---- Demo per Professione section ---- */}
           <section>
-            <SectionLabel label="Demo per Professione" />
+            <SectionLabel label={t.demoHub.professionGroup} />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {demos.map((demo, i) => (
                 <DemoCard
                   key={demo.slug}
                   demo={demo}
                   globalIndex={i}
-                  total={demos.length}
+                  total={allDemos.length}
                   focused={focusedIndex === i}
+                  highlighted={highlightedIndex === i}
+                  recommendedBadge={t.demoHub.recommendedBadge}
+                  launchDemo={t.demoHub.launchDemo}
                   onFocus={makeOnFocus(i)}
                   cardRef={(el) => {
                     cardRefs.current[i] = el;
+                    if (highlightedIndex === i) {
+                      highlightedCardRef.current = el;
+                    }
+                  }}
+                />
+              ))}
+            </div>
+          </section>
+
+          {/* ---- Altro section ---- */}
+          <section>
+            <SectionLabel label={t.demoHub.otherGroup} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {otherDemos.map((demo, i) => (
+                <DemoCard
+                  key={demo.slug}
+                  demo={demo}
+                  globalIndex={demos.length + i}
+                  total={allDemos.length}
+                  focused={focusedIndex === demos.length + i}
+                  highlighted={false}
+                  recommendedBadge=""
+                  launchDemo={t.demoHub.launchDemo}
+                  onFocus={makeOnFocus(demos.length + i)}
+                  cardRef={(el) => {
+                    cardRefs.current[demos.length + i] = el;
                   }}
                 />
               ))}

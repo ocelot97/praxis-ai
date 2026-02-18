@@ -1,1640 +1,943 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title data-i18n="pageTitle">Document Intelligence Demo — Praxis AI</title>
+<title>Elaborazione Fatture Elettroniche — Praxis AI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --terracotta: #C15F3C;
-    --cream: #F4F3EE;
-    --charcoal: #141413;
-    --mid: #b0aea5;
-    --border: #e8e6dc;
-    --highlight: rgba(193, 95, 60, 0.15);
-    --highlight-active: rgba(193, 95, 60, 0.30);
-    --green: #22863a;
-    --yellow: #b08800;
-    --red: #cb2431;
-    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
-    --font-display: 'Caveat', cursive;
-  }
-
-  html { font-size: 16px; }
-
-  body {
-    font-family: var(--font-body);
-    background: var(--cream);
-    color: var(--charcoal);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* ── Header ─────────────────────────────────── */
-  header {
-    background: var(--charcoal);
-    color: var(--cream);
-    padding: 20px 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
-  }
-
-  .header-brand {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .header-logo {
-    width: 36px;
-    height: 36px;
-    background: var(--terracotta);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 18px;
-    color: #fff;
-  }
-
-  .header-name {
-    font-family: var(--font-display);
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-  }
-
-  .header-title {
-    font-size: 14px;
-    color: var(--mid);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  .header-badge {
-    display: inline-block;
-    background: var(--terracotta);
-    color: #fff;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 20px;
-    margin-left: 12px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    vertical-align: middle;
-  }
-
-  /* ── Main Layout ────────────────────────────── */
-  main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 32px 40px;
-    gap: 28px;
-    max-width: 1440px;
-    width: 100%;
-    margin: 0 auto;
-  }
-
-  /* ── Section Titles ─────────────────────────── */
-  .section-label {
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--mid);
-    margin-bottom: 12px;
-  }
-
-  /* ── Document Selector ──────────────────────── */
-  .doc-selector {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .doc-card {
-    flex: 1;
-    min-width: 220px;
-    background: #fff;
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    padding: 22px 20px;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .doc-card:hover {
-    border-color: var(--terracotta);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 24px rgba(193, 95, 60, 0.10);
-  }
-
-  .doc-card.active {
-    border-color: var(--terracotta);
-    background: var(--highlight);
-    box-shadow: 0 4px 20px rgba(193, 95, 60, 0.12);
-  }
-
-  .doc-card-icon {
-    width: 44px;
-    height: 44px;
-    background: var(--cream);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 20px;
-  }
-
-  .doc-card.active .doc-card-icon {
-    background: var(--terracotta);
-    color: #fff;
-  }
-
-  .doc-card-info h3 {
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-
-  .doc-card-info p {
-    font-size: 13px;
-    color: var(--mid);
-    line-height: 1.4;
-  }
-
-  /* ── Split Panel ────────────────────────────── */
-  .split-panel {
-    display: flex;
-    gap: 24px;
-    flex: 1;
-    min-height: 520px;
-    opacity: 0;
-    transform: translateY(12px);
-    transition: all 0.4s ease;
-    pointer-events: none;
-  }
-
-  .split-panel.visible {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-
-  .panel {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .panel-left {
-    flex: 1.1;
-    position: relative;
-  }
-
-  .panel-right {
-    flex: 0.9;
-  }
-
-  .panel-header {
-    padding: 16px 22px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
-  }
-
-  .panel-header h2 {
-    font-size: 14px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .panel-header-tag {
-    font-size: 11px;
-    font-weight: 500;
-    background: var(--cream);
-    color: var(--mid);
-    padding: 3px 10px;
-    border-radius: 20px;
-  }
-
-  .panel-body {
-    flex: 1;
-    overflow-y: auto;
-    position: relative;
-  }
-
-  /* ── Scanner Animation ──────────────────────── */
-  .scanner-line {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, var(--terracotta), transparent);
-    z-index: 10;
-    opacity: 0;
-    pointer-events: none;
-    box-shadow: 0 0 16px rgba(193, 95, 60, 0.4);
-  }
-
-  .scanner-line.scanning {
-    opacity: 1;
-    animation: scanDown 2.5s ease-in-out forwards;
-  }
-
-  @keyframes scanDown {
-    0% { top: 0; }
-    100% { top: 100%; }
-  }
-
-  /* ── Document Preview ───────────────────────── */
-  .doc-preview {
-    padding: 32px 36px;
-    font-family: 'Georgia', 'Times New Roman', serif;
-    font-size: 13px;
-    line-height: 1.6;
-    color: #333;
-    min-height: 100%;
-    background: #fff;
-  }
-
-  .doc-preview .doc-header-block {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 28px;
-    padding-bottom: 20px;
-    border-bottom: 2px solid #222;
-  }
-
-  .doc-preview .doc-company-logo {
-    width: 48px;
-    height: 48px;
-    background: var(--charcoal);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-family: var(--font-body);
-    font-weight: 700;
-    font-size: 16px;
-    margin-bottom: 8px;
-  }
-
-  .doc-preview .doc-company-name {
-    font-family: var(--font-body);
-    font-weight: 700;
-    font-size: 16px;
-    color: var(--charcoal);
-  }
-
-  .doc-preview .doc-company-address {
-    font-size: 11px;
-    color: #777;
-    line-height: 1.5;
-    font-family: var(--font-body);
-  }
-
-  .doc-preview .doc-type-title {
-    font-family: var(--font-body);
-    font-size: 24px;
-    font-weight: 700;
-    text-align: right;
-    color: var(--charcoal);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-  }
-
-  .doc-preview .doc-meta-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 24px;
-  }
-
-  .doc-preview .doc-meta-group {
-    font-family: var(--font-body);
-    font-size: 12px;
-  }
-
-  .doc-preview .doc-meta-group label {
-    display: block;
-    font-weight: 600;
-    color: #999;
-    text-transform: uppercase;
-    font-size: 10px;
-    letter-spacing: 0.8px;
-    margin-bottom: 2px;
-  }
-
-  .doc-preview .doc-meta-group span {
-    color: var(--charcoal);
-    font-weight: 500;
-  }
-
-  /* Highlight on extract */
-  .doc-preview [data-field] {
-    position: relative;
-    transition: background 0.3s ease;
-    border-radius: 2px;
-    padding: 0 2px;
-    margin: 0 -2px;
-  }
-
-  .doc-preview [data-field].highlighted {
-    background: rgba(255, 200, 50, 0.35);
-  }
-
-  .doc-preview [data-field].highlighted::after {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border: 1.5px solid rgba(193, 95, 60, 0.5);
-    border-radius: 3px;
-    pointer-events: none;
-  }
-
-  /* Table in invoice */
-  .doc-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    font-family: var(--font-body);
-    font-size: 12px;
-  }
-
-  .doc-table th {
-    background: #f5f5f0;
-    text-align: left;
-    padding: 10px 12px;
-    font-weight: 600;
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #777;
-    border-bottom: 2px solid #ddd;
-  }
-
-  .doc-table td {
-    padding: 10px 12px;
-    border-bottom: 1px solid #eee;
-    vertical-align: top;
-  }
-
-  .doc-table .text-right {
-    text-align: right;
-  }
-
-  .doc-totals {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 6px;
-    margin-top: 16px;
-    font-family: var(--font-body);
-    font-size: 13px;
-  }
-
-  .doc-totals .total-row {
-    display: flex;
-    gap: 40px;
-    min-width: 220px;
-    justify-content: space-between;
-  }
-
-  .doc-totals .total-row.grand {
-    font-weight: 700;
-    font-size: 15px;
-    border-top: 2px solid #222;
-    padding-top: 8px;
-    margin-top: 4px;
-  }
-
-  .doc-totals .total-label {
-    color: #777;
-  }
-
-  /* Contract style */
-  .doc-preview .contract-title {
-    font-family: var(--font-body);
-    font-weight: 700;
-    font-size: 20px;
-    text-align: center;
-    margin-bottom: 24px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .doc-preview .contract-section {
-    margin-bottom: 18px;
-  }
-
-  .doc-preview .contract-section-title {
-    font-family: var(--font-body);
-    font-weight: 700;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 6px;
-    color: #555;
-  }
-
-  .doc-preview .contract-text {
-    font-size: 12.5px;
-    line-height: 1.7;
-    text-align: justify;
-  }
-
-  /* Claim form style */
-  .doc-preview .form-field {
-    display: flex;
-    border-bottom: 1px solid #ddd;
-    padding: 8px 0;
-    font-family: var(--font-body);
-    font-size: 12px;
-  }
-
-  .doc-preview .form-label {
-    width: 180px;
-    font-weight: 600;
-    color: #555;
-    flex-shrink: 0;
-  }
-
-  .doc-preview .form-value {
-    flex: 1;
-    color: var(--charcoal);
-  }
-
-  .doc-preview .form-section-title {
-    font-family: var(--font-body);
-    font-weight: 700;
-    font-size: 13px;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    padding-bottom: 4px;
-    border-bottom: 2px solid #ccc;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #444;
-  }
-
-  /* ── Right Panel: Extracted Data ─────────────── */
-  .extraction-progress {
-    padding: 16px 22px;
-    border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
-  }
-
-  .progress-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--mid);
-    margin-bottom: 8px;
-  }
-
-  .progress-bar-track {
-    width: 100%;
-    height: 6px;
-    background: var(--cream);
-    border-radius: 6px;
-    overflow: hidden;
-  }
-
-  .progress-bar-fill {
-    height: 100%;
-    width: 0%;
-    background: var(--terracotta);
-    border-radius: 6px;
-    transition: width 0.3s ease;
-  }
-
-  .extracted-list {
-    padding: 12px 22px 22px;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .extracted-item {
-    display: flex;
-    align-items: center;
-    padding: 11px 0;
-    border-bottom: 1px solid var(--border);
-    opacity: 0;
-    transform: translateX(16px);
-    transition: all 0.35s ease;
-  }
-
-  .extracted-item.visible {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  .extracted-item:last-child {
-    border-bottom: none;
-  }
-
-  .extracted-field-name {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--mid);
-    width: 120px;
-    flex-shrink: 0;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-  }
-
-  .extracted-field-value {
-    flex: 1;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--charcoal);
-    padding: 0 12px;
-  }
-
-  .extracted-confidence {
-    font-size: 12px;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 20px;
-    flex-shrink: 0;
-    min-width: 52px;
-    text-align: center;
-  }
-
-  .confidence-high {
-    background: #e6f4ea;
-    color: var(--green);
-  }
-
-  .confidence-medium {
-    background: #fff8e1;
-    color: var(--yellow);
-  }
-
-  .confidence-low {
-    background: #fce8e6;
-    color: var(--red);
-  }
-
-  /* ── Stats Bar ──────────────────────────────── */
-  .stats-bar {
-    background: var(--charcoal);
-    border-radius: 12px;
-    padding: 16px 28px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-    opacity: 0;
-    transform: translateY(8px);
-    transition: all 0.4s ease 0.2s;
-    flex-shrink: 0;
-  }
-
-  .stats-bar.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .stat-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--cream);
-  }
-
-  .stat-icon {
-    width: 34px;
-    height: 34px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-  }
-
-  .stat-label {
-    font-size: 11px;
-    color: var(--mid);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .stat-value {
-    font-size: 18px;
-    font-weight: 700;
-  }
-
-  .stat-badge {
-    background: var(--terracotta);
-    color: #fff;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-  }
-
-  /* ── Placeholder ────────────────────────────── */
-  .placeholder-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 80px 40px;
-    text-align: center;
-    transition: all 0.3s ease;
-  }
-
-  .placeholder-icon {
-    width: 80px;
-    height: 80px;
-    background: var(--cream);
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 36px;
-    margin-bottom: 20px;
-  }
-
-  .placeholder-state h3 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 8px;
-  }
-
-  .placeholder-state p {
-    font-size: 14px;
-    color: var(--mid);
-    max-width: 320px;
-    line-height: 1.5;
-  }
-
-  /* ── Processing Timer ───────────────────────── */
-  .processing-time {
-    padding: 12px 22px;
-    border-top: 1px solid var(--border);
-    font-size: 12px;
-    color: var(--mid);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .processing-time.visible {
-    opacity: 1;
-  }
-
-  .processing-time strong {
-    color: var(--terracotta);
-    font-weight: 700;
-  }
-
-  /* ── Responsive ─────────────────────────────── */
-  @media (max-width: 900px) {
-    main { padding: 20px; }
-    header { padding: 16px 20px; }
-    .split-panel { flex-direction: column; min-height: auto; }
-    .panel-left, .panel-right { flex: none; }
-    .panel-left { min-height: 400px; }
-    .doc-selector { flex-direction: column; }
-    .doc-card { min-width: auto; }
-    .stats-bar { padding: 14px 20px; }
-    .doc-preview { padding: 24px 20px; }
-  }
-
-  /* ── Scrollbar ──────────────────────────────── */
-  .panel-body::-webkit-scrollbar { width: 5px; }
-  .panel-body::-webkit-scrollbar-track { background: transparent; }
-  .panel-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-  .panel-body::-webkit-scrollbar-thumb:hover { background: var(--mid); }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy: #0f172a;
+  --navy-light: #1e3a5f;
+  --navy-muted: #334155;
+  --silver: #94a3b8;
+  --surface: #f0f4f8;
+  --surface-light: #f8fafc;
+  --surface-dark: #e2e8f0;
+  --ice: #fafbfd;
+  --border: #cbd5e1;
+  --white: #ffffff;
+  --accent-green: #16a34a;
+  --accent-amber: #d97706;
+  --accent-red: #dc2626;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-display: 'Caveat', cursive;
+}
+
+html { font-size: 16px; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--surface);
+  color: var(--navy);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* ---- HEADER ---- */
+.header {
+  background: var(--navy);
+  color: var(--white);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.header-logo {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--white);
+}
+.header-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--silver);
+  flex: 1;
+}
+.header-badge {
+  background: var(--navy-light);
+  color: var(--silver);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 4px 10px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+/* ---- PROGRESS ---- */
+.progress-wrap {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.progress-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--navy-muted);
+  white-space: nowrap;
+}
+.progress-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--surface-dark);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--navy-light);
+  border-radius: 3px;
+  transition: width 0.6s ease;
+  width: 25%;
+}
+.btn-next {
+  background: var(--navy);
+  color: var(--white);
+  border: none;
+  padding: 8px 22px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+.btn-next:hover { background: var(--navy-light); }
+.btn-next:active { transform: scale(0.97); }
+.btn-next:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ---- MAIN ---- */
+.main {
+  flex: 1;
+  padding: 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.step { display: none; width: 100%; max-width: 900px; }
+.step.active { display: block; }
+
+/* ---- STEP 1 — INVOICE QUEUE ---- */
+.invoice-queue {
+  position: relative;
+  min-height: 340px;
+  padding-top: 10px;
+}
+.invoice-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(15,23,42,0.06), 0 1px 3px rgba(15,23,42,0.04);
+  opacity: 0;
+  transform: translateX(80px);
+  transition: opacity 0.4s ease, transform 0.5s ease;
+  position: relative;
+}
+.invoice-card.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+.invoice-card .inv-number {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--navy);
+}
+.invoice-card .inv-detail {
+  font-size: 0.82rem;
+  color: var(--navy-muted);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+.invoice-card .inv-amount {
+  font-weight: 700;
+  color: var(--navy-light);
+}
+.queue-counter {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--silver);
+}
+
+/* ---- STEP 2 — EXTRACTION ---- */
+.step2-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+.extraction-panel {
+  flex: 1;
+  min-width: 0;
+}
+.expanded-invoice {
+  background: var(--white);
+  border: 2px solid var(--navy-light);
+  border-radius: 10px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.scanner-line {
+  position: absolute;
+  left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, var(--navy-light) 30%, var(--navy) 50%, var(--navy-light) 70%, transparent 100%);
+  opacity: 0;
+  top: 0;
+  z-index: 2;
+}
+.scanner-line.scanning {
+  opacity: 1;
+  animation: scanDown 2s ease-in-out forwards;
+}
+@keyframes scanDown {
+  0% { top: 0; }
+  100% { top: 100%; }
+}
+.field-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--surface-dark);
+  font-size: 0.82rem;
+  opacity: 0.3;
+  transition: opacity 0.3s, background 0.3s;
+}
+.field-row.extracted {
+  opacity: 1;
+  background: rgba(22,163,74,0.04);
+}
+.field-label { color: var(--navy-muted); font-weight: 500; }
+.field-value { font-weight: 700; color: var(--navy); }
+.field-check {
+  color: var(--accent-green);
+  font-weight: 700;
+  margin-left: 8px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.field-row.extracted .field-check { opacity: 1; }
+
+.extraction-table-wrap {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+}
+.extraction-table {
+  width: 100%;
+  font-size: 0.75rem;
+  border-collapse: collapse;
+  background: var(--white);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.extraction-table th {
+  background: var(--navy);
+  color: var(--white);
+  padding: 8px 10px;
+  text-align: left;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.extraction-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--surface-dark);
+  white-space: nowrap;
+}
+.extraction-table tr.new-row { animation: fadeRow 0.4s ease; }
+@keyframes fadeRow {
+  from { opacity: 0; background: rgba(30,58,95,0.08); }
+  to { opacity: 1; background: transparent; }
+}
+.batch-counter {
+  text-align: center;
+  margin-top: 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--navy-muted);
+}
+
+/* Amber flag */
+.amber-flag {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 28px; height: 28px;
+  background: var(--accent-amber);
+  color: var(--white);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  animation: pulse-amber 1.5s infinite;
+  z-index: 5;
+}
+@keyframes pulse-amber {
+  0%,100% { box-shadow: 0 0 0 0 rgba(217,119,6,0.5); }
+  50% { box-shadow: 0 0 0 8px rgba(217,119,6,0); }
+}
+.flag-detail {
+  display: none;
+  background: #fffbeb;
+  border: 1px solid var(--accent-amber);
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 12px;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--navy);
+  animation: fadeIn 0.3s ease;
+}
+.flag-detail.open { display: block; }
+.flag-detail-title {
+  font-weight: 700;
+  color: var(--accent-amber);
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+.flag-detail p { margin-bottom: 6px; }
+.flag-detail .diff {
+  font-weight: 700;
+  color: var(--accent-red);
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- STEP 3 — RECONCILIATION ---- */
+.recon-table {
+  width: 100%;
+  font-size: 0.78rem;
+  border-collapse: collapse;
+  background: var(--white);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+.recon-table th {
+  background: var(--navy);
+  color: var(--white);
+  padding: 9px 12px;
+  text-align: left;
+  font-weight: 600;
+}
+.recon-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--surface-dark);
+}
+.recon-table .match-cell {
+  text-align: center;
+  font-size: 1.1rem;
+}
+.match-ok { color: var(--accent-green); }
+.match-fail { color: var(--accent-red); animation: pulse-red 1.2s infinite; }
+@keyframes pulse-red {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.recon-stats {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px;
+  text-align: center;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--navy-muted);
+}
+.recon-stats .green { color: var(--accent-green); }
+.recon-stats .amber { color: var(--accent-amber); }
+
+/* ---- STEP 4 — F24 ---- */
+.f24-form {
+  background: var(--white);
+  border: 2px solid var(--navy-muted);
+  border-radius: 10px;
+  overflow: hidden;
+  max-width: 680px;
+  margin: 0 auto;
+}
+.f24-header {
+  background: var(--navy);
+  color: var(--white);
+  padding: 14px 20px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+}
+.f24-section {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.f24-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.f24-section-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--navy-light);
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+.f24-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  font-size: 0.82rem;
+}
+.f24-label { color: var(--navy-muted); }
+.f24-value {
+  font-weight: 700;
+  color: var(--navy);
+  min-width: 0;
+  text-align: right;
+}
+.f24-value.filling {
+  animation: typeIn 0.6s ease;
+}
+@keyframes typeIn {
+  from { opacity: 0; transform: translateX(10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.f24-total {
+  background: var(--surface);
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--navy);
+}
+.f24-badge {
+  text-align: center;
+  padding: 18px 20px;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.f24-badge.visible { opacity: 1; }
+.f24-badge-inner {
+  display: inline-block;
+  background: rgba(22,163,74,0.08);
+  border: 1px solid var(--accent-green);
+  color: var(--accent-green);
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 10px 24px;
+  border-radius: 8px;
+}
+.f24-cta {
+  text-align: center;
+  padding: 0 20px 20px;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.f24-cta.visible { opacity: 1; }
+.f24-cta a {
+  display: inline-block;
+  background: var(--navy);
+  color: var(--white);
+  font-weight: 600;
+  font-size: 0.88rem;
+  padding: 12px 28px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.f24-cta a:hover { background: var(--navy-light); }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 700px) {
+  .header { padding: 10px 14px; gap: 10px; }
+  .header-logo { font-size: 1.2rem; }
+  .header-title { font-size: 0.82rem; }
+  .main { padding: 14px; }
+  .step2-layout { flex-direction: column; }
+  .f24-form { max-width: 100%; }
+  .extraction-table { font-size: 0.68rem; }
+  .recon-table { font-size: 0.72rem; }
+}
 </style>
 </head>
 <body>
 
-<!-- ═══ Header ═══ -->
-<header>
-  <div class="header-brand">
-    <div class="header-logo">P</div>
-    <span class="header-name">Praxis AI</span>
-  </div>
-  <div>
-    <span class="header-title" data-i18n="headerTitle">Document Intelligence</span>
-    <span class="header-badge" data-i18n="headerBadge">Demo</span>
-  </div>
-</header>
+<!-- HEADER -->
+<div class="header">
+  <div class="header-logo">Praxis AI</div>
+  <div class="header-title" id="headerTitle"></div>
+  <div class="header-badge">DEMO</div>
+</div>
 
-<!-- ═══ Main ═══ -->
-<main>
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-label" id="progressLabel"></div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <button class="btn-next" id="btnNext"></button>
+</div>
 
-  <!-- Document Selector -->
-  <div>
-    <div class="section-label" data-i18n="sectionLabel">Select a Document</div>
-    <div class="doc-selector">
-      <div class="doc-card" data-doc="invoice" onclick="selectDocument('invoice')">
-        <div class="doc-card-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-        </div>
-        <div class="doc-card-info">
-          <h3 data-i18n="invoiceTitle">Invoice #INV-2024-0847</h3>
-          <p data-i18n="invoiceDesc">Vendor invoice with line items, tax, and payment terms</p>
-        </div>
-      </div>
-      <div class="doc-card" data-doc="contract" onclick="selectDocument('contract')">
-        <div class="doc-card-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
-        </div>
-        <div class="doc-card-info">
-          <h3 data-i18n="contractTitle">Employment Contract</h3>
-          <p data-i18n="contractDesc">Full employment agreement with compensation and terms</p>
-        </div>
-      </div>
-      <div class="doc-card" data-doc="claim" onclick="selectDocument('claim')">
-        <div class="doc-card-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="M9 15l3 3 3-3"/></svg>
-        </div>
-        <div class="doc-card-info">
-          <h3 data-i18n="claimTitle">Insurance Claim Form</h3>
-          <p data-i18n="claimDesc">Auto collision claim with damage assessment details</p>
-        </div>
+<!-- STEPS -->
+<div class="main">
+
+  <!-- STEP 1 -->
+  <div class="step active" id="step1">
+    <div class="invoice-queue" id="invoiceQueue"></div>
+    <div class="queue-counter" id="queueCounter"></div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step" id="step2">
+    <div class="step2-layout">
+      <div class="extraction-panel" id="extractionPanel"></div>
+      <div class="extraction-table-wrap">
+        <table class="extraction-table">
+          <thead id="extTableHead"></thead>
+          <tbody id="extTableBody"></tbody>
+        </table>
       </div>
     </div>
+    <div class="batch-counter" id="batchCounter"></div>
   </div>
 
-  <!-- Placeholder -->
-  <div id="placeholder" class="placeholder-state">
-    <div class="placeholder-icon">
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--mid)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-    </div>
-    <h3 data-i18n="placeholderTitle">Select a document to begin</h3>
-    <p data-i18n="placeholderDesc">Choose one of the sample documents above to see AI-powered data extraction in action.</p>
+  <!-- STEP 3 -->
+  <div class="step" id="step3">
+    <table class="recon-table" id="reconTable">
+      <thead id="reconHead"></thead>
+      <tbody id="reconBody"></tbody>
+    </table>
+    <div class="recon-stats" id="reconStats"></div>
   </div>
 
-  <!-- Split Panel -->
-  <div id="splitPanel" class="split-panel">
-    <!-- Left: Document Preview -->
-    <div class="panel panel-left">
-      <div class="panel-header">
-        <h2>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-          <span data-i18n="panelDocPreview">Document Preview</span>
-        </h2>
-        <span class="panel-header-tag" id="docTypeTag">PDF</span>
+  <!-- STEP 4 -->
+  <div class="step" id="step4">
+    <div class="f24-form" id="f24Form">
+      <div class="f24-header" id="f24Header"></div>
+      <div class="f24-section" id="f24Contrib">
+        <div class="f24-section-title" id="f24ContribTitle"></div>
+        <div id="f24ContribBody"></div>
       </div>
-      <div class="panel-body" id="docPreviewBody">
-        <div class="scanner-line" id="scannerLine"></div>
-        <div class="doc-preview" id="docPreview"></div>
+      <div class="f24-section" id="f24Erario">
+        <div class="f24-section-title" id="f24ErarioTitle"></div>
+        <div id="f24ErarioBody"></div>
       </div>
-    </div>
-
-    <!-- Right: Extracted Data -->
-    <div class="panel panel-right">
-      <div class="panel-header">
-        <h2>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          <span data-i18n="panelExtractedData">Extracted Data</span>
-        </h2>
-        <span class="panel-header-tag" id="fieldCountTag" data-i18n="zeroFields">0 fields</span>
-      </div>
-      <div class="extraction-progress" id="progressSection">
-        <div class="progress-label">
-          <span id="progressLabel" data-i18n="analyzingDoc">Analyzing document...</span>
-          <span id="progressPercent">0%</span>
-        </div>
-        <div class="progress-bar-track">
-          <div class="progress-bar-fill" id="progressBar"></div>
-        </div>
-      </div>
-      <div class="panel-body">
-        <div class="extracted-list" id="extractedList"></div>
-      </div>
-      <div class="processing-time" id="processingTime">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span data-i18n="processedIn">Processed in</span> <strong id="timeValue">0.0s</strong>
-      </div>
+      <div class="f24-total" id="f24Total"></div>
+      <div class="f24-badge" id="f24Badge"></div>
+      <div class="f24-cta" id="f24Cta"></div>
     </div>
   </div>
 
-  <!-- Stats Bar -->
-  <div class="stats-bar" id="statsBar">
-    <div class="stat-item">
-      <div class="stat-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      </div>
-      <div>
-        <div class="stat-label" data-i18n="statFieldsExtracted">Fields Extracted</div>
-        <div class="stat-value" id="statFields">--</div>
-      </div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-      </div>
-      <div>
-        <div class="stat-label" data-i18n="statAvgConfidence">Avg. Confidence</div>
-        <div class="stat-value" id="statConfidence">--</div>
-      </div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      </div>
-      <div>
-        <div class="stat-label" data-i18n="statProcessingTime">Processing Time</div>
-        <div class="stat-value" id="statTime">--</div>
-      </div>
-    </div>
-    <div class="stat-badge" data-i18n="statAccuracy">95%+ Accuracy</div>
-  </div>
-
-</main>
+</div>
 
 <script>
-// --- i18n ---
-const LOCALE = window.__PRAXIS_LOCALE__ || 'it';
-const T = {
-  en: {
-    pageTitle: 'Document Intelligence Demo — Praxis AI',
-    headerTitle: 'Document Intelligence',
-    headerBadge: 'Demo',
-    sectionLabel: 'Select a Document',
-    invoiceTitle: 'Invoice #INV-2024-0847',
-    invoiceDesc: 'Vendor invoice with line items, tax, and payment terms',
-    contractTitle: 'Employment Contract',
-    contractDesc: 'Full employment agreement with compensation and terms',
-    claimTitle: 'Insurance Claim Form',
-    claimDesc: 'Auto collision claim with damage assessment details',
-    placeholderTitle: 'Select a document to begin',
-    placeholderDesc: 'Choose one of the sample documents above to see AI-powered data extraction in action.',
-    panelDocPreview: 'Document Preview',
-    panelExtractedData: 'Extracted Data',
-    zeroFields: '0 fields',
-    analyzingDoc: 'Analyzing document...',
-    extractionComplete: 'Extraction complete',
-    processedIn: 'Processed in',
-    statFieldsExtracted: 'Fields Extracted',
-    statAvgConfidence: 'Avg. Confidence',
-    statProcessingTime: 'Processing Time',
-    statAccuracy: '95%+ Accuracy',
-    fieldSuffix: 'field',
-    fieldsSuffix: 'fields',
-    // Invoice field names
-    fVendor: 'Vendor',
-    fInvoiceNo: 'Invoice No.',
-    fDate: 'Date',
-    fDueDate: 'Due Date',
-    fItem1: 'Item 1',
-    fItem2: 'Item 2',
-    fItem3: 'Item 3',
-    fSubtotal: 'Subtotal',
-    fTax: 'Tax (9%)',
-    fTotal: 'Total',
-    // Invoice field values
-    vItem1: 'Cloud Server License x2 @ $1,200',
-    vItem2: 'API Gateway Setup x1 @ $850',
-    vItem3: 'Support Plan (Annual) x1 @ $1,000',
-    // Contract field names
-    fPartyA: 'Party A',
-    fPartyB: 'Party B',
-    fEffectiveDate: 'Effective Date',
-    fPosition: 'Position',
-    fSalary: 'Salary',
-    fDuration: 'Duration',
-    fNoticePeriod: 'Notice Period',
-    fNonCompete: 'Non-Compete',
-    // Contract field values
-    vDuration: '24 months',
-    vNoticePeriod: '30 days',
-    vNonCompete: '12 months, 50mi radius',
-    // Claim field names
-    fClaimNo: 'Claim No.',
-    fPolicyHolder: 'Policy Holder',
-    fPolicyNo: 'Policy No.',
-    fIncidentDate: 'Incident Date',
-    fClaimType: 'Claim Type',
-    fEstDamage: 'Est. Damage',
-    fDeductible: 'Deductible',
-    // Claim field values
-    vClaimType: 'Auto - Collision',
-    // Invoice preview labels
-    pInvoiceNumber: 'Invoice Number',
-    pDateIssued: 'Date Issued',
-    pDueDate: 'Due Date',
-    pPaymentTerms: 'Payment Terms',
-    pBillTo: 'Bill To',
-    pDescription: 'Description',
-    pQty: 'Qty',
-    pUnitPrice: 'Unit Price',
-    pAmount: 'Amount',
-    pSubtotal: 'Subtotal',
-    pSalesTax: 'Sales Tax (9%)',
-    pTotalDue: 'Total Due',
-    pInvoiceNote: 'Payment is due within 30 days of invoice date. Please include invoice number on all correspondence. Wire transfers accepted. Late payments subject to 1.5% monthly interest.',
-    pInvoiceTypeTitle: 'Invoice',
-    // Contract preview labels
-    pConfidential: 'Confidential',
-    pEmploymentAgreement: 'Employment Agreement',
-    pEffectiveDate: 'Effective Date:',
-    pSectionParties: '1. Parties',
-    pPartiesText1: 'This Employment Agreement ("Agreement") is entered into between',
-    pPartiesText2: ', a Delaware corporation with principal offices at 500 Market Street, San Francisco, CA 94105 ("Employer"), and',
-    pPartiesText3: ', an individual residing at 742 Evergreen Terrace, Springfield, IL 62704 ("Employee").',
-    pSectionPosition: '2. Position & Duties',
-    pPositionText1: 'Employee shall serve in the role of',
-    pPositionText2: 'and shall report directly to the VP of Engineering. Employee agrees to devote full-time professional efforts to the duties and responsibilities assigned by the Employer.',
-    pSectionCompensation: '3. Compensation',
-    pCompText1: 'Employer agrees to pay Employee a base annual salary of',
-    pCompText2: ', payable in accordance with Employer\'s standard payroll schedule. Employee shall also be eligible for an annual performance bonus of up to 15% of base salary, subject to meeting performance objectives established by management.',
-    pSectionTerm: '4. Term',
-    pTermText1: 'This Agreement shall be effective for a period of',
-    pTermText2: 'from the Effective Date, subject to earlier termination as provided herein. Either party may terminate this Agreement with',
-    pTermText3: 'prior written notice to the other party.',
-    pSectionNonCompete: '5. Non-Competition',
-    pNonCompeteText1: 'Upon termination, Employee agrees not to engage in competing business activities for a period of',
-    pNonCompeteText2: 'within a',
-    pNonCompeteText3: 'of any Employer office location. This restriction applies to direct employment, consulting, and advisory roles with competitors in the same market segment.',
-    p50miRadius: '50-mile radius',
-    pAuthorizedSignatory: 'Authorized Signatory',
-    pEmployee: 'Employee',
-    // Claim preview labels
-    pInsuranceClaimDiv: 'Insurance Claim Division',
-    pClaimForm: 'Claim Form',
-    pFormRevision: 'Form CL-200 Rev. 2023',
-    pClaimInformation: 'Claim Information',
-    pClaimNumber: 'Claim Number',
-    pDateFiled: 'Date Filed',
-    pClaimTypeLabel: 'Claim Type',
-    pPolicyholderDetails: 'Policyholder Details',
-    pFullName: 'Full Name',
-    pPolicyNumber: 'Policy Number',
-    pAddress: 'Address',
-    pPhone: 'Phone',
-    pIncidentDetails: 'Incident Details',
-    pDateOfIncident: 'Date of Incident',
-    pLocation: 'Location',
-    pDescriptionLabel: 'Description',
-    pIncidentDescription: 'Vehicle was struck on the rear passenger side by another vehicle that ran a red light at the intersection. Police report filed (#BPD-2023-44291). Other driver cited for failure to obey traffic signal.',
-    pFinancialSummary: 'Financial Summary',
-    pEstimatedDamage: 'Estimated Damage',
-    pDeductible: 'Deductible',
-    pNetClaimAmount: 'Net Claim Amount',
-    pClaimCertification: 'By signing below, I certify that the information provided is true and accurate to the best of my knowledge. I understand that any false statements may result in denial of my claim.',
-    pPolicyholderSignature: 'Policyholder Signature',
-  },
-  it: {
-    pageTitle: 'Demo Document Intelligence — Praxis AI',
-    headerTitle: 'Document Intelligence',
-    headerBadge: 'Demo',
-    sectionLabel: 'Seleziona un Documento',
-    invoiceTitle: 'Fattura #INV-2024-0847',
-    invoiceDesc: 'Fattura fornitore con voci, imposte e termini di pagamento',
-    contractTitle: 'Contratto di Lavoro',
-    contractDesc: 'Contratto di assunzione completo con compenso e condizioni',
-    claimTitle: 'Modulo Richiesta Risarcimento',
-    claimDesc: 'Richiesta risarcimento auto con dettagli del danno',
-    placeholderTitle: 'Seleziona un documento per iniziare',
-    placeholderDesc: 'Scegli uno dei documenti sopra per vedere l\'estrazione dati basata su AI in azione.',
-    panelDocPreview: 'Anteprima Documento',
-    panelExtractedData: 'Dati Estratti',
-    zeroFields: '0 campi',
-    analyzingDoc: 'Analisi del documento...',
-    extractionComplete: 'Estrazione completata',
-    processedIn: 'Elaborato in',
-    statFieldsExtracted: 'Campi Estratti',
-    statAvgConfidence: 'Affidabilit\u00E0 Media',
-    statProcessingTime: 'Tempo di Elaborazione',
-    statAccuracy: 'Accuratezza 95%+',
-    fieldSuffix: 'campo',
-    fieldsSuffix: 'campi',
-    // Invoice field names
-    fVendor: 'Fornitore',
-    fInvoiceNo: 'N. Fattura',
-    fDate: 'Data',
-    fDueDate: 'Scadenza',
-    fItem1: 'Voce 1',
-    fItem2: 'Voce 2',
-    fItem3: 'Voce 3',
-    fSubtotal: 'Subtotale',
-    fTax: 'IVA (9%)',
-    fTotal: 'Totale',
-    // Invoice field values
-    vItem1: 'Licenza Cloud Server x2 @ $1.200',
-    vItem2: 'Setup API Gateway x1 @ $850',
-    vItem3: 'Piano Supporto (Annuale) x1 @ $1.000',
-    // Contract field names
-    fPartyA: 'Parte A',
-    fPartyB: 'Parte B',
-    fEffectiveDate: 'Data Decorrenza',
-    fPosition: 'Posizione',
-    fSalary: 'Retribuzione',
-    fDuration: 'Durata',
-    fNoticePeriod: 'Preavviso',
-    fNonCompete: 'Non Concorrenza',
-    // Contract field values
-    vDuration: '24 mesi',
-    vNoticePeriod: '30 giorni',
-    vNonCompete: '12 mesi, raggio 80 km',
-    // Claim field names
-    fClaimNo: 'N. Pratica',
-    fPolicyHolder: 'Assicurato',
-    fPolicyNo: 'N. Polizza',
-    fIncidentDate: 'Data Sinistro',
-    fClaimType: 'Tipo Sinistro',
-    fEstDamage: 'Danno Stimato',
-    fDeductible: 'Franchigia',
-    // Claim field values
-    vClaimType: 'Auto - Collisione',
-    // Invoice preview labels
-    pInvoiceNumber: 'Numero Fattura',
-    pDateIssued: 'Data Emissione',
-    pDueDate: 'Data Scadenza',
-    pPaymentTerms: 'Termini di Pagamento',
-    pBillTo: 'Destinatario',
-    pDescription: 'Descrizione',
-    pQty: 'Qt\u00E0',
-    pUnitPrice: 'Prezzo Unitario',
-    pAmount: 'Importo',
-    pSubtotal: 'Subtotale',
-    pSalesTax: 'IVA (9%)',
-    pTotalDue: 'Totale Dovuto',
-    pInvoiceNote: 'Il pagamento \u00E8 dovuto entro 30 giorni dalla data della fattura. Si prega di indicare il numero di fattura in tutta la corrispondenza. Accettati bonifici bancari. Interessi dell\'1,5% mensile sui pagamenti in ritardo.',
-    pInvoiceTypeTitle: 'Fattura',
-    // Contract preview labels
-    pConfidential: 'Riservato',
-    pEmploymentAgreement: 'Contratto di Lavoro',
-    pEffectiveDate: 'Data Decorrenza:',
-    pSectionParties: '1. Parti',
-    pPartiesText1: 'Il presente Contratto di Lavoro ("Contratto") \u00E8 stipulato tra',
-    pPartiesText2: ', societ\u00E0 del Delaware con sede principale in 500 Market Street, San Francisco, CA 94105 ("Datore di Lavoro"), e',
-    pPartiesText3: ', residente in 742 Evergreen Terrace, Springfield, IL 62704 ("Dipendente").',
-    pSectionPosition: '2. Posizione e Mansioni',
-    pPositionText1: 'Il Dipendente ricoprir\u00E0 il ruolo di',
-    pPositionText2: 'e risponder\u00E0 direttamente al VP of Engineering. Il Dipendente si impegna a dedicare il proprio impegno professionale a tempo pieno alle mansioni assegnate dal Datore di Lavoro.',
-    pSectionCompensation: '3. Retribuzione',
-    pCompText1: 'Il Datore di Lavoro si impegna a corrispondere al Dipendente uno stipendio base annuo di',
-    pCompText2: ', pagabile secondo il calendario retributivo standard del Datore di Lavoro. Il Dipendente avr\u00E0 inoltre diritto a un bonus annuale fino al 15% dello stipendio base, subordinato al raggiungimento degli obiettivi stabiliti dalla direzione.',
-    pSectionTerm: '4. Durata',
-    pTermText1: 'Il presente Contratto avr\u00E0 efficacia per un periodo di',
-    pTermText2: 'dalla Data di Decorrenza, salvo risoluzione anticipata. Ciascuna parte potr\u00E0 recedere dal Contratto con un preavviso scritto di',
-    pTermText3: 'all\'altra parte.',
-    pSectionNonCompete: '5. Non Concorrenza',
-    pNonCompeteText1: 'Alla cessazione del rapporto, il Dipendente si impegna a non svolgere attivit\u00E0 in concorrenza per un periodo di',
-    pNonCompeteText2: 'entro un',
-    pNonCompeteText3: 'da qualsiasi sede del Datore di Lavoro. Questa restrizione si applica a impiego diretto, consulenza e ruoli di advisory presso concorrenti nello stesso segmento di mercato.',
-    p50miRadius: 'raggio di 80 km',
-    pAuthorizedSignatory: 'Firmatario Autorizzato',
-    pEmployee: 'Dipendente',
-    // Claim preview labels
-    pInsuranceClaimDiv: 'Divisione Sinistri',
-    pClaimForm: 'Modulo Sinistro',
-    pFormRevision: 'Modulo CL-200 Rev. 2023',
-    pClaimInformation: 'Informazioni Sinistro',
-    pClaimNumber: 'Numero Pratica',
-    pDateFiled: 'Data Apertura',
-    pClaimTypeLabel: 'Tipo Sinistro',
-    pPolicyholderDetails: 'Dati Assicurato',
-    pFullName: 'Nome Completo',
-    pPolicyNumber: 'Numero Polizza',
-    pAddress: 'Indirizzo',
-    pPhone: 'Telefono',
-    pIncidentDetails: 'Dettagli Sinistro',
-    pDateOfIncident: 'Data del Sinistro',
-    pLocation: 'Luogo',
-    pDescriptionLabel: 'Descrizione',
-    pIncidentDescription: 'Il veicolo \u00E8 stato colpito sul lato posteriore del passeggero da un altro veicolo che ha ignorato il semaforo rosso all\'incrocio. Rapporto di polizia depositato (#BPD-2023-44291). L\'altro conducente sanzionato per mancato rispetto del segnale stradale.',
-    pFinancialSummary: 'Riepilogo Finanziario',
-    pEstimatedDamage: 'Danno Stimato',
-    pDeductible: 'Franchigia',
-    pNetClaimAmount: 'Importo Netto Risarcimento',
-    pClaimCertification: 'Con la firma sottostante, dichiaro che le informazioni fornite sono veritiere e accurate al meglio delle mie conoscenze. Comprendo che dichiarazioni false possono comportare il rigetto della richiesta.',
-    pPolicyholderSignature: 'Firma dell\'Assicurato',
-  },
-}[LOCALE];
+(function() {
+  'use strict';
 
-// Apply i18n to static HTML elements
-document.querySelectorAll('[data-i18n]').forEach(function(el) {
-  var key = el.getAttribute('data-i18n');
-  if (T[key] !== undefined) el.textContent = T[key];
-});
-document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
-  var key = el.getAttribute('data-i18n-placeholder');
-  if (T[key] !== undefined) el.placeholder = T[key];
-});
-document.title = T.pageTitle;
+  // ---- i18n ----
+  var locale = (typeof window.__PRAXIS_LOCALE__ === 'string') ? window.__PRAXIS_LOCALE__ : 'it';
+  if (locale !== 'it' && locale !== 'en') locale = 'it';
 
-// ═══════════════════════════════════════════════
-//  Document Data
-// ═══════════════════════════════════════════════
+  var T = {
+    pageTitle: { it: 'Elaborazione Fatture Elettroniche', en: 'Electronic Invoice Processing' },
+    stepOf: { it: 'Passaggio {n} di 4', en: 'Step {n} of 4' },
+    next: { it: 'Avanti', en: 'Next' },
+    queueCounter: { it: '{n} fatture in coda', en: '{n} invoices in queue' },
+    batchCounter: { it: '{a}/{b} elaborate', en: '{a}/{b} processed' },
+    thFornitore: { it: 'Fornitore', en: 'Supplier' },
+    thPIVA: { it: 'P.IVA', en: 'VAT No.' },
+    thNetto: { it: 'Netto', en: 'Net' },
+    thIVA: { it: 'IVA', en: 'VAT' },
+    thTotale: { it: 'Totale', en: 'Total' },
+    ragioneSociale: { it: 'Ragione Sociale', en: 'Company Name' },
+    piva: { it: 'P.IVA', en: 'VAT No.' },
+    codDestinatario: { it: 'Codice Destinatario', en: 'Recipient Code' },
+    importoNetto: { it: 'Importo Netto', en: 'Net Amount' },
+    aliquotaIva: { it: 'Aliquota IVA', en: 'VAT Rate' },
+    importoIva: { it: 'Importo IVA', en: 'VAT Amount' },
+    totaleFattura: { it: 'Totale Fattura', en: 'Invoice Total' },
+    flagTitle: { it: '\u26A0 Aliquota IVA da Verificare', en: '\u26A0 VAT Rate to Verify' },
+    flagBody1: { it: 'Aliquota IVA 10% applicata su forniture per ufficio. Categoria merceologica generalmente soggetta ad aliquota ordinaria 22%.', en: 'VAT rate of 10% applied to office supplies. Product category generally subject to standard 22% rate.' },
+    flagBody2: { it: "Verificare se l'aliquota ridotta \u00e8 applicabile in base all'Art. 16 D.P.R. 633/72.", en: 'Verify whether the reduced rate is applicable under Art. 16 D.P.R. 633/72.' },
+    flagBody3: { it: 'Differenza potenziale: \u20AC135,00 di IVA non contabilizzata.', en: 'Potential difference: \u20AC135.00 of unaccounted VAT.' },
+    reconFattura: { it: 'Fattura', en: 'Invoice' },
+    reconFornitore: { it: 'Fornitore', en: 'Supplier' },
+    reconImporto: { it: 'Importo', en: 'Amount' },
+    reconPrimaNota: { it: 'Prima Nota', en: 'Journal Entry' },
+    reconStato: { it: 'Stato', en: 'Status' },
+    reconFound: { it: 'Trovata', en: 'Found' },
+    reconNotFound: { it: 'Nessuna corrispondenza trovata in Prima Nota', en: 'No match found in Journal Entry' },
+    reconStats: { it: '<span class="green">4/5 riconciliate automaticamente</span> \u2014 <span class="amber">1 da verificare manualmente</span>', en: '<span class="green">4/5 automatically reconciled</span> \u2014 <span class="amber">1 to verify manually</span>' },
+    f24Title: { it: 'MODELLO F24 \u2014 DELEGA DI PAGAMENTO', en: 'F24 FORM \u2014 PAYMENT ORDER' },
+    f24Contribuente: { it: 'Contribuente', en: 'Taxpayer' },
+    f24SezioneErario: { it: 'Sezione Erario', en: 'Treasury Section' },
+    f24CodFiscale: { it: 'Codice Fiscale', en: 'Tax Code' },
+    f24Denominazione: { it: 'Denominazione', en: 'Name' },
+    f24Domicilio: { it: 'Domicilio Fiscale', en: 'Tax Domicile' },
+    f24CodiceTributo: { it: 'Codice Tributo', en: 'Tax Code' },
+    f24Periodo: { it: 'Periodo di Riferimento', en: 'Reference Period' },
+    f24ImportoDebito: { it: 'Importo a Debito', en: 'Debit Amount' },
+    f24Totale: { it: 'TOTALE', en: 'TOTAL' },
+    f24Badge: { it: 'Modello F24 pronto per la revisione', en: 'F24 Form ready for review' },
+    f24Cta: { it: 'Vuoi automatizzare le tue fatture?', en: 'Want to automate your invoices?' },
+    clickToInspect: { it: 'Clicca sulla segnalazione per i dettagli', en: 'Click the flag for details' }
+  };
 
-const documents = {
-  invoice: {
-    type: 'PDF',
-    time: '1.2s',
-    fields: [
-      { name: T.fVendor, value: 'TechSupply Co.', confidence: 98 },
-      { name: T.fInvoiceNo, value: 'INV-2024-0847', confidence: 99 },
-      { name: T.fDate, value: 'January 15, 2024', confidence: 97 },
-      { name: T.fDueDate, value: 'February 15, 2024', confidence: 96 },
-      { name: T.fItem1, value: T.vItem1, confidence: 97 },
-      { name: T.fItem2, value: T.vItem2, confidence: 96 },
-      { name: T.fItem3, value: T.vItem3, confidence: 95 },
-      { name: T.fSubtotal, value: '$4,250.00', confidence: 99 },
-      { name: T.fTax, value: '$382.50', confidence: 98 },
-      { name: T.fTotal, value: '$4,632.50', confidence: 99 },
-    ],
-    preview: `
-      <div class="doc-header-block">
-        <div>
-          <div class="doc-company-logo">TS</div>
-          <div class="doc-company-name" data-field="vendor">TechSupply Co.</div>
-          <div class="doc-company-address">
-            2847 Innovation Drive, Suite 300<br>
-            San Francisco, CA 94105<br>
-            billing@techsupply.co
-          </div>
-        </div>
-        <div style="text-align:right">
-          <div class="doc-type-title">${T.pInvoiceTypeTitle}</div>
-        </div>
-      </div>
-
-      <div class="doc-meta-row">
-        <div class="doc-meta-group">
-          <label>${T.pInvoiceNumber}</label>
-          <span data-field="invoice_no">INV-2024-0847</span>
-        </div>
-        <div class="doc-meta-group">
-          <label>${T.pDateIssued}</label>
-          <span data-field="date">January 15, 2024</span>
-        </div>
-        <div class="doc-meta-group">
-          <label>${T.pDueDate}</label>
-          <span data-field="due_date">February 15, 2024</span>
-        </div>
-        <div class="doc-meta-group">
-          <label>${T.pPaymentTerms}</label>
-          <span>Net 30</span>
-        </div>
-      </div>
-
-      <div class="doc-meta-row" style="margin-bottom:8px">
-        <div class="doc-meta-group">
-          <label>${T.pBillTo}</label>
-          <span>Meridian Dynamics Inc.<br>
-          <span style="color:#777;font-size:11px">1200 Park Avenue, New York, NY 10128</span></span>
-        </div>
-      </div>
-
-      <table class="doc-table">
-        <thead>
-          <tr>
-            <th style="width:45%">${T.pDescription}</th>
-            <th style="width:10%">${T.pQty}</th>
-            <th class="text-right" style="width:20%">${T.pUnitPrice}</th>
-            <th class="text-right" style="width:25%">${T.pAmount}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr data-field="item1">
-            <td>Cloud Server License (Enterprise)</td>
-            <td>2</td>
-            <td class="text-right">$1,200.00</td>
-            <td class="text-right">$2,400.00</td>
-          </tr>
-          <tr data-field="item2">
-            <td>API Gateway Setup & Configuration</td>
-            <td>1</td>
-            <td class="text-right">$850.00</td>
-            <td class="text-right">$850.00</td>
-          </tr>
-          <tr data-field="item3">
-            <td>Premium Support Plan (Annual)</td>
-            <td>1</td>
-            <td class="text-right">$1,000.00</td>
-            <td class="text-right">$1,000.00</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="doc-totals">
-        <div class="total-row" data-field="subtotal">
-          <span class="total-label">${T.pSubtotal}</span>
-          <span>$4,250.00</span>
-        </div>
-        <div class="total-row" data-field="tax">
-          <span class="total-label">${T.pSalesTax}</span>
-          <span>$382.50</span>
-        </div>
-        <div class="total-row grand" data-field="total">
-          <span class="total-label">${T.pTotalDue}</span>
-          <span>$4,632.50</span>
-        </div>
-      </div>
-
-      <div style="margin-top:32px;padding-top:16px;border-top:1px solid #eee;font-family:var(--font-body);font-size:11px;color:#999;line-height:1.5">
-        ${T.pInvoiceNote}
-      </div>
-    `
-  },
-
-  contract: {
-    type: 'DOCX',
-    time: '1.8s',
-    fields: [
-      { name: T.fPartyA, value: 'Acme Corp', confidence: 97 },
-      { name: T.fPartyB, value: 'Jane Smith', confidence: 96 },
-      { name: T.fEffectiveDate, value: 'March 1, 2024', confidence: 98 },
-      { name: T.fPosition, value: 'Senior Developer', confidence: 99 },
-      { name: T.fSalary, value: '$145,000/year', confidence: 97 },
-      { name: T.fDuration, value: T.vDuration, confidence: 95 },
-      { name: T.fNoticePeriod, value: T.vNoticePeriod, confidence: 94 },
-      { name: T.fNonCompete, value: T.vNonCompete, confidence: 91 },
-    ],
-    preview: `
-      <div style="text-align:center;margin-bottom:12px">
-        <div style="font-family:var(--font-body);font-size:11px;color:#999;letter-spacing:1px;text-transform:uppercase">${T.pConfidential}</div>
-      </div>
-      <div class="contract-title">${T.pEmploymentAgreement}</div>
-
-      <div style="text-align:center;margin-bottom:28px;font-family:var(--font-body);font-size:12px;color:#777">
-        ${T.pEffectiveDate} <span data-field="effective_date" style="color:#333;font-weight:600">March 1, 2024</span>
-      </div>
-
-      <div class="contract-section">
-        <div class="contract-section-title">${T.pSectionParties}</div>
-        <div class="contract-text">
-          ${T.pPartiesText1}
-          <span data-field="party_a" style="font-weight:700">Acme Corp</span>${T.pPartiesText2}
-          <span data-field="party_b" style="font-weight:700">Jane Smith</span>${T.pPartiesText3}
-        </div>
-      </div>
-
-      <div class="contract-section">
-        <div class="contract-section-title">${T.pSectionPosition}</div>
-        <div class="contract-text">
-          ${T.pPositionText1} <span data-field="position" style="font-weight:700">Senior Developer</span>
-          ${T.pPositionText2}
-        </div>
-      </div>
-
-      <div class="contract-section">
-        <div class="contract-section-title">${T.pSectionCompensation}</div>
-        <div class="contract-text">
-          ${T.pCompText1}
-          <span data-field="salary" style="font-weight:700">$145,000/year</span>${T.pCompText2}
-        </div>
-      </div>
-
-      <div class="contract-section">
-        <div class="contract-section-title">${T.pSectionTerm}</div>
-        <div class="contract-text">
-          ${T.pTermText1}
-          <span data-field="duration" style="font-weight:700">${T.vDuration}</span>
-          ${T.pTermText2}
-          <span data-field="notice_period" style="font-weight:700">${T.vNoticePeriod}</span>
-          ${T.pTermText3}
-        </div>
-      </div>
-
-      <div class="contract-section">
-        <div class="contract-section-title">${T.pSectionNonCompete}</div>
-        <div class="contract-text">
-          ${T.pNonCompeteText1}
-          <span data-field="non_compete" style="font-weight:700">12 ${LOCALE === 'it' ? 'mesi' : 'months'}</span> ${T.pNonCompeteText2}
-          <span style="font-weight:700">${T.p50miRadius}</span> ${T.pNonCompeteText3}
-        </div>
-      </div>
-
-      <div style="margin-top:32px;display:flex;justify-content:space-between;font-family:var(--font-body);font-size:12px">
-        <div>
-          <div style="border-top:1px solid #333;width:200px;padding-top:8px;margin-top:40px">
-            <strong>Acme Corp</strong><br>
-            <span style="color:#999">${T.pAuthorizedSignatory}</span>
-          </div>
-        </div>
-        <div>
-          <div style="border-top:1px solid #333;width:200px;padding-top:8px;margin-top:40px">
-            <strong>Jane Smith</strong><br>
-            <span style="color:#999">${T.pEmployee}</span>
-          </div>
-        </div>
-      </div>
-    `
-  },
-
-  claim: {
-    type: 'PDF',
-    time: '1.4s',
-    fields: [
-      { name: T.fClaimNo, value: 'CLM-2024-12847', confidence: 99 },
-      { name: T.fPolicyHolder, value: 'Robert Johnson', confidence: 97 },
-      { name: T.fPolicyNo, value: 'POL-889234', confidence: 98 },
-      { name: T.fIncidentDate, value: 'December 3, 2023', confidence: 96 },
-      { name: T.fClaimType, value: T.vClaimType, confidence: 98 },
-      { name: T.fEstDamage, value: '$8,750.00', confidence: 94 },
-      { name: T.fDeductible, value: '$500.00', confidence: 99 },
-    ],
-    preview: `
-      <div class="doc-header-block">
-        <div>
-          <div class="doc-company-logo" style="background:#1a5276;border-radius:50%">SI</div>
-          <div class="doc-company-name">SafeGuard Insurance</div>
-          <div class="doc-company-address">
-            ${T.pInsuranceClaimDiv}<br>
-            P.O. Box 44820, Hartford, CT 06144<br>
-            claims@safeguardins.com | 1-800-555-0199
-          </div>
-        </div>
-        <div style="text-align:right">
-          <div class="doc-type-title" style="font-size:18px;letter-spacing:1px">${T.pClaimForm}</div>
-          <div style="font-family:var(--font-body);font-size:11px;color:#999;margin-top:4px">${T.pFormRevision}</div>
-        </div>
-      </div>
-
-      <div class="form-section-title">${T.pClaimInformation}</div>
-      <div class="form-field">
-        <div class="form-label">${T.pClaimNumber}</div>
-        <div class="form-value" data-field="claim_no">CLM-2024-12847</div>
-      </div>
-      <div class="form-field">
-        <div class="form-label">${T.pDateFiled}</div>
-        <div class="form-value">December 5, 2023</div>
-      </div>
-      <div class="form-field">
-        <div class="form-label">${T.pClaimTypeLabel}</div>
-        <div class="form-value" data-field="claim_type">${T.vClaimType}</div>
-      </div>
-
-      <div class="form-section-title">${T.pPolicyholderDetails}</div>
-      <div class="form-field">
-        <div class="form-label">${T.pFullName}</div>
-        <div class="form-value" data-field="policy_holder">Robert Johnson</div>
-      </div>
-      <div class="form-field">
-        <div class="form-label">${T.pPolicyNumber}</div>
-        <div class="form-value" data-field="policy_no">POL-889234</div>
-      </div>
-      <div class="form-field">
-        <div class="form-label">${T.pAddress}</div>
-        <div class="form-value">385 Oak Street, Apt 12B, Boston, MA 02116</div>
-      </div>
-      <div class="form-field">
-        <div class="form-label">${T.pPhone}</div>
-        <div class="form-value">(617) 555-0342</div>
-      </div>
-
-      <div class="form-section-title">${T.pIncidentDetails}</div>
-      <div class="form-field">
-        <div class="form-label">${T.pDateOfIncident}</div>
-        <div class="form-value" data-field="incident_date">December 3, 2023</div>
-      </div>
-      <div class="form-field">
-        <div class="form-label">${T.pLocation}</div>
-        <div class="form-value">Intersection of Main St & 5th Ave, Boston, MA</div>
-      </div>
-      <div class="form-field">
-        <div class="form-label">${T.pDescriptionLabel}</div>
-        <div class="form-value" style="font-size:11.5px;line-height:1.5">
-          ${T.pIncidentDescription}
-        </div>
-      </div>
-
-      <div class="form-section-title">${T.pFinancialSummary}</div>
-      <div class="form-field">
-        <div class="form-label">${T.pEstimatedDamage}</div>
-        <div class="form-value" data-field="est_damage" style="font-weight:700">$8,750.00</div>
-      </div>
-      <div class="form-field">
-        <div class="form-label">${T.pDeductible}</div>
-        <div class="form-value" data-field="deductible">$500.00</div>
-      </div>
-      <div class="form-field" style="border-bottom:2px solid #333">
-        <div class="form-label" style="font-weight:700">${T.pNetClaimAmount}</div>
-        <div class="form-value" style="font-weight:700">$8,250.00</div>
-      </div>
-
-      <div style="margin-top:24px;font-family:var(--font-body);font-size:11px;color:#999;line-height:1.5">
-        ${T.pClaimCertification}
-      </div>
-      <div style="margin-top:20px;border-top:1px solid #333;width:200px;padding-top:8px;font-family:var(--font-body);font-size:12px">
-        <strong>Robert Johnson</strong><br>
-        <span style="color:#999">${T.pPolicyholderSignature}</span>
-      </div>
-    `
+  function t(key, vars) {
+    var s = T[key] ? (T[key][locale] || T[key]['it']) : key;
+    if (vars) {
+      Object.keys(vars).forEach(function(k) {
+        s = s.replace('{' + k + '}', vars[k]);
+      });
+    }
+    return s;
   }
-};
 
-// Field-to-data-field mapping for highlights
-const fieldMapping = {
-  invoice: {
-    0: 'vendor',
-    1: 'invoice_no',
-    2: 'date',
-    3: 'due_date',
-    4: 'item1',
-    5: 'item2',
-    6: 'item3',
-    7: 'subtotal',
-    8: 'tax',
-    9: 'total',
-  },
-  contract: {
-    0: 'party_a',
-    1: 'party_b',
-    2: 'effective_date',
-    3: 'position',
-    4: 'salary',
-    5: 'duration',
-    6: 'notice_period',
-    7: 'non_compete',
-  },
-  claim: {
-    0: 'claim_no',
-    1: 'policy_holder',
-    2: 'policy_no',
-    3: 'incident_date',
-    4: 'claim_type',
-    5: 'est_damage',
-    6: 'deductible',
+  // ---- DATA ----
+  var invoices = [
+    { num: '2024/0847', name: 'TechSupply S.r.l.', piva: '02345678901', netto: '\u20AC3.200,00', ivaRate: '22%', iva: '\u20AC704,00', totale: '\u20AC3.904,00', codDest: 'KRRH6B9' },
+    { num: '2024/0891', name: 'Studio Legale Bianchi', piva: '01234567890', netto: '\u20AC1.800,00', ivaRate: '22%', iva: '\u20AC396,00', totale: '\u20AC2.196,00', codDest: 'M5UXCR1', extra: ' (Ritenuta d\'acconto 20%)' },
+    { num: '2024/0903', name: 'Forniture Ufficio S.p.A.', piva: '03456789012', netto: '\u20AC450,00', ivaRate: '10%', iva: '\u20AC45,00', totale: '\u20AC495,00', codDest: 'J6TN3M4', flagged: true },
+    { num: '2024/0912', name: 'Consulenza Marketing', piva: '04567890123', netto: '\u20AC2.500,00', ivaRate: '22%', iva: '\u20AC550,00', totale: '\u20AC3.050,00', codDest: 'A1B2C3D' },
+    { num: '2024/0928', name: 'Manutenzione Immobili', piva: '05678901234', netto: '\u20AC1.100,00', ivaRate: '10%', iva: '\u20AC110,00', totale: '\u20AC1.210,00', codDest: 'W9X8Y7Z', noRecon: true }
+  ];
+
+  // ---- STATE ----
+  var currentStep = 1;
+
+  // ---- INIT ----
+  function init() {
+    document.getElementById('headerTitle').textContent = t('pageTitle');
+    updateProgress();
+    buildStep1();
+    document.getElementById('btnNext').addEventListener('click', nextStep);
   }
-};
 
-// ═══════════════════════════════════════════════
-//  State
-// ═══════════════════════════════════════════════
-let currentDoc = null;
-let animationTimer = null;
-let fieldTimers = [];
+  function updateProgress() {
+    document.getElementById('progressLabel').textContent = t('stepOf', { n: currentStep });
+    document.getElementById('progressFill').style.width = (currentStep * 25) + '%';
+    var btn = document.getElementById('btnNext');
+    btn.textContent = t('next');
+    btn.disabled = false;
+  }
 
-// ═══════════════════════════════════════════════
-//  Select Document
-// ═══════════════════════════════════════════════
-function selectDocument(docKey) {
-  // Prevent re-selecting the same doc while animating
-  if (currentDoc === docKey) return;
-  currentDoc = docKey;
+  // ---- STEP 1 ----
+  function buildStep1() {
+    var queue = document.getElementById('invoiceQueue');
+    queue.innerHTML = '';
+    invoices.forEach(function(inv, i) {
+      var card = document.createElement('div');
+      card.className = 'invoice-card';
+      var extraText = inv.extra || '';
+      card.innerHTML =
+        '<div class="inv-number">Fattura n. ' + inv.num + '</div>' +
+        '<div class="inv-detail">' + inv.name + ' \u2014 P.IVA: ' + inv.piva +
+        ' \u2014 <span class="inv-amount">' + inv.netto + ' + IVA ' + inv.ivaRate + '</span>' +
+        extraText + '</div>';
+      queue.appendChild(card);
+      setTimeout(function() { card.classList.add('visible'); }, 200 + i * 280);
+    });
+    document.getElementById('queueCounter').textContent = t('queueCounter', { n: 5 });
+  }
 
-  // Clear previous animations
-  if (animationTimer) clearTimeout(animationTimer);
-  fieldTimers.forEach(t => clearTimeout(t));
-  fieldTimers = [];
+  // ---- STEP 2 ----
+  function buildStep2() {
+    // Build table header
+    var thead = document.getElementById('extTableHead');
+    thead.innerHTML = '<tr><th>#</th><th>' + t('thFornitore') + '</th><th>' + t('thPIVA') +
+      '</th><th>' + t('thNetto') + '</th><th>' + t('thIVA') + '</th><th>' + t('thTotale') + '</th></tr>';
+    document.getElementById('extTableBody').innerHTML = '';
+    document.getElementById('batchCounter').textContent = t('batchCounter', { a: 0, b: 5 });
 
-  const doc = documents[docKey];
+    var panel = document.getElementById('extractionPanel');
+    panel.innerHTML = '';
 
-  // Update card active states
-  document.querySelectorAll('.doc-card').forEach(card => {
-    card.classList.toggle('active', card.dataset.doc === docKey);
-  });
+    // Extraction sequence
+    var extractionFields = [
+      { label: t('ragioneSociale'), value: invoices[0].name },
+      { label: t('piva'), value: invoices[0].piva },
+      { label: t('codDestinatario'), value: invoices[0].codDest },
+      { label: t('importoNetto'), value: invoices[0].netto },
+      { label: t('aliquotaIva'), value: invoices[0].ivaRate },
+      { label: t('importoIva'), value: invoices[0].iva },
+      { label: t('totaleFattura'), value: invoices[0].totale }
+    ];
 
-  // Hide placeholder, show split panel
-  document.getElementById('placeholder').style.display = 'none';
-  const splitPanel = document.getElementById('splitPanel');
-  splitPanel.classList.add('visible');
+    // Build expanded invoice view
+    var expanded = document.createElement('div');
+    expanded.className = 'expanded-invoice';
+    expanded.innerHTML = '<div class="scanner-line" id="scannerLine"></div>' +
+      '<div style="font-weight:700;font-size:0.95rem;margin-bottom:12px;">Fattura n. ' + invoices[0].num + ' \u2014 ' + invoices[0].name + '</div>';
 
-  // Set doc type tag
-  document.getElementById('docTypeTag').textContent = doc.type;
+    extractionFields.forEach(function(f, i) {
+      var row = document.createElement('div');
+      row.className = 'field-row';
+      row.id = 'field-' + i;
+      row.innerHTML = '<span class="field-label">' + f.label + '</span>' +
+        '<span><span class="field-value">' + f.value + '</span><span class="field-check">\u2713</span></span>';
+      expanded.appendChild(row);
+    });
+    panel.appendChild(expanded);
 
-  // Render document preview
-  document.getElementById('docPreview').innerHTML = doc.preview;
+    // Hint for interactive moment
+    var hint = document.createElement('div');
+    hint.id = 'interactiveHint';
+    hint.style.cssText = 'text-align:center;font-size:0.8rem;color:var(--accent-amber);font-weight:600;margin-top:8px;opacity:0;transition:opacity 0.5s;';
+    hint.textContent = t('clickToInspect');
+    panel.appendChild(hint);
 
-  // Reset right panel
-  document.getElementById('extractedList').innerHTML = '';
-  document.getElementById('progressBar').style.width = '0%';
-  document.getElementById('progressPercent').textContent = '0%';
-  document.getElementById('progressLabel').textContent = T.analyzingDoc;
-  document.getElementById('fieldCountTag').textContent = '0 ' + T.fieldsSuffix;
-  document.getElementById('processingTime').classList.remove('visible');
-  document.getElementById('statsBar').classList.remove('visible');
+    // Start scanning animation
+    setTimeout(function() {
+      document.getElementById('scannerLine').classList.add('scanning');
+    }, 300);
 
-  // Remove old scanner class and force reflow
-  const scannerLine = document.getElementById('scannerLine');
-  scannerLine.classList.remove('scanning');
-  void scannerLine.offsetWidth; // force reflow
+    // Extract fields one by one
+    extractionFields.forEach(function(f, i) {
+      setTimeout(function() {
+        var row = document.getElementById('field-' + i);
+        if (row) row.classList.add('extracted');
+      }, 800 + i * 350);
+    });
 
-  // Start scanning animation
-  setTimeout(() => {
-    scannerLine.classList.add('scanning');
-  }, 100);
+    // After first invoice extraction, add table row
+    var firstDone = 800 + extractionFields.length * 350 + 400;
+    setTimeout(function() {
+      addTableRow(invoices[0], 1);
+      document.getElementById('batchCounter').textContent = t('batchCounter', { a: 1, b: 5 });
+    }, firstDone);
 
-  // Start field extraction after short delay
-  animationTimer = setTimeout(() => {
-    startExtraction(docKey, doc);
-  }, 600);
-}
+    // Process invoices 2-5 with decreasing delays (batch efficiency)
+    var delays = [800, 500, 400, 350];
+    var batchDelay = firstDone;
+    for (var k = 1; k < 5; k++) {
+      batchDelay += delays[k - 1];
+      (function(i, bd) {
+        setTimeout(function() {
+          addTableRow(invoices[i], i + 1);
+          document.getElementById('batchCounter').textContent = t('batchCounter', { a: i + 1, b: 5 });
+          if (i === 2) {
+            setTimeout(function() { showAmberFlag(); }, 300);
+          }
+        }, bd);
+      })(k, batchDelay);
+    }
+  }
 
-// ═══════════════════════════════════════════════
-//  Extraction Animation
-// ═══════════════════════════════════════════════
-function startExtraction(docKey, doc) {
-  const fields = doc.fields;
-  const totalFields = fields.length;
-  const mapping = fieldMapping[docKey];
-  const intervalBase = 180;
-  const extractedList = document.getElementById('extractedList');
+  function addTableRow(inv, num) {
+    var tbody = document.getElementById('extTableBody');
+    var tr = document.createElement('tr');
+    tr.className = 'new-row';
+    if (inv.flagged) tr.style.background = 'rgba(217,119,6,0.06)';
+    tr.innerHTML = '<td>' + num + '</td><td>' + inv.name + '</td><td>' + inv.piva +
+      '</td><td>' + inv.netto + '</td><td>' + inv.iva + '</td><td>' + inv.totale + '</td>';
+    tbody.appendChild(tr);
+  }
 
-  // Build all items (hidden)
-  fields.forEach((field, i) => {
-    const confClass = field.confidence >= 95 ? 'confidence-high'
-                    : field.confidence >= 85 ? 'confidence-medium'
-                    : 'confidence-low';
+  function showAmberFlag() {
+    var panel = document.getElementById('extractionPanel');
+    // Create flagged invoice card
+    var flagCard = document.createElement('div');
+    flagCard.className = 'expanded-invoice';
+    flagCard.style.position = 'relative';
+    flagCard.style.cursor = 'pointer';
+    flagCard.innerHTML =
+      '<div class="amber-flag" id="amberBtn">\u26A0</div>' +
+      '<div style="font-weight:700;font-size:0.9rem;">Fattura n. ' + invoices[2].num + ' \u2014 ' + invoices[2].name + '</div>' +
+      '<div style="font-size:0.82rem;color:var(--navy-muted);margin-top:4px;">' + invoices[2].netto + ' + IVA ' + invoices[2].ivaRate + '</div>' +
+      '<div class="flag-detail" id="flagDetail">' +
+        '<div class="flag-detail-title">' + t('flagTitle') + '</div>' +
+        '<p>' + t('flagBody1') + '</p>' +
+        '<p>' + t('flagBody2') + '</p>' +
+        '<p class="diff">' + t('flagBody3') + '</p>' +
+      '</div>';
+    panel.appendChild(flagCard);
 
-    const item = document.createElement('div');
-    item.className = 'extracted-item';
-    item.id = `field-${i}`;
-    item.innerHTML = `
-      <div class="extracted-field-name">${field.name}</div>
-      <div class="extracted-field-value">${field.value}</div>
-      <div class="extracted-confidence ${confClass}">${field.confidence}%</div>
-    `;
-    extractedList.appendChild(item);
-  });
+    var hintEl = document.getElementById('interactiveHint');
+    if (hintEl) hintEl.style.opacity = '1';
 
-  // Reveal fields one by one
-  fields.forEach((field, i) => {
-    const delay = i * intervalBase + Math.random() * 80;
-    const timer = setTimeout(() => {
-      // Show extracted item
-      const item = document.getElementById(`field-${i}`);
-      if (item) item.classList.add('visible');
+    flagCard.addEventListener('click', function() {
+      var detail = document.getElementById('flagDetail');
+      detail.classList.toggle('open');
+      var hintEl2 = document.getElementById('interactiveHint');
+      if (hintEl2) hintEl2.style.opacity = '0';
+    });
+  }
 
-      // Highlight on document
-      const dataField = mapping[i];
-      if (dataField) {
-        const el = document.querySelector(`[data-field="${dataField}"]`);
-        if (el) el.classList.add('highlighted');
-      }
+  // ---- STEP 3 ----
+  function buildStep3() {
+    var thead = document.getElementById('reconHead');
+    thead.innerHTML = '<tr><th>' + t('reconFattura') + '</th><th>' + t('reconFornitore') +
+      '</th><th>' + t('reconImporto') + '</th><th>' + t('reconPrimaNota') + '</th><th>' + t('reconStato') + '</th></tr>';
 
-      // Update progress
-      const progress = Math.round(((i + 1) / totalFields) * 100);
-      document.getElementById('progressBar').style.width = progress + '%';
-      document.getElementById('progressPercent').textContent = progress + '%';
-      document.getElementById('fieldCountTag').textContent = (i + 1) + ' ' + ((i + 1) > 1 ? T.fieldsSuffix : T.fieldSuffix);
+    var tbody = document.getElementById('reconBody');
+    tbody.innerHTML = '';
 
-      if (i === totalFields - 1) {
-        // Extraction complete
-        setTimeout(() => {
-          document.getElementById('progressLabel').textContent = T.extractionComplete;
-          showStats(doc);
-        }, 200);
+    var primaNotaRefs = ['PN-2024/1201', 'PN-2024/1203', 'PN-2024/1207', 'PN-2024/1210', '\u2014'];
+
+    invoices.forEach(function(inv, i) {
+      var tr = document.createElement('tr');
+      tr.id = 'recon-row-' + i;
+      tr.style.opacity = '0';
+      tr.style.transition = 'opacity 0.4s';
+      var isMatch = !inv.noRecon;
+      tr.innerHTML = '<td>n. ' + inv.num + '</td><td>' + inv.name + '</td><td>' + inv.totale +
+        '</td><td>' + primaNotaRefs[i] + '</td>' +
+        '<td class="match-cell"><span id="match-icon-' + i + '"></span></td>';
+      tbody.appendChild(tr);
+    });
+
+    // Animate rows appearing
+    invoices.forEach(function(inv, i) {
+      setTimeout(function() {
+        var row = document.getElementById('recon-row-' + i);
+        if (row) row.style.opacity = '1';
+      }, 300 + i * 300);
+    });
+
+    // Animate match icons
+    invoices.forEach(function(inv, i) {
+      setTimeout(function() {
+        var icon = document.getElementById('match-icon-' + i);
+        if (icon) {
+          if (inv.noRecon) {
+            icon.className = 'match-fail';
+            icon.textContent = '\u2717';
+            icon.title = t('reconNotFound');
+          } else {
+            icon.className = 'match-ok';
+            icon.textContent = '\u2713';
+          }
+        }
+      }, 800 + i * 400);
+    });
+
+    // Show stats
+    setTimeout(function() {
+      document.getElementById('reconStats').innerHTML = t('reconStats');
+    }, 800 + 5 * 400);
+  }
+
+  // ---- STEP 4 ----
+  function buildStep4() {
+    document.getElementById('f24Header').textContent = t('f24Title');
+
+    // Contribuente section
+    document.getElementById('f24ContribTitle').textContent = t('f24Contribuente');
+    document.getElementById('f24ContribBody').innerHTML =
+      '<div class="f24-row"><span class="f24-label">' + t('f24CodFiscale') + '</span><span class="f24-value" id="f24cf"></span></div>' +
+      '<div class="f24-row"><span class="f24-label">' + t('f24Denominazione') + '</span><span class="f24-value" id="f24denom"></span></div>' +
+      '<div class="f24-row"><span class="f24-label">' + t('f24Domicilio') + '</span><span class="f24-value" id="f24dom"></span></div>';
+
+    // Erario section
+    document.getElementById('f24ErarioTitle').textContent = t('f24SezioneErario');
+    document.getElementById('f24ErarioBody').innerHTML =
+      '<div class="f24-row"><span class="f24-label">' + t('f24CodiceTributo') + '</span><span class="f24-value" id="f24trib"></span></div>' +
+      '<div class="f24-row"><span class="f24-label">' + t('f24Periodo') + '</span><span class="f24-value" id="f24per"></span></div>' +
+      '<div class="f24-row"><span class="f24-label">' + t('f24ImportoDebito') + '</span><span class="f24-value" id="f24imp"></span></div>';
+
+    // Totale
+    document.getElementById('f24Total').innerHTML =
+      '<span>' + t('f24Totale') + '</span><span id="f24tot"></span>';
+
+    // Badge
+    document.getElementById('f24Badge').innerHTML =
+      '<div class="f24-badge-inner">\u2713 ' + t('f24Badge') + '</div>';
+
+    // CTA
+    document.getElementById('f24Cta').innerHTML =
+      '<a href="#">' + t('f24Cta') + '</a>';
+
+    // Animate sections
+    setTimeout(function() {
+      document.getElementById('f24Contrib').classList.add('visible');
+      fillField('f24cf', 'RSSMRA80A01H501Z', 300);
+      fillField('f24denom', 'Studio Rossi & Associati', 600);
+      fillField('f24dom', 'Via Roma 42, 00100 Roma (RM)', 900);
+    }, 400);
+
+    setTimeout(function() {
+      document.getElementById('f24Erario').classList.add('visible');
+      fillField('f24trib', '6001 (Versamento IVA mensile)', 300);
+      fillField('f24per', '01/2026', 600);
+      fillField('f24imp', '\u20AC1.684,00', 900);
+    }, 1800);
+
+    setTimeout(function() {
+      document.getElementById('f24tot').textContent = '\u20AC1.684,00';
+      document.getElementById('f24tot').classList.add('filling');
+    }, 3200);
+
+    setTimeout(function() {
+      document.getElementById('f24Badge').classList.add('visible');
+    }, 3800);
+
+    setTimeout(function() {
+      document.getElementById('f24Cta').classList.add('visible');
+    }, 4300);
+  }
+
+  function fillField(id, value, delay) {
+    setTimeout(function() {
+      var el = document.getElementById(id);
+      if (el) {
+        el.textContent = value;
+        el.classList.add('filling');
       }
     }, delay);
-    fieldTimers.push(timer);
-  });
-}
+  }
 
-// ═══════════════════════════════════════════════
-//  Show Stats
-// ═══════════════════════════════════════════════
-function showStats(doc) {
-  const fields = doc.fields;
-  const avgConf = Math.round(fields.reduce((sum, f) => sum + f.confidence, 0) / fields.length);
+  // ---- NAVIGATION ----
+  function nextStep() {
+    if (currentStep >= 4) return;
 
-  document.getElementById('processingTime').classList.add('visible');
-  document.getElementById('timeValue').textContent = doc.time;
+    // Hide current step
+    document.getElementById('step' + currentStep).classList.remove('active');
+    currentStep++;
+    document.getElementById('step' + currentStep).classList.add('active');
+    updateProgress();
 
-  document.getElementById('statFields').textContent = fields.length + '/' + fields.length;
-  document.getElementById('statConfidence').textContent = avgConf + '%';
-  document.getElementById('statTime').textContent = doc.time;
+    if (currentStep === 2) buildStep2();
+    else if (currentStep === 3) buildStep3();
+    else if (currentStep === 4) {
+      buildStep4();
+      document.getElementById('btnNext').disabled = true;
+    }
+  }
 
-  document.getElementById('statsBar').classList.add('visible');
-}
+  // ---- START ----
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+})();
 </script>
-
 </body>
 </html>

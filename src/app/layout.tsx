@@ -3,6 +3,7 @@ import { inter, caveat } from "@/lib/fonts";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { LocaleProvider } from "@/lib/i18n";
+import { ProfilingProvider } from "@/lib/profiling-context";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -43,12 +44,14 @@ export default function RootLayout({
     <html lang="it" className={`${inter.variable} ${caveat.variable}`}>
       <body>
         <LocaleProvider>
-          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-white focus:text-navy">
-            Skip to content
-          </a>
-          <Navbar />
-          <main id="main-content">{children}</main>
-          <Footer />
+          <ProfilingProvider>
+            <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-white focus:text-navy">
+              Skip to content
+            </a>
+            <Navbar />
+            <main id="main-content">{children}</main>
+            <Footer />
+          </ProfilingProvider>
         </LocaleProvider>
       </body>
     </html>

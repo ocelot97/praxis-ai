@@ -1,13 +1,23 @@
 "use client";
 
 import * as React from "react";
+import { Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { LogoMark } from "@/components/ui/logo";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useLocale } from "@/lib/i18n";
+import { getProfession } from "@/lib/professions";
 import { login } from "./actions";
 
-export default function DemoLoginPage() {
+function LoginForm() {
+  const { t } = useLocale();
+  const searchParams = useSearchParams();
+  const professionSlug = searchParams?.get("profession") || null;
+  const profession = professionSlug ? getProfession(professionSlug) : null;
+  const professionCard = profession ? t.simulation.cards.find((c: any) => c.slug === profession.slug) : null;
+
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
   const emailRef = React.useRef<HTMLInputElement>(null);
@@ -27,6 +37,8 @@ export default function DemoLoginPage() {
       setLoading(false);
     }
   }
+
+  const titleText = profession ? `${t.demoLogin.personalizedTitle} ${professionCard?.title}` : t.demoLogin.title;
 
   return (
     <>
@@ -165,10 +177,10 @@ export default function DemoLoginPage() {
           <div className="login-card card-base">
             <div className="text-center mb-6">
               <h1 className="text-xl font-sans font-semibold text-navy mb-1">
-                Demo Access
+                {titleText}
               </h1>
               <p className="text-sm font-sans text-silver">
-                Sign in to view interactive demos
+                {t.demoLogin.subtitle}
               </p>
             </div>
 
@@ -184,38 +196,47 @@ export default function DemoLoginPage() {
                 id="email"
                 name="email"
                 type="email"
-                label="Email"
-                placeholder="you@company.com"
+                label={t.demoLogin.emailLabel}
+                placeholder={t.demoLogin.emailPlaceholder}
                 required
               />
               <Input
                 id="password"
                 name="password"
                 type="password"
-                label="Password"
+                label={t.demoLogin.passwordLabel}
                 placeholder="••••••••"
                 required
               />
+              {professionSlug && <input type="hidden" name="profession" value={professionSlug} />}
               <Button
                 type="submit"
                 className={`w-full ${loading ? "login-btn-loading" : ""}`}
                 loading={loading}
               >
-                {loading ? "Authenticating..." : "Sign In"}
+                {loading ? t.demoLogin.authenticating : t.demoLogin.signIn}
               </Button>
             </form>
           </div>
 
           <div className="login-footer text-center mt-6">
             <p className="text-xs font-sans text-silver">
-              For client meeting access only
+              {t.demoLogin.clientOnly}
             </p>
             <p className="text-[10px] font-sans text-silver/30 uppercase tracking-widest mt-2">
-              Praxis AI Demo Platform
+              {t.demoLogin.platformName}
             </p>
           </div>
         </div>
       </div>
     </>
+  );
+}
+
+export default function DemoLoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-ice" />}>
+      <LoginForm />
+    </Suspense>
   );
 }

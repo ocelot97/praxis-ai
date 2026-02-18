@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klaviyo AI Strategist &mdash; Praxis AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1e3a5f;--navy-light:#2a5080;--navy-muted:#5a7a9b;
+  --silver:#6b7280;--ice:#edf2f7;--accent:#c9a227;
+  --surface:#f0f4f8;--border:#d1dae4;--white:#ffffff;
+  --green:#16a34a;--green-light:#dcfce7;--red:#dc2626;--red-light:#fee2e2;
+  --amber:#d97706;--amber-light:#fef3c7;--blue:#2563eb;--blue-light:#dbeafe;
+  --font-body:'Inter',system-ui,sans-serif;--font-display:'Caveat',cursive;
+  --shadow-sm:0 1px 3px rgba(30,58,95,0.06);--shadow-md:0 4px 12px rgba(30,58,95,0.08);
+  --shadow-lg:0 8px 30px rgba(30,58,95,0.12);
+  --radius-sm:8px;--radius-md:12px;--radius-lg:16px
+}
+html{font-size:16px}
+body{font-family:var(--font-body);background:var(--surface);color:var(--navy);min-height:100vh;-webkit-font-smoothing:antialiased;padding-bottom:20px;overflow-x:hidden}
+
+/* Header */
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid var(--border);background:var(--navy);color:var(--white);position:sticky;top:0;z-index:100}
+.header-left{display:flex;align-items:center;gap:16px}
+.header-brand{font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--white)}
+.header-divider{width:1px;height:22px;background:var(--navy-muted)}
+.header-title{font-size:13px;color:var(--navy-muted);font-weight:500}
+.header-badge{display:inline-block;background:var(--accent);color:var(--white);font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:1px;text-transform:uppercase}
+
+/* Progress */
+.progress-bar{display:flex;align-items:center;gap:12px;padding:14px 28px;background:var(--white);border-bottom:1px solid var(--border)}
+.progress-steps{display:flex;gap:6px;flex:1}
+.progress-step{flex:1;height:4px;border-radius:2px;background:var(--ice);transition:background .4s}
+.progress-step.active{background:var(--navy)}
+.progress-step.done{background:var(--green)}
+.progress-label{font-size:12px;font-weight:600;color:var(--navy-muted);white-space:nowrap}
+.btn-next{padding:8px 24px;background:var(--navy);color:var(--white);border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:var(--font-body);cursor:pointer;transition:background .2s,transform .15s}
+.btn-next:hover{background:var(--navy-light)}
+.btn-next:active{transform:scale(.97)}
+.btn-next:disabled{opacity:.4;cursor:not-allowed}
+
+/* Main */
+.main{max-width:1100px;margin:0 auto;padding:24px 24px 0}
+.step-container{display:none;opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}
+.step-container.active{display:block}
+.step-container.visible{opacity:1;transform:translateY(0)}
+.step-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--silver);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--navy);color:var(--white);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* Cards */
+.card{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:16px}
+.card-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--ice)}
+.card-header h3{font-size:14px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px}
+.card-body{padding:16px 20px}
+
+/* Campaign Table */
+.campaign-table{width:100%;border-collapse:collapse;font-size:12px}
+.campaign-table th{text-align:left;padding:10px 12px;background:var(--surface);font-weight:600;color:var(--navy-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+.campaign-table td{padding:10px 12px;border-bottom:1px solid var(--ice);font-variant-numeric:tabular-nums;vertical-align:middle}
+.campaign-table tr{opacity:0;transform:translateX(-8px);transition:all .35s ease}
+.campaign-table tr.visible{opacity:1;transform:translateX(0)}
+.campaign-table tr.clickable{cursor:pointer;position:relative}
+.campaign-table tr.clickable:hover td{background:rgba(30,58,95,0.03)}
+.campaign-name{font-weight:600;color:var(--navy)}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:3px 9px;border-radius:12px}
+.badge-green{background:var(--green-light);color:var(--green)}
+.badge-amber{background:var(--amber-light);color:var(--amber)}
+.badge-red{background:var(--red-light);color:var(--red)}
+.badge-blue{background:var(--blue-light);color:var(--blue)}
+
+/* Pulse animation for clickable */
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(30,58,95,0.25)}50%{box-shadow:0 0 0 6px rgba(30,58,95,0)}}
+.pulse-row{animation:pulseGlow 2s ease-in-out infinite}
+.pulse-row td:first-child::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);border-radius:0 2px 2px 0}
+
+/* Scanner */
+.scanner-overlay{position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--navy),var(--accent),var(--navy),transparent);opacity:0;z-index:10;pointer-events:none}
+.scanner-overlay.active{opacity:1;animation:scanDown 2.5s ease-in-out}
+@keyframes scanDown{0%{top:0}100%{top:100%}}
+
+/* Insights */
+.insight-item{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-bottom:1px solid var(--ice);opacity:0;transform:translateY(8px);transition:all .4s ease}
+.insight-item.visible{opacity:1;transform:translateY(0)}
+.insight-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.insight-icon.green{background:var(--green-light);color:var(--green)}
+.insight-icon.amber{background:var(--amber-light);color:var(--amber)}
+.insight-icon.blue{background:var(--blue-light);color:var(--blue)}
+.insight-text{font-size:13px;line-height:1.6;color:var(--navy)}
+.insight-text strong{font-weight:700}
+
+/* Heatmap */
+.heatmap-container{margin-top:16px}
+.heatmap-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.heatmap-grid{display:grid;grid-template-columns:80px repeat(7,1fr);gap:3px;font-size:10px}
+.heatmap-header{font-weight:600;color:var(--navy-muted);text-align:center;padding:6px 4px}
+.heatmap-label{font-weight:600;color:var(--navy-muted);display:flex;align-items:center;padding:0 4px;font-size:10px}
+.heatmap-cell{border-radius:4px;text-align:center;padding:8px 4px;font-weight:600;color:var(--white);opacity:0;transform:scale(0.5);transition:all .3s ease}
+.heatmap-cell.visible{opacity:1;transform:scale(1)}
+.heatmap-cell.low{background:rgba(30,58,95,0.12);color:var(--navy-muted)}
+.heatmap-cell.med{background:rgba(30,58,95,0.35);color:var(--white)}
+.heatmap-cell.high{background:rgba(30,58,95,0.65);color:var(--white)}
+.heatmap-cell.peak{background:var(--navy);color:var(--accent)}
+
+/* Expanded detail */
+.detail-panel{display:none;margin:-1px 0 16px;padding:20px;background:var(--white);border:2px solid var(--accent);border-radius:0 0 var(--radius-md) var(--radius-md);animation:slideDown .4s ease}
+.detail-panel.visible{display:block}
+@keyframes slideDown{from{opacity:0;max-height:0;padding:0 20px}to{opacity:1;max-height:600px;padding:20px}}
+.detail-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.detail-diagnosis{font-size:12px;color:var(--navy-muted);line-height:1.7;margin-bottom:14px;padding:12px;background:var(--ice);border-radius:var(--radius-sm)}
+.recommendation{padding:10px 14px;background:var(--surface);border-radius:var(--radius-sm);border-left:3px solid var(--navy);margin-bottom:8px;font-size:12px;color:var(--navy);line-height:1.5}
+.recommendation strong{color:var(--accent)}
+
+/* Strategy items */
+.strategy-section{margin-bottom:16px}
+.strategy-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--navy-muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--ice);display:flex;align-items:center;gap:6px}
+.strategy-item{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid var(--ice);opacity:0;transform:translateX(-10px);transition:all .4s ease}
+.strategy-item.visible{opacity:1;transform:translateX(0)}
+.strategy-bullet{width:24px;height:24px;border-radius:50%;background:var(--navy);color:var(--white);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.strategy-content{flex:1}
+.strategy-content .title{font-size:13px;font-weight:600;color:var(--navy)}
+.strategy-content .desc{font-size:11px;color:var(--navy-muted);margin-top:2px;line-height:1.5}
+.strategy-content .metric{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--green);margin-top:4px}
+
+/* Typewriter cursor */
+.tw-cursor{display:inline-block;width:2px;height:14px;background:var(--navy);animation:blink .5s infinite;vertical-align:text-bottom;margin-left:1px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* Calendar */
+.calendar-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}
+.calendar-day{padding:10px;background:var(--ice);border-radius:var(--radius-sm);border:1px solid var(--border);opacity:0;transform:translateY(8px);transition:all .3s ease}
+.calendar-day.visible{opacity:1;transform:translateY(0)}
+.calendar-day-header{font-size:10px;font-weight:700;color:var(--navy-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.calendar-day-content{font-size:11px;color:var(--navy);line-height:1.5}
+.calendar-day-tag{display:inline-block;font-size:9px;font-weight:600;padding:2px 6px;border-radius:8px;margin-top:4px}
+
+/* Report Preview */
+.report-preview{background:var(--white);border:2px solid var(--border);border-radius:var(--radius-md);padding:28px;position:relative;overflow:hidden}
+.report-watermark{position:absolute;top:12px;right:16px;font-size:10px;font-weight:700;color:var(--navy-muted);letter-spacing:1px;text-transform:uppercase;opacity:.5}
+.report-title{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.report-subtitle{font-size:13px;color:var(--navy-muted);margin-bottom:20px}
+.report-divider{height:2px;background:linear-gradient(90deg,var(--navy),var(--accent),transparent);margin-bottom:20px;border-radius:1px}
+.report-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.report-metric{text-align:center;padding:16px;background:var(--ice);border-radius:var(--radius-md);border:1px solid var(--border);opacity:0;transform:scale(.9);transition:all .4s ease}
+.report-metric.visible{opacity:1;transform:scale(1)}
+.report-metric-value{font-size:28px;font-weight:700;margin-bottom:4px}
+.report-metric-value.green{color:var(--green)}
+.report-metric-value.blue{color:var(--blue)}
+.report-metric-value.red{color:var(--red)}
+.report-metric-label{font-size:11px;color:var(--navy-muted);font-weight:500}
+.report-metric-change{font-size:12px;font-weight:600;margin-top:2px}
+
+.report-highlights{margin-bottom:20px}
+.report-highlight{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:13px;color:var(--navy);opacity:0;transition:opacity .3s}
+.report-highlight.visible{opacity:1}
+.report-highlight .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* CTA */
+.cta-section{text-align:center;margin-top:20px;padding:24px;background:linear-gradient(135deg,var(--navy),var(--navy-light));border-radius:var(--radius-lg);opacity:0;transition:opacity .5s}
+.cta-section.visible{opacity:1}
+.cta-title{font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--white);margin-bottom:6px}
+.cta-subtitle{font-size:14px;color:var(--navy-muted);margin-bottom:16px;color:rgba(255,255,255,.7)}
+.cta-btn{padding:12px 36px;background:var(--accent);color:var(--white);border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;font-family:var(--font-body);cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(201,162,39,.35)}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(201,162,39,.5)}
+
+/* Responsive */
+@media(max-width:900px){
+  .header{padding:12px 16px;flex-wrap:wrap;gap:8px}
+  .main{padding:16px 12px 0}
+  .progress-bar{padding:10px 16px}
+  .campaign-table{font-size:11px}
+  .campaign-table th,.campaign-table td{padding:8px 6px}
+  .heatmap-grid{font-size:9px}
+  .report-metrics{grid-template-columns:1fr}
+  .calendar-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .campaign-table .hide-mobile{display:none}
+  .heatmap-grid{grid-template-columns:60px repeat(7,1fr)}
+  .report-metric-value{font-size:22px}
+  .calendar-grid{grid-template-columns:1fr}
+}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--silver);border-radius:10px}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <span class="header-brand">Praxis AI</span>
+    <div class="header-divider"></div>
+    <span class="header-title" data-i18n="headerTitle">Klaviyo AI Strategist</span>
+  </div>
+  <span class="header-badge">DEMO</span>
+</header>
+
+<div class="progress-bar">
+  <div class="progress-steps">
+    <div class="progress-step" id="pstep1"></div>
+    <div class="progress-step" id="pstep2"></div>
+    <div class="progress-step" id="pstep3"></div>
+    <div class="progress-step" id="pstep4"></div>
+  </div>
+  <span class="progress-label" id="progressLabel">Step 1 di 4</span>
+  <button class="btn-next" id="btnNext" data-i18n="btnNext">Avanti</button>
+</div>
+
+<div class="main">
+
+  <!-- STEP 1: Campaign Dashboard -->
+  <div class="step-container" id="step1">
+    <div class="step-label"><span class="step-num">1</span> <span data-i18n="step1Label">Campaign Dashboard</span></div>
+    <div class="card">
+      <div class="card-header">
+        <h3>&#128233; <span data-i18n="campOverview">Panoramica Campagne</span></h3>
+        <span class="badge badge-blue" data-i18n="lastDays">Ultimi 30 giorni</span>
+      </div>
+      <div class="card-body" style="padding:0;overflow-x:auto">
+        <table class="campaign-table" id="campaignTable">
+          <thead>
+            <tr class="visible">
+              <th data-i18n="thCampaign">Campagna</th>
+              <th data-i18n="thOpenRate">Open Rate</th>
+              <th data-i18n="thClickRate">Click Rate</th>
+              <th class="hide-mobile" data-i18n="thRevenue">Revenue</th>
+              <th class="hide-mobile" data-i18n="thUnsub">Unsub Rate</th>
+              <th data-i18n="thStatus">Performance</th>
+            </tr>
+          </thead>
+          <tbody id="campaignBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card" id="summaryCard" style="opacity:0;transition:opacity .5s">
+      <div class="card-body" style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center">
+        <div style="text-align:center;min-width:100px">
+          <div style="font-size:24px;font-weight:700;color:var(--navy)" id="totalSent">0</div>
+          <div style="font-size:11px;color:var(--silver)" data-i18n="totalSent">Email inviate</div>
+        </div>
+        <div style="text-align:center;min-width:100px">
+          <div style="font-size:24px;font-weight:700;color:var(--green)" id="avgOpen">0%</div>
+          <div style="font-size:11px;color:var(--silver)" data-i18n="avgOpen">Open rate medio</div>
+        </div>
+        <div style="text-align:center;min-width:100px">
+          <div style="font-size:24px;font-weight:700;color:var(--accent)" id="totalRev">0</div>
+          <div style="font-size:11px;color:var(--silver)" data-i18n="totalRev">Revenue totale</div>
+        </div>
+        <div style="text-align:center;min-width:100px">
+          <div style="font-size:24px;font-weight:700;color:var(--blue)" id="avgClick">0%</div>
+          <div style="font-size:11px;color:var(--silver)" data-i18n="avgClick">Click rate medio</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: AI Analysis -->
+  <div class="step-container" id="step2">
+    <div class="step-label"><span class="step-num">2</span> <span data-i18n="step2Label">Analisi AI</span></div>
+    <div class="card" style="position:relative;overflow:hidden" id="analysisCard">
+      <div class="scanner-overlay" id="scanner"></div>
+      <div class="card-header">
+        <h3>&#129302; <span data-i18n="aiInsights">Insight AI</span></h3>
+        <span class="badge badge-green" id="insightBadge" style="opacity:0" data-i18n="insightsFound">3 insight trovati</span>
+      </div>
+      <div class="card-body" style="padding:0" id="insightsList"></div>
+    </div>
+    <div class="card" id="heatmapCard" style="opacity:0;transition:opacity .5s">
+      <div class="card-header">
+        <h3>&#128293; <span data-i18n="heatmapTitle">Heatmap Orari di Invio</span></h3>
+        <span class="badge badge-blue" data-i18n="heatmapBased">Basata su 12.500 aperture</span>
+      </div>
+      <div class="card-body">
+        <div class="heatmap-grid" id="heatmapGrid"></div>
+      </div>
+    </div>
+    <div id="detailPanel" class="detail-panel"></div>
+  </div>
+
+  <!-- STEP 3: Strategy Generation -->
+  <div class="step-container" id="step3">
+    <div class="step-label"><span class="step-num">3</span> <span data-i18n="step3Label">Generazione Strategia</span></div>
+    <div class="card" id="strategyCard">
+      <div class="card-header">
+        <h3>&#128640; <span data-i18n="strategyTitle">Piano Strategico Q2 2026</span></h3>
+        <span class="badge badge-green" data-i18n="aiGenerated">Generato da AI</span>
+      </div>
+      <div class="card-body" id="strategyBody"></div>
+    </div>
+    <div class="card" id="calendarCard" style="opacity:0;transition:opacity .5s">
+      <div class="card-header">
+        <h3>&#128197; <span data-i18n="calendarTitle">Calendario Contenuti &mdash; Settimane 1-4</span></h3>
+      </div>
+      <div class="card-body">
+        <div class="calendar-grid" id="calendarGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: Export & Implementation -->
+  <div class="step-container" id="step4">
+    <div class="step-label"><span class="step-num">4</span> <span data-i18n="step4Label">Report & Implementazione</span></div>
+    <div class="card">
+      <div class="card-header">
+        <h3>&#128196; <span data-i18n="reportTitle">Anteprima Report Esecutivo</span></h3>
+        <span class="badge badge-blue">PDF</span>
+      </div>
+      <div class="card-body">
+        <div class="report-preview" id="reportPreview">
+          <div class="report-watermark">PRAXIS AI &mdash; CONFIDENTIAL</div>
+          <div class="report-title" data-i18n="reportDocTitle">Piano Strategico Email Marketing Q2 2026</div>
+          <div class="report-subtitle" data-i18n="reportDocSubtitle">Preparato per: Fashion Brand Italia S.r.l. &mdash; Febbraio 2026</div>
+          <div class="report-divider"></div>
+          <div class="report-metrics" id="reportMetrics"></div>
+          <div class="report-highlights" id="reportHighlights"></div>
+        </div>
+      </div>
+    </div>
+    <div class="cta-section" id="ctaSection">
+      <div class="cta-title" data-i18n="ctaTitle">Trasforma il tuo Email Marketing</div>
+      <div class="cta-subtitle" data-i18n="ctaSubtitle">Implementa strategie AI-driven con Praxis AI e Klaviyo</div>
+      <button class="cta-btn" data-i18n="ctaBtn">Richiedi Strategia Personalizzata</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+'use strict';
+
+var LOCALE = (typeof window !== 'undefined' && window.__PRAXIS_LOCALE__) || 'it';
+
+var T_ALL = {
+en: {
+  headerTitle:'Klaviyo AI Strategist',
+  btnNext:'Next',
+  step1Label:'Campaign Dashboard',
+  step2Label:'AI Analysis',
+  step3Label:'Strategy Generation',
+  step4Label:'Report & Implementation',
+  campOverview:'Campaign Overview',
+  lastDays:'Last 30 days',
+  thCampaign:'Campaign',thOpenRate:'Open Rate',thClickRate:'Click Rate',thRevenue:'Revenue',thUnsub:'Unsub Rate',thStatus:'Performance',
+  totalSent:'Emails sent',avgOpen:'Avg open rate',totalRev:'Total revenue',avgClick:'Avg click rate',
+  aiInsights:'AI Insights',insightsFound:'3 insights found',
+  heatmapTitle:'Send Time Heatmap',heatmapBased:'Based on 12,500 opens',
+  step3Label:'Strategy Generation',
+  strategyTitle:'Q2 2026 Strategic Plan',aiGenerated:'AI Generated',
+  calendarTitle:'Content Calendar \u2014 Weeks 1-4',
+  step4Label:'Report & Implementation',
+  reportTitle:'Executive Report Preview',
+  reportDocTitle:'Email Marketing Strategic Plan Q2 2026',
+  reportDocSubtitle:'Prepared for: Fashion Brand Italia S.r.l. \u2014 February 2026',
+  ctaTitle:'Transform Your Email Marketing',
+  ctaSubtitle:'Implement AI-driven strategies with Praxis AI and Klaviyo',
+  ctaBtn:'Request Custom Strategy',
+  stepOf:'Step',of:'of',
+
+  camp1:'Spring Collection 2026',camp2:'Summer Sale -50%',camp3:'Welcome Series New Subscribers',camp4:'Re-engagement Inactive Customers',camp5:'Post-Purchase Cross-sell',camp6:'VIP Early Access',
+
+  insight1:'The <strong>"VIP Frequent Buyers"</strong> segment has a 68% open rate \u2014 2.3x above average. Recommendation: expand this segment with lookalike targeting.',
+  insight2:'The Welcome series <strong>loses 45% of subscribers after email 2</strong> \u2014 content gap identified. Emails 3-4 need a stronger value proposition.',
+  insight3:'<strong>Optimal send time: Tuesday 10:30 and Thursday 15:00</strong> \u2014 based on analysis of 12,500 opens across 6 campaigns.',
+
+  detailDiagTitle:'Diagnosis: Welcome Series Performance Drop',
+  detailDiag:'Email 1 has a 72% open rate (strong), but email 2 drops to 38% and email 3 to only 19%. The main issue is that emails 2-3 are purely promotional without educational or engagement content. Subscribers haven\'t built enough brand affinity to respond to sales messages.',
+  rec1:'<strong>Email 2:</strong> Replace promotional content with brand storytelling + size guide. Projected open rate: 52% (+14pp)',
+  rec2:'<strong>Email 3:</strong> Add interactive style quiz with personalized recommendations. Projected open rate: 45% (+26pp)',
+  rec3:'<strong>Email 4 (new):</strong> Social proof + UGC showcase before first promotional push. Projected conversion: +8%',
+  clickExpand:'Click to see detailed analysis',
+
+  secFlows:'Flow Automations',secSegments:'Segment Refinements',secABTests:'A/B Test Plan',
+  flow1Title:'Welcome Series Optimization',flow1Desc:'Redesign from 3 to 5 emails with engagement ladder',flow1Metric:'Projected: +\u20AC18,200/quarter',
+  flow2Title:'Winback Flow 90 Days',flow2Desc:'New automated flow for 90-day inactive customers',flow2Metric:'Projected: +\u20AC12,400/quarter',
+  flow3Title:'Post-Purchase Upsell',flow3Desc:'Dynamic product recommendations based on purchase history',flow3Metric:'Projected: +\u20AC9,800/quarter',
+  seg1Title:'VIP Frequency Expansion',seg1Desc:'Expand VIP segment criteria from 3+ to 2+ orders/quarter',seg1Metric:'Predicted lift: +23% revenue',
+  seg2Title:'Browse Abandonment Segment',seg2Desc:'New segment for 3+ product views without purchase in 7 days',seg2Metric:'Predicted lift: +15% conversion',
+  ab1Title:'Subject Line Personalization',ab1Desc:'First name + product category vs. generic subjects',ab1Metric:'Expected: +12-18% open rate',
+  ab2Title:'Send Time Optimization',ab2Desc:'AI-predicted optimal time per subscriber vs. fixed schedule',ab2Metric:'Expected: +8-14% engagement',
+
+  calW1Day:'WEEK 1',calW1:'Spring Collection launch email + VIP early access',calW1Tag:'Launch',
+  calW2Day:'WEEK 2',calW2:'Welcome series redesign + A/B test deployment',calW2Tag:'Optimization',
+  calW3Day:'WEEK 3',calW3:'Post-purchase flow activation + UGC campaign',calW3Tag:'Automation',
+  calW4Day:'WEEK 4',calW4:'Re-engagement campaign + winback flow launch',calW4Tag:'Re-engagement',
+
+  metricRev:'+23%',metricRevLabel:'Projected Revenue',metricRevChange:'vs. Q1 2026',
+  metricOpen:'+15%',metricOpenLabel:'Open Rate Lift',metricOpenChange:'vs. current average',
+  metricChurn:'-30%',metricChurnLabel:'Churn Reduction',metricChurnChange:'vs. current rate',
+
+  hl1:'Welcome series redesign: +\u20AC18,200/quarter projected revenue',
+  hl2:'VIP segment expansion: 2,340 additional high-value contacts',
+  hl3:'Send time optimization: +12% avg engagement improvement',
+  hl4:'New winback flow: recovery of ~850 inactive customers/quarter',
+  hl5:'Total projected ROI: 340% on email marketing investment',
+  progressLabel:'Step {n} of 4'
+},
+it: {
+  headerTitle:'Klaviyo AI Strategist',
+  btnNext:'Avanti',
+  step1Label:'Dashboard Campagne',
+  step2Label:'Analisi AI',
+  step3Label:'Generazione Strategia',
+  step4Label:'Report & Implementazione',
+  campOverview:'Panoramica Campagne',
+  lastDays:'Ultimi 30 giorni',
+  thCampaign:'Campagna',thOpenRate:'Open Rate',thClickRate:'Click Rate',thRevenue:'Revenue',thUnsub:'Unsub Rate',thStatus:'Performance',
+  totalSent:'Email inviate',avgOpen:'Open rate medio',totalRev:'Revenue totale',avgClick:'Click rate medio',
+  aiInsights:'Insight AI',insightsFound:'3 insight trovati',
+  heatmapTitle:'Heatmap Orari di Invio',heatmapBased:'Basata su 12.500 aperture',
+  strategyTitle:'Piano Strategico Q2 2026',aiGenerated:'Generato da AI',
+  calendarTitle:'Calendario Contenuti \u2014 Settimane 1-4',
+  reportTitle:'Anteprima Report Esecutivo',
+  reportDocTitle:'Piano Strategico Email Marketing Q2 2026',
+  reportDocSubtitle:'Preparato per: Fashion Brand Italia S.r.l. \u2014 Febbraio 2026',
+  ctaTitle:'Trasforma il tuo Email Marketing',
+  ctaSubtitle:'Implementa strategie AI-driven con Praxis AI e Klaviyo',
+  ctaBtn:'Richiedi Strategia Personalizzata',
+  stepOf:'Step',of:'di',
+
+  camp1:'Collezione Primavera 2026',camp2:'Saldi Estivi -50%',camp3:'Welcome Series Nuovi Iscritti',camp4:'Re-engagement Clienti Inattivi',camp5:'Post-Acquisto Cross-sell',camp6:'VIP Early Access',
+
+  insight1:'Il segmento <strong>"VIP Frequent Buyers"</strong> ha un tasso di apertura del 68% \u2014 2.3x sopra la media. Raccomandazione: espandere il segmento con targeting lookalike.',
+  insight2:'La serie Welcome <strong>perde il 45% degli iscritti dopo l\'email 2</strong> \u2014 gap di contenuto identificato. Le email 3-4 necessitano di una value proposition pi\u00F9 forte.',
+  insight3:'<strong>Orario di invio ottimale: Marted\u00EC 10:30 e Gioved\u00EC 15:00</strong> \u2014 basato sull\'analisi di 12.500 aperture su 6 campagne.',
+
+  detailDiagTitle:'Diagnosi: Calo Performance Welcome Series',
+  detailDiag:'L\'email 1 ha un open rate del 72% (forte), ma l\'email 2 scende al 38% e l\'email 3 a solo il 19%. Il problema principale \u00E8 che le email 2-3 sono puramente promozionali senza contenuti educativi o di engagement. Gli iscritti non hanno costruito sufficiente affinit\u00E0 con il brand per rispondere a messaggi di vendita.',
+  rec1:'<strong>Email 2:</strong> Sostituire contenuto promozionale con brand storytelling + guida taglie. Open rate previsto: 52% (+14pp)',
+  rec2:'<strong>Email 3:</strong> Aggiungere quiz interattivo sullo stile con raccomandazioni personalizzate. Open rate previsto: 45% (+26pp)',
+  rec3:'<strong>Email 4 (nuova):</strong> Social proof + showcase UGC prima del primo push promozionale. Conversione prevista: +8%',
+  clickExpand:'Clicca per vedere l\'analisi dettagliata',
+
+  secFlows:'Flow Automazioni',secSegments:'Affinamento Segmenti',secABTests:'Piano A/B Test',
+  flow1Title:'Ottimizzazione Welcome Series',flow1Desc:'Redesign da 3 a 5 email con engagement ladder progressiva',flow1Metric:'Proiezione: +\u20AC18.200/trimestre',
+  flow2Title:'Winback Flow 90 Giorni',flow2Desc:'Nuovo flow automatizzato per clienti inattivi da 90 giorni',flow2Metric:'Proiezione: +\u20AC12.400/trimestre',
+  flow3Title:'Post-Acquisto Upsell',flow3Desc:'Raccomandazioni prodotto dinamiche basate sullo storico acquisti',flow3Metric:'Proiezione: +\u20AC9.800/trimestre',
+  seg1Title:'Espansione VIP Frequency',seg1Desc:'Ampliare i criteri del segmento VIP da 3+ a 2+ ordini/trimestre',seg1Metric:'Lift previsto: +23% revenue',
+  seg2Title:'Segmento Browse Abandonment',seg2Desc:'Nuovo segmento per 3+ visualizzazioni prodotto senza acquisto in 7gg',seg2Metric:'Lift previsto: +15% conversione',
+  ab1Title:'Personalizzazione Subject Line',ab1Desc:'Nome + categoria prodotto vs. oggetti generici',ab1Metric:'Atteso: +12-18% open rate',
+  ab2Title:'Ottimizzazione Orario Invio',ab2Desc:'Orario ottimale AI-predicted per iscritto vs. orario fisso',ab2Metric:'Atteso: +8-14% engagement',
+
+  calW1Day:'SETTIMANA 1',calW1:'Email lancio Collezione Primavera + accesso anticipato VIP',calW1Tag:'Lancio',
+  calW2Day:'SETTIMANA 2',calW2:'Redesign Welcome Series + deployment A/B test',calW2Tag:'Ottimizzazione',
+  calW3Day:'SETTIMANA 3',calW3:'Attivazione flow post-acquisto + campagna UGC',calW3Tag:'Automazione',
+  calW4Day:'SETTIMANA 4',calW4:'Campagna re-engagement + lancio winback flow',calW4Tag:'Re-engagement',
+
+  metricRev:'+23%',metricRevLabel:'Revenue Proiettato',metricRevChange:'vs. Q1 2026',
+  metricOpen:'+15%',metricOpenLabel:'Incremento Open Rate',metricOpenChange:'vs. media attuale',
+  metricChurn:'-30%',metricChurnLabel:'Riduzione Churn',metricChurnChange:'vs. tasso attuale',
+
+  hl1:'Redesign Welcome Series: +\u20AC18.200/trimestre revenue proiettato',
+  hl2:'Espansione segmento VIP: 2.340 contatti high-value aggiuntivi',
+  hl3:'Ottimizzazione orario invio: +12% miglioramento engagement medio',
+  hl4:'Nuovo winback flow: recupero di ~850 clienti inattivi/trimestre',
+  hl5:'ROI totale proiettato: 340% sull\'investimento email marketing',
+  progressLabel:'Step {n} di 4'
+}
+};
+
+var T = T_ALL[LOCALE] || T_ALL.it;
+
+/* State */
+var currentStep = 0;
+var totalSteps = 4;
+var demoTimers = [];
+var detailOpen = false;
+
+function dt(fn, ms) { var id = setTimeout(fn, ms); demoTimers.push(id); return id; }
+
+/* i18n */
+function applyI18n() {
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var k = el.getAttribute('data-i18n');
+    if (T[k] !== undefined) el.textContent = T[k];
+  });
+  document.documentElement.lang = LOCALE;
+}
+
+/* Progress */
+function updateProgress(step) {
+  for (var i = 1; i <= totalSteps; i++) {
+    var el = document.getElementById('pstep' + i);
+    el.className = 'progress-step';
+    if (i < step) el.classList.add('done');
+    else if (i === step) el.classList.add('active');
+  }
+  document.getElementById('progressLabel').textContent = T.stepOf + ' ' + step + ' ' + T.of + ' ' + totalSteps;
+  var btn = document.getElementById('btnNext');
+  btn.disabled = step >= totalSteps;
+  btn.textContent = step >= totalSteps ? (LOCALE === 'en' ? 'Complete' : 'Completato') : T.btnNext;
+}
+
+/* Animate counter */
+function animateValue(el, target, prefix, suffix, duration) {
+  duration = duration || 1000;
+  var start = null;
+  function step(ts) {
+    if (!start) start = ts;
+    var p = Math.min((ts - start) / duration, 1);
+    var ease = 1 - Math.pow(1 - p, 3);
+    el.textContent = (prefix || '') + Math.round(target * ease).toLocaleString('it-IT') + (suffix || '');
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+/* Campaign data */
+var campaigns = [
+  {name:T.camp1, open:'45.2%', click:'8.7%', revenue:'\u20AC12.450', unsub:'0.12%', perf:'green', openN:45.2, clickable:false},
+  {name:T.camp2, open:'38.1%', click:'12.3%', revenue:'\u20AC28.900', unsub:'0.34%', perf:'green', openN:38.1, clickable:false},
+  {name:T.camp3, open:'62.4%', click:'5.2%', revenue:'\u20AC3.200', unsub:'0.89%', perf:'amber', openN:62.4, clickable:true},
+  {name:T.camp4, open:'18.6%', click:'2.1%', revenue:'\u20AC1.850', unsub:'1.45%', perf:'red', openN:18.6, clickable:false},
+  {name:T.camp5, open:'35.8%', click:'9.4%', revenue:'\u20AC8.320', unsub:'0.18%', perf:'green', openN:35.8, clickable:false},
+  {name:T.camp6, open:'68.0%', click:'15.7%', revenue:'\u20AC19.600', unsub:'0.05%', perf:'green', openN:68.0, clickable:false}
+];
+
+var perfLabels = {green:LOCALE==='en'?'Above Avg':'Sopra Media', amber:LOCALE==='en'?'Average':'Nella Media', red:LOCALE==='en'?'Below Avg':'Sotto Media'};
+
+/* Build campaign table */
+function buildCampaigns() {
+  var tbody = document.getElementById('campaignBody');
+  tbody.innerHTML = '';
+  campaigns.forEach(function(c, i) {
+    var tr = document.createElement('tr');
+    if (c.clickable) tr.className = 'clickable pulse-row';
+    tr.setAttribute('data-index', i);
+    tr.innerHTML =
+      '<td style="position:relative"><span class="campaign-name">' + c.name + '</span></td>' +
+      '<td>' + c.open + '</td>' +
+      '<td>' + c.click + '</td>' +
+      '<td class="hide-mobile">' + c.revenue + '</td>' +
+      '<td class="hide-mobile">' + c.unsub + '</td>' +
+      '<td><span class="badge badge-' + c.perf + '">' + perfLabels[c.perf] + '</span></td>';
+    tbody.appendChild(tr);
+  });
+}
+
+/* Heatmap data (Mon-Sun, 6 time slots) */
+var heatmapData = [
+  {label:'08:00'  , vals:[3,2,4,3,2,1,1]},
+  {label:'10:00'  , vals:[5,8,5,6,4,2,1]},
+  {label:'12:00'  , vals:[4,5,4,4,5,3,2]},
+  {label:'14:00'  , vals:[3,4,3,5,3,2,1]},
+  {label:'15:00'  , vals:[4,5,4,8,4,2,1]},
+  {label:'18:00'  , vals:[3,3,3,3,4,3,2]}
+];
+var heatDays = LOCALE === 'en' ?
+  ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] :
+  ['Lun','Mar','Mer','Gio','Ven','Sab','Dom'];
+
+function buildHeatmap() {
+  var grid = document.getElementById('heatmapGrid');
+  grid.innerHTML = '';
+  /* header row */
+  grid.innerHTML += '<div class="heatmap-header"></div>';
+  heatDays.forEach(function(d) {
+    grid.innerHTML += '<div class="heatmap-header">' + d + '</div>';
+  });
+  var cellIndex = 0;
+  heatmapData.forEach(function(row) {
+    grid.innerHTML += '<div class="heatmap-label">' + row.label + '</div>';
+    row.vals.forEach(function(v) {
+      var cls = v <= 2 ? 'low' : v <= 4 ? 'med' : v <= 6 ? 'high' : 'peak';
+      grid.innerHTML += '<div class="heatmap-cell ' + cls + '" data-ci="' + cellIndex + '">' + (v * 12 + Math.floor(Math.random()*5)) + '%</div>';
+      cellIndex++;
+    });
+  });
+}
+
+/* Build strategy */
+function buildStrategy() {
+  var body = document.getElementById('strategyBody');
+  body.innerHTML = '';
+
+  var sections = [
+    {title:T.secFlows, icon:'\u2699\uFE0F', items:[
+      {title:T.flow1Title, desc:T.flow1Desc, metric:T.flow1Metric},
+      {title:T.flow2Title, desc:T.flow2Desc, metric:T.flow2Metric},
+      {title:T.flow3Title, desc:T.flow3Desc, metric:T.flow3Metric}
+    ]},
+    {title:T.secSegments, icon:'\uD83C\uDFAF', items:[
+      {title:T.seg1Title, desc:T.seg1Desc, metric:T.seg1Metric},
+      {title:T.seg2Title, desc:T.seg2Desc, metric:T.seg2Metric}
+    ]},
+    {title:T.secABTests, icon:'\uD83E\uDDEA', items:[
+      {title:T.ab1Title, desc:T.ab1Desc, metric:T.ab1Metric},
+      {title:T.ab2Title, desc:T.ab2Desc, metric:T.ab2Metric}
+    ]}
+  ];
+
+  var itemCount = 0;
+  sections.forEach(function(sec) {
+    var secDiv = document.createElement('div');
+    secDiv.className = 'strategy-section';
+    secDiv.innerHTML = '<div class="strategy-section-title">' + sec.icon + ' ' + sec.title + '</div>';
+    sec.items.forEach(function(item, i) {
+      itemCount++;
+      var el = document.createElement('div');
+      el.className = 'strategy-item';
+      el.setAttribute('data-si', itemCount);
+      el.innerHTML =
+        '<div class="strategy-bullet">' + itemCount + '</div>' +
+        '<div class="strategy-content">' +
+        '<div class="title"></div>' +
+        '<div class="desc"></div>' +
+        '<div class="metric">\u2191 </div>' +
+        '</div>';
+      secDiv.appendChild(el);
+    });
+    body.appendChild(secDiv);
+  });
+}
+
+/* Build calendar */
+function buildCalendar() {
+  var grid = document.getElementById('calendarGrid');
+  grid.innerHTML = '';
+  var weeks = [
+    {day:T.calW1Day, content:T.calW1, tag:T.calW1Tag, tagColor:'badge-green'},
+    {day:T.calW2Day, content:T.calW2, tag:T.calW2Tag, tagColor:'badge-blue'},
+    {day:T.calW3Day, content:T.calW3, tag:T.calW3Tag, tagColor:'badge-amber'},
+    {day:T.calW4Day, content:T.calW4, tag:T.calW4Tag, tagColor:'badge-red'}
+  ];
+  weeks.forEach(function(w) {
+    var el = document.createElement('div');
+    el.className = 'calendar-day';
+    el.innerHTML =
+      '<div class="calendar-day-header">' + w.day + '</div>' +
+      '<div class="calendar-day-content">' + w.content + '</div>' +
+      '<span class="calendar-day-tag badge ' + w.tagColor + '">' + w.tag + '</span>';
+    grid.appendChild(el);
+  });
+}
+
+/* Build report */
+function buildReport() {
+  var metricsEl = document.getElementById('reportMetrics');
+  metricsEl.innerHTML = '';
+
+  var metrics = [
+    {value:T.metricRev, label:T.metricRevLabel, change:T.metricRevChange, color:'green'},
+    {value:T.metricOpen, label:T.metricOpenLabel, change:T.metricOpenChange, color:'blue'},
+    {value:T.metricChurn, label:T.metricChurnLabel, change:T.metricChurnChange, color:'red'}
+  ];
+  metrics.forEach(function(m) {
+    var el = document.createElement('div');
+    el.className = 'report-metric';
+    el.innerHTML =
+      '<div class="report-metric-value ' + m.color + '">' + m.value + '</div>' +
+      '<div class="report-metric-label">' + m.label + '</div>' +
+      '<div class="report-metric-change" style="color:var(--silver)">' + m.change + '</div>';
+    metricsEl.appendChild(el);
+  });
+
+  var hlEl = document.getElementById('reportHighlights');
+  hlEl.innerHTML = '';
+  var colors = ['var(--green)','var(--blue)','var(--accent)','var(--amber)','var(--navy)'];
+  for (var i = 1; i <= 5; i++) {
+    var hl = document.createElement('div');
+    hl.className = 'report-highlight';
+    hl.innerHTML = '<span class="dot" style="background:' + colors[i-1] + '"></span>' + T['hl' + i];
+    hlEl.appendChild(hl);
+  }
+}
+
+/* Typewriter effect */
+function typewrite(el, text, speed, callback) {
+  var i = 0;
+  el.textContent = '';
+  var cursor = document.createElement('span');
+  cursor.className = 'tw-cursor';
+  el.appendChild(cursor);
+  var interval = setInterval(function() {
+    if (i < text.length) {
+      el.insertBefore(document.createTextNode(text.charAt(i)), cursor);
+      i++;
+    } else {
+      clearInterval(interval);
+      if (cursor.parentNode) cursor.remove();
+      if (callback) callback();
+    }
+  }, speed || 20);
+  return interval;
+}
+
+/* ---------- STEP RUNNERS ---------- */
+
+function runStep1() {
+  var sc = document.getElementById('step1');
+  sc.classList.add('active');
+  dt(function() { sc.classList.add('visible'); }, 50);
+
+  var rows = document.querySelectorAll('#campaignBody tr');
+  rows.forEach(function(tr, i) {
+    dt(function() { tr.classList.add('visible'); }, 200 + i * 180);
+  });
+
+  dt(function() {
+    document.getElementById('summaryCard').style.opacity = '1';
+    animateValue(document.getElementById('totalSent'), 87400, '', '', 1200);
+    animateValue(document.getElementById('avgOpen'), 44, '', '%', 1000);
+    animateValue(document.getElementById('totalRev'), 74320, '\u20AC', '', 1200);
+    animateValue(document.getElementById('avgClick'), 8, '', '%', 1000);
+  }, 200 + rows.length * 180 + 300);
+}
+
+function runStep2() {
+  var sc = document.getElementById('step2');
+  sc.classList.add('active');
+  dt(function() { sc.classList.add('visible'); }, 50);
+
+  /* Scanner animation */
+  var scanner = document.getElementById('scanner');
+  scanner.classList.add('active');
+  dt(function() { scanner.classList.remove('active'); }, 2600);
+
+  /* Build insights */
+  var insightsList = document.getElementById('insightsList');
+  insightsList.innerHTML = '';
+  var insights = [
+    {icon:'\uD83D\uDCC8', iconCls:'green', html:T.insight1},
+    {icon:'\u26A0\uFE0F', iconCls:'amber', html:T.insight2},
+    {icon:'\u23F0', iconCls:'blue', html:T.insight3}
+  ];
+
+  insights.forEach(function(ins, i) {
+    var el = document.createElement('div');
+    el.className = 'insight-item';
+    el.innerHTML =
+      '<div class="insight-icon ' + ins.iconCls + '">' + ins.icon + '</div>' +
+      '<div class="insight-text">' + ins.html + '</div>';
+    insightsList.appendChild(el);
+    dt(function() { el.classList.add('visible'); }, 2800 + i * 500);
+  });
+
+  dt(function() {
+    document.getElementById('insightBadge').style.opacity = '1';
+  }, 2800 + insights.length * 500);
+
+  /* Heatmap */
+  dt(function() {
+    document.getElementById('heatmapCard').style.opacity = '1';
+    var cells = document.querySelectorAll('.heatmap-cell');
+    cells.forEach(function(cell, i) {
+      dt(function() { cell.classList.add('visible'); }, i * 30);
+    });
+  }, 2800 + insights.length * 500 + 400);
+
+  /* Interactive: click on welcome series row to expand */
+  var clickableRow = document.querySelector('#campaignBody tr.clickable');
+  if (clickableRow) {
+    /* We need to re-create the click target in step 2 context */
+  }
+  /* Add pulse hint to insight 2 (amber) */
+  dt(function() {
+    var amberInsight = insightsList.querySelectorAll('.insight-item')[1];
+    if (amberInsight) {
+      amberInsight.style.cursor = 'pointer';
+      amberInsight.style.border = '1px solid var(--amber)';
+      amberInsight.style.borderRadius = 'var(--radius-sm)';
+      amberInsight.style.animation = 'pulseGlow 2s ease-in-out infinite';
+      amberInsight.title = T.clickExpand;
+      amberInsight.addEventListener('click', function handler() {
+        showDetailPanel();
+        amberInsight.style.animation = 'none';
+        amberInsight.style.border = '1px solid var(--green)';
+        amberInsight.removeEventListener('click', handler);
+      });
+    }
+  }, 2800 + 1 * 500 + 200);
+}
+
+function showDetailPanel() {
+  var panel = document.getElementById('detailPanel');
+  panel.innerHTML =
+    '<div class="detail-title">\uD83D\uDD0D ' + T.detailDiagTitle + '</div>' +
+    '<div class="detail-diagnosis">' + T.detailDiag + '</div>' +
+    '<div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px">' + (LOCALE === 'en' ? 'Recommendations:' : 'Raccomandazioni:') + '</div>' +
+    '<div class="recommendation">' + T.rec1 + '</div>' +
+    '<div class="recommendation">' + T.rec2 + '</div>' +
+    '<div class="recommendation">' + T.rec3 + '</div>';
+  panel.classList.add('visible');
+}
+
+function runStep3() {
+  var sc = document.getElementById('step3');
+  sc.classList.add('active');
+  dt(function() { sc.classList.add('visible'); }, 50);
+
+  /* Get all strategy items and typewrite them */
+  var sections = [
+    {title:T.secFlows, items:[
+      {title:T.flow1Title, desc:T.flow1Desc, metric:T.flow1Metric},
+      {title:T.flow2Title, desc:T.flow2Desc, metric:T.flow2Metric},
+      {title:T.flow3Title, desc:T.flow3Desc, metric:T.flow3Metric}
+    ]},
+    {title:T.secSegments, items:[
+      {title:T.seg1Title, desc:T.seg1Desc, metric:T.seg1Metric},
+      {title:T.seg2Title, desc:T.seg2Desc, metric:T.seg2Metric}
+    ]},
+    {title:T.secABTests, items:[
+      {title:T.ab1Title, desc:T.ab1Desc, metric:T.ab1Metric},
+      {title:T.ab2Title, desc:T.ab2Desc, metric:T.ab2Metric}
+    ]}
+  ];
+
+  var allItems = [];
+  sections.forEach(function(sec) {
+    sec.items.forEach(function(item) { allItems.push(item); });
+  });
+
+  var strategyItems = document.querySelectorAll('.strategy-item');
+  var delay = 400;
+
+  strategyItems.forEach(function(el, i) {
+    dt(function() {
+      el.classList.add('visible');
+      var titleEl = el.querySelector('.title');
+      var descEl = el.querySelector('.desc');
+      var metricEl = el.querySelector('.metric');
+      typewrite(titleEl, allItems[i].title, 18, function() {
+        typewrite(descEl, allItems[i].desc, 12, function() {
+          metricEl.textContent = '\u2191 ' + allItems[i].metric;
+        });
+      });
+    }, delay + i * 900);
+  });
+
+  /* Calendar */
+  dt(function() {
+    document.getElementById('calendarCard').style.opacity = '1';
+    var days = document.querySelectorAll('.calendar-day');
+    days.forEach(function(d, i) {
+      dt(function() { d.classList.add('visible'); }, i * 200);
+    });
+  }, delay + allItems.length * 900 + 400);
+}
+
+function runStep4() {
+  var sc = document.getElementById('step4');
+  sc.classList.add('active');
+  dt(function() { sc.classList.add('visible'); }, 50);
+
+  /* Animate report metrics */
+  var metrics = document.querySelectorAll('.report-metric');
+  metrics.forEach(function(m, i) {
+    dt(function() { m.classList.add('visible'); }, 300 + i * 400);
+  });
+
+  /* Animate highlights */
+  var highlights = document.querySelectorAll('.report-highlight');
+  highlights.forEach(function(h, i) {
+    dt(function() { h.classList.add('visible'); }, 300 + metrics.length * 400 + 200 + i * 300);
+  });
+
+  /* CTA */
+  dt(function() {
+    document.getElementById('ctaSection').classList.add('visible');
+  }, 300 + metrics.length * 400 + 200 + highlights.length * 300 + 400);
+}
+
+/* Step navigation */
+function goToStep(step) {
+  if (step < 1 || step > totalSteps) return;
+  currentStep = step;
+  updateProgress(step);
+
+  for (var i = 1; i <= totalSteps; i++) {
+    var el = document.getElementById('step' + i);
+    if (i === step) {
+      el.style.display = 'block';
+      el.classList.add('active');
+      dt(function(s) { return function() { s.classList.add('visible'); }; }(el), 50);
+    } else {
+      el.classList.remove('active', 'visible');
+      el.style.display = 'none';
+    }
+  }
+
+  /* Reset detail panel */
+  var dp = document.getElementById('detailPanel');
+  dp.classList.remove('visible');
+  dp.innerHTML = '';
+
+  switch(step) {
+    case 1: runStep1(); break;
+    case 2: runStep2(); break;
+    case 3: runStep3(); break;
+    case 4: runStep4(); break;
+  }
+}
+
+document.getElementById('btnNext').addEventListener('click', function() {
+  if (currentStep < totalSteps) {
+    goToStep(currentStep + 1);
+  }
+});
+
+/* Init */
+function init() {
+  applyI18n();
+  buildCampaigns();
+  buildHeatmap();
+  buildStrategy();
+  buildCalendar();
+  buildReport();
+  goToStep(1);
+}
+
+init();
+
+})();
+</script>
+</body>
+</html>

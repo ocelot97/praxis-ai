@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klaviyo AI Ops &mdash; Praxis AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1e3a5f;--navy-light:#2a5080;--navy-muted:#5a7a9b;
+  --silver:#6b7280;--ice:#edf2f7;--accent:#c9a227;
+  --surface:#f0f4f8;--border:#d1dae4;--white:#ffffff;
+  --green:#16a34a;--green-light:#dcfce7;--red:#dc2626;--red-light:#fee2e2;
+  --amber:#d97706;--amber-light:#fef3c7;--blue:#2563eb;--blue-light:#dbeafe;
+  --font-body:'Inter',system-ui,sans-serif;--font-display:'Caveat',cursive;
+  --shadow-sm:0 1px 3px rgba(30,58,95,0.06);--shadow-md:0 4px 12px rgba(30,58,95,0.08);
+  --shadow-lg:0 8px 30px rgba(30,58,95,0.12);
+  --radius-sm:8px;--radius-md:12px;--radius-lg:16px
+}
+html{font-size:16px}
+body{font-family:var(--font-body);background:var(--surface);color:var(--navy);min-height:100vh;-webkit-font-smoothing:antialiased;padding-bottom:20px;overflow-x:hidden}
+
+/* Header */
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid var(--border);background:var(--navy);color:var(--white);position:sticky;top:0;z-index:100}
+.header-left{display:flex;align-items:center;gap:16px}
+.header-brand{font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--white)}
+.header-divider{width:1px;height:22px;background:var(--navy-muted)}
+.header-title{font-size:13px;color:var(--navy-muted);font-weight:500}
+.header-badge{display:inline-block;background:var(--accent);color:var(--white);font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:1px;text-transform:uppercase}
+
+/* Progress */
+.progress-bar{display:flex;align-items:center;gap:12px;padding:14px 28px;background:var(--white);border-bottom:1px solid var(--border)}
+.progress-steps{display:flex;gap:6px;flex:1}
+.progress-step{flex:1;height:4px;border-radius:2px;background:var(--ice);transition:background .4s}
+.progress-step.active{background:var(--navy)}
+.progress-step.done{background:var(--green)}
+.progress-label{font-size:12px;font-weight:600;color:var(--navy-muted);white-space:nowrap}
+.btn-next{padding:8px 24px;background:var(--navy);color:var(--white);border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:var(--font-body);cursor:pointer;transition:background .2s,transform .15s}
+.btn-next:hover{background:var(--navy-light)}
+.btn-next:active{transform:scale(.97)}
+.btn-next:disabled{opacity:.4;cursor:not-allowed}
+
+/* Main */
+.main{max-width:1100px;margin:0 auto;padding:24px 24px 0}
+.step-container{display:none;opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}
+.step-container.active{display:block}
+.step-container.visible{opacity:1;transform:translateY(0)}
+.step-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--silver);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--navy);color:var(--white);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* Cards */
+.card{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:16px}
+.card-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--ice)}
+.card-header h3{font-size:14px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px}
+.card-body{padding:16px 20px}
+
+/* Template Gallery */
+.template-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.template-card{background:var(--white);border:2px solid var(--border);border-radius:var(--radius-md);padding:0;cursor:pointer;transition:all .3s ease;overflow:hidden;opacity:0;transform:translateY(12px);position:relative}
+.template-card.visible{opacity:1;transform:translateY(0)}
+.template-card:hover{border-color:var(--navy-muted);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.template-card.selected{border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,162,39,0.2)}
+.template-preview{height:120px;background:var(--ice);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.template-preview-icon{font-size:40px;opacity:.6}
+.template-preview-lines{position:absolute;bottom:12px;left:16px;right:16px;display:flex;flex-direction:column;gap:4px}
+.template-preview-line{height:4px;border-radius:2px;background:var(--border)}
+.template-preview-line:nth-child(1){width:80%}
+.template-preview-line:nth-child(2){width:60%}
+.template-preview-line:nth-child(3){width:70%}
+.template-info{padding:14px 16px}
+.template-name{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.template-subject{font-size:11px;color:var(--navy-muted);margin-bottom:8px;line-height:1.4}
+.template-perf{display:flex;gap:6px}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:3px 9px;border-radius:12px}
+.badge-green{background:var(--green-light);color:var(--green)}
+.badge-amber{background:var(--amber-light);color:var(--amber)}
+.badge-red{background:var(--red-light);color:var(--red)}
+.badge-blue{background:var(--blue-light);color:var(--blue)}
+.badge-navy{background:rgba(30,58,95,0.1);color:var(--navy)}
+
+/* Pulse */
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(201,162,39,0.35)}50%{box-shadow:0 0 0 8px rgba(201,162,39,0)}}
+.pulse-card{animation:pulseGlow 2s ease-in-out infinite}
+
+/* Email Builder */
+.builder-layout{display:grid;grid-template-columns:180px 1fr 240px;gap:16px;min-height:420px}
+.builder-palette{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px}
+.palette-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--navy-muted);margin-bottom:12px}
+.palette-item{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--ice);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px;font-size:12px;font-weight:600;color:var(--navy);transition:all .3s;cursor:grab}
+.palette-item:hover{border-color:var(--navy-muted);background:var(--white)}
+.palette-item.used{opacity:.5;border-style:dashed}
+.palette-item .p-icon{font-size:16px;flex-shrink:0}
+
+.builder-canvas{background:var(--white);border:2px solid var(--border);border-radius:var(--radius-md);position:relative;overflow:hidden;display:flex;flex-direction:column}
+.canvas-toolbar{padding:8px 14px;background:var(--ice);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.canvas-toolbar-title{font-size:11px;font-weight:600;color:var(--navy-muted)}
+.canvas-device-btns{display:flex;gap:4px}
+.canvas-device-btn{padding:4px 10px;border:1px solid var(--border);background:var(--white);border-radius:4px;font-size:10px;font-weight:600;color:var(--navy-muted);cursor:pointer;transition:all .2s;font-family:var(--font-body)}
+.canvas-device-btn.active{background:var(--navy);color:var(--white);border-color:var(--navy)}
+.canvas-content{flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:0;background:var(--surface)}
+.canvas-block{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;opacity:0;transform:translateY(20px);transition:all .5s cubic-bezier(.22,1,.36,1);cursor:pointer}
+.canvas-block.visible{opacity:1;transform:translateY(0)}
+.canvas-block:hover{border-color:var(--accent)}
+.canvas-block.selected{border-color:var(--accent);box-shadow:0 0 0 2px rgba(201,162,39,0.2)}
+
+/* Email block styles */
+.block-header{padding:16px;background:var(--navy);text-align:center;color:var(--white)}
+.block-header .brand-name{font-family:var(--font-display);font-size:22px;font-weight:700}
+.block-header .nav-links{margin-top:6px;font-size:10px;color:var(--navy-muted);display:flex;justify-content:center;gap:12px}
+.block-header .nav-links span{color:rgba(255,255,255,.6)}
+.block-hero{padding:20px;text-align:center;background:linear-gradient(135deg,var(--ice),var(--surface))}
+.block-hero .hero-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:6px}
+.block-hero .hero-title{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.block-hero .hero-desc{font-size:12px;color:var(--navy-muted);line-height:1.5}
+.block-products{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.block-product{background:var(--ice);border-radius:var(--radius-sm);padding:12px;text-align:center}
+.block-product .prod-img{width:60px;height:60px;background:var(--border);border-radius:var(--radius-sm);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.block-product .prod-name{font-size:11px;font-weight:600;color:var(--navy)}
+.block-product .prod-price{font-size:12px;font-weight:700;color:var(--accent);margin-top:2px}
+.block-cta{padding:20px;text-align:center}
+.block-cta-btn{display:inline-block;padding:10px 28px;background:var(--accent);color:var(--white);border-radius:var(--radius-sm);font-size:13px;font-weight:700;letter-spacing:.5px}
+.block-footer{padding:14px;background:var(--ice);text-align:center;font-size:10px;color:var(--silver);line-height:1.6}
+
+.builder-suggestions{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;overflow-y:auto}
+.suggestion-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--navy-muted);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.suggestion-item{padding:12px;background:var(--ice);border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:10px;font-size:12px;color:var(--navy);line-height:1.6;opacity:0;transform:translateX(8px);transition:all .4s}
+.suggestion-item.visible{opacity:1;transform:translateX(0)}
+.suggestion-item strong{color:var(--accent);font-weight:700}
+.color-swatches{display:flex;gap:6px;margin-top:8px}
+.color-swatch{width:24px;height:24px;border-radius:50%;border:2px solid var(--white);box-shadow:var(--shadow-sm);opacity:0;transform:scale(0);transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+.color-swatch.visible{opacity:1;transform:scale(1)}
+
+/* Variant popup for interactive click */
+.variant-panel{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--white);border:2px solid var(--accent);border-radius:var(--radius-md);padding:20px;box-shadow:var(--shadow-lg);z-index:50;width:90%;max-width:500px;animation:popIn .3s ease}
+.variant-panel.visible{display:block}
+@keyframes popIn{from{opacity:0;transform:translate(-50%,-50%) scale(.9)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.variant-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.variant-options{display:flex;gap:10px;flex-wrap:wrap}
+.variant-option{flex:1;min-width:130px;padding:12px;background:var(--ice);border:1px solid var(--border);border-radius:var(--radius-sm);text-align:center;cursor:pointer;transition:all .2s}
+.variant-option:hover{border-color:var(--accent);background:var(--white)}
+.variant-option .var-label{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.variant-option .var-perf{font-size:11px;color:var(--navy-muted)}
+.variant-option .var-badge{margin-top:6px}
+.variant-close{margin-top:12px;text-align:right}
+.variant-close-btn{padding:6px 16px;background:var(--navy);color:var(--white);border:none;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font-body)}
+
+/* Content Optimization */
+.optim-section{margin-bottom:20px}
+.optim-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--navy-muted);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.subject-compare{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.subject-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:var(--radius-sm);border:1px solid var(--border);opacity:0;transform:translateX(-10px);transition:all .4s}
+.subject-row.visible{opacity:1;transform:translateX(0)}
+.subject-row.original{background:var(--ice)}
+.subject-row.optimized{background:var(--green-light);border-color:var(--green)}
+.subject-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--silver);width:80px;flex-shrink:0}
+.subject-text{flex:1;font-size:13px;color:var(--navy);font-weight:500}
+.subject-score{font-size:18px;font-weight:700;flex-shrink:0;width:60px;text-align:center}
+.subject-score.low{color:var(--amber)}
+.subject-score.high{color:var(--green)}
+
+.cta-compare{display:flex;gap:12px;margin-bottom:16px}
+.cta-option{flex:1;padding:14px;background:var(--ice);border:1px solid var(--border);border-radius:var(--radius-sm);text-align:center;opacity:0;transition:all .4s}
+.cta-option.visible{opacity:1}
+.cta-option .cta-text{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.cta-option .cta-perf{font-size:11px;color:var(--navy-muted)}
+.cta-option.winner{border-color:var(--green);background:var(--green-light)}
+
+/* Responsive Preview */
+.responsive-preview{display:flex;justify-content:center;gap:16px;padding:16px;background:var(--ice);border-radius:var(--radius-md);margin-bottom:16px}
+.preview-device{background:var(--white);border:2px solid var(--border);border-radius:var(--radius-md);overflow:hidden;transition:all .6s ease;opacity:0;transform:scale(.8)}
+.preview-device.visible{opacity:1;transform:scale(1)}
+.preview-device.desktop{width:280px;height:200px}
+.preview-device.tablet{width:180px;height:200px}
+.preview-device.mobile{width:110px;height:200px}
+.preview-device-bar{height:16px;background:var(--ice);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 6px;gap:3px}
+.preview-device-dot{width:5px;height:5px;border-radius:50%;background:var(--border)}
+.preview-device-content{padding:8px;font-size:7px;color:var(--navy-muted);line-height:1.4;overflow:hidden;height:calc(100% - 16px)}
+.preview-device-content .mini-header{background:var(--navy);color:var(--white);padding:4px;text-align:center;font-size:6px;font-weight:700;border-radius:2px;margin-bottom:4px}
+.preview-device-content .mini-hero{background:var(--ice);padding:6px;text-align:center;border-radius:2px;margin-bottom:4px}
+.preview-device-content .mini-hero .mh-title{font-size:8px;font-weight:700;color:var(--navy)}
+.preview-device-content .mini-products{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:4px}
+.preview-device-content .mini-prod{background:var(--ice);border-radius:2px;padding:4px;text-align:center}
+.preview-device-content .mini-prod .mp-box{width:16px;height:16px;background:var(--border);border-radius:2px;margin:0 auto 2px}
+.preview-device-content .mini-cta{text-align:center;padding:4px}
+.preview-device-content .mini-cta-btn{display:inline-block;padding:2px 8px;background:var(--accent);color:var(--white);border-radius:2px;font-size:6px;font-weight:700}
+.preview-label{text-align:center;font-size:10px;font-weight:600;color:var(--navy-muted);margin-top:6px}
+
+/* Spam Score */
+.spam-check{display:flex;flex-direction:column;gap:6px}
+.spam-item{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--ice);border-radius:var(--radius-sm);font-size:12px;font-weight:500;color:var(--navy);opacity:0;transition:all .3s}
+.spam-item.visible{opacity:1}
+.spam-item .check{font-size:14px;color:var(--green);flex-shrink:0}
+
+/* Deploy Step */
+.deploy-config{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.config-group{padding:14px;background:var(--ice);border-radius:var(--radius-sm);border:1px solid var(--border)}
+.config-group-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--navy-muted);margin-bottom:10px}
+.config-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px}
+.config-row:last-child{border-bottom:none}
+.config-label{color:var(--navy-muted);font-weight:500}
+.config-value{font-weight:600;color:var(--navy)}
+
+.checklist{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.checklist-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-weight:500;color:var(--navy);opacity:0;transform:translateX(-10px);transition:all .4s}
+.checklist-item.visible{opacity:1;transform:translateX(0)}
+.checklist-item .cl-icon{font-size:16px;flex-shrink:0}
+
+.countdown-section{text-align:center;padding:20px;background:linear-gradient(135deg,var(--navy),var(--navy-light));border-radius:var(--radius-md);margin-bottom:16px;opacity:0;transition:opacity .5s}
+.countdown-section.visible{opacity:1}
+.countdown-title{font-size:16px;font-weight:700;color:var(--white);margin-bottom:6px}
+.countdown-subtitle{font-size:12px;color:rgba(255,255,255,.6);margin-bottom:16px}
+.countdown-display{display:flex;justify-content:center;gap:12px}
+.countdown-unit{text-align:center}
+.countdown-number{font-size:32px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+.countdown-label{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px}
+
+.projected-card{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding:16px;background:var(--ice);border-radius:var(--radius-md);opacity:0;transition:opacity .5s}
+.projected-card.visible{opacity:1}
+.projected-item{text-align:center;min-width:100px}
+.projected-value{font-size:22px;font-weight:700}
+.projected-value.green{color:var(--green)}
+.projected-value.blue{color:var(--blue)}
+.projected-value.amber{color:var(--accent)}
+.projected-label{font-size:11px;color:var(--silver);margin-top:2px}
+
+/* CTA */
+.cta-section{text-align:center;margin-top:20px;padding:24px;background:linear-gradient(135deg,var(--navy),var(--navy-light));border-radius:var(--radius-lg);opacity:0;transition:opacity .5s}
+.cta-section.visible{opacity:1}
+.cta-title{font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--white);margin-bottom:6px}
+.cta-subtitle{font-size:14px;color:rgba(255,255,255,.7);margin-bottom:16px}
+.cta-btn{padding:12px 36px;background:var(--accent);color:var(--white);border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;font-family:var(--font-body);cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(201,162,39,.35)}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(201,162,39,.5)}
+
+/* Responsive */
+@media(max-width:900px){
+  .header{padding:12px 16px;flex-wrap:wrap;gap:8px}
+  .main{padding:16px 12px 0}
+  .progress-bar{padding:10px 16px}
+  .template-grid{grid-template-columns:1fr}
+  .builder-layout{grid-template-columns:1fr;min-height:auto}
+  .builder-palette{display:none}
+  .deploy-config{grid-template-columns:1fr}
+  .responsive-preview{flex-direction:column;align-items:center}
+  .cta-compare{flex-direction:column}
+}
+@media(max-width:600px){
+  .builder-layout{grid-template-columns:1fr}
+  .builder-suggestions{display:none}
+  .block-products{grid-template-columns:1fr}
+  .variant-options{flex-direction:column}
+}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--silver);border-radius:10px}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <span class="header-brand">Praxis AI</span>
+    <div class="header-divider"></div>
+    <span class="header-title" data-i18n="headerTitle">Klaviyo AI Ops</span>
+  </div>
+  <span class="header-badge">DEMO</span>
+</header>
+
+<div class="progress-bar">
+  <div class="progress-steps">
+    <div class="progress-step" id="pstep1"></div>
+    <div class="progress-step" id="pstep2"></div>
+    <div class="progress-step" id="pstep3"></div>
+    <div class="progress-step" id="pstep4"></div>
+  </div>
+  <span class="progress-label" id="progressLabel">Step 1 di 4</span>
+  <button class="btn-next" id="btnNext" data-i18n="btnNext">Avanti</button>
+</div>
+
+<div class="main">
+
+  <!-- STEP 1: Template Gallery -->
+  <div class="step-container" id="step1">
+    <div class="step-label"><span class="step-num">1</span> <span data-i18n="step1Label">Galleria Template</span></div>
+    <div class="card">
+      <div class="card-header">
+        <h3>&#9993; <span data-i18n="galleryTitle">Template Email Klaviyo</span></h3>
+        <span class="badge badge-blue" data-i18n="galleryCount">4 template disponibili</span>
+      </div>
+      <div class="card-body">
+        <div class="template-grid" id="templateGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: AI Design -->
+  <div class="step-container" id="step2">
+    <div class="step-label"><span class="step-num">2</span> <span data-i18n="step2Label">Design AI</span></div>
+    <div class="builder-layout" id="builderLayout">
+      <div class="builder-palette" id="builderPalette">
+        <div class="palette-title" data-i18n="paletteTitle">Componenti</div>
+        <div id="paletteItems"></div>
+      </div>
+      <div class="builder-canvas" id="builderCanvas">
+        <div class="canvas-toolbar">
+          <span class="canvas-toolbar-title" data-i18n="canvasTitle">Email Canvas</span>
+          <div class="canvas-device-btns">
+            <button class="canvas-device-btn active" data-device="desktop">Desktop</button>
+            <button class="canvas-device-btn" data-device="tablet">Tablet</button>
+            <button class="canvas-device-btn" data-device="mobile">Mobile</button>
+          </div>
+        </div>
+        <div class="canvas-content" id="canvasContent"></div>
+        <div class="variant-panel" id="variantPanel"></div>
+      </div>
+      <div class="builder-suggestions" id="builderSuggestions">
+        <div class="suggestion-title">&#129302; <span data-i18n="suggestionsTitle">Suggerimenti AI</span></div>
+        <div id="suggestionsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Content Optimization -->
+  <div class="step-container" id="step3">
+    <div class="step-label"><span class="step-num">3</span> <span data-i18n="step3Label">Ottimizzazione Contenuti</span></div>
+    <div class="card" id="subjectCard">
+      <div class="card-header">
+        <h3>&#128221; <span data-i18n="subjectTitle">Ottimizzazione Oggetto</span></h3>
+      </div>
+      <div class="card-body" id="subjectBody"></div>
+    </div>
+    <div class="card" id="ctaOptCard">
+      <div class="card-header">
+        <h3>&#127919; <span data-i18n="ctaOptTitle">Ottimizzazione CTA</span></h3>
+      </div>
+      <div class="card-body" id="ctaOptBody"></div>
+    </div>
+    <div class="card" id="responsiveCard">
+      <div class="card-header">
+        <h3>&#128241; <span data-i18n="responsiveTitle">Anteprima Responsiva</span></h3>
+      </div>
+      <div class="card-body" id="responsiveBody"></div>
+    </div>
+    <div class="card" id="spamCard">
+      <div class="card-header">
+        <h3>&#128737; <span data-i18n="spamTitle">Spam Score Check</span></h3>
+        <span class="badge badge-green" id="spamBadge" style="opacity:0" data-i18n="spamPass">Superato</span>
+      </div>
+      <div class="card-body">
+        <div class="spam-check" id="spamList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: Deploy & Monitor -->
+  <div class="step-container" id="step4">
+    <div class="step-label"><span class="step-num">4</span> <span data-i18n="step4Label">Deploy & Monitor</span></div>
+    <div class="card">
+      <div class="card-header">
+        <h3>&#9881; <span data-i18n="deployConfigTitle">Configurazione Invio</span></h3>
+      </div>
+      <div class="card-body">
+        <div class="deploy-config" id="deployConfig"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h3>&#9989; <span data-i18n="checklistTitle">Pre-Send Checklist</span></h3>
+      </div>
+      <div class="card-body">
+        <div class="checklist" id="checklist"></div>
+      </div>
+    </div>
+    <div class="countdown-section" id="countdownSection">
+      <div class="countdown-title" data-i18n="readyTitle">Pronto per l'invio</div>
+      <div class="countdown-subtitle" data-i18n="readySubtitle">Invio programmato per Marted&igrave; 10:30</div>
+      <div class="countdown-display">
+        <div class="countdown-unit">
+          <div class="countdown-number" id="cdHours">02</div>
+          <div class="countdown-label" data-i18n="cdHours">Ore</div>
+        </div>
+        <div class="countdown-unit">
+          <div class="countdown-number" id="cdMinutes">47</div>
+          <div class="countdown-label" data-i18n="cdMinutes">Minuti</div>
+        </div>
+        <div class="countdown-unit">
+          <div class="countdown-number" id="cdSeconds">33</div>
+          <div class="countdown-label" data-i18n="cdSeconds">Secondi</div>
+        </div>
+      </div>
+    </div>
+    <div class="projected-card" id="projectedCard">
+      <div class="projected-item">
+        <div class="projected-value green" id="projOpen">0%</div>
+        <div class="projected-label" data-i18n="projOpen">Open Rate Previsto</div>
+      </div>
+      <div class="projected-item">
+        <div class="projected-value blue" id="projClick">0%</div>
+        <div class="projected-label" data-i18n="projClick">Click Rate Previsto</div>
+      </div>
+      <div class="projected-item">
+        <div class="projected-value amber" id="projRev">&euro;0</div>
+        <div class="projected-label" data-i18n="projRev">Revenue Previsto</div>
+      </div>
+    </div>
+    <div class="cta-section" id="ctaSection">
+      <div class="cta-title" data-i18n="ctaTitle">Crea Email Perfette con l'AI</div>
+      <div class="cta-subtitle" data-i18n="ctaSubtitle">Ottimizza ogni aspetto delle tue campagne Klaviyo</div>
+      <button class="cta-btn" data-i18n="ctaBtn">Inizia con Praxis AI</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+'use strict';
+
+var LOCALE = (typeof window !== 'undefined' && window.__PRAXIS_LOCALE__) || 'it';
+
+var T_ALL = {
+en: {
+  headerTitle:'Klaviyo AI Ops',
+  btnNext:'Next',
+  step1Label:'Template Gallery',step2Label:'AI Design',step3Label:'Content Optimization',step4Label:'Deploy & Monitor',
+  galleryTitle:'Klaviyo Email Templates',galleryCount:'4 templates available',
+  tpl1Name:'Product Launch',tpl1Subject:'Subject: Discover the new Spring collection',tpl1Perf:'Predicted: 48% Open',
+  tpl2Name:'Weekly Newsletter',tpl2Subject:'Subject: This week at Fashion Brand Italia',tpl2Perf:'Predicted: 35% Open',
+  tpl3Name:'Abandoned Cart',tpl3Subject:'Subject: You forgot something special!',tpl3Perf:'Predicted: 55% Open',
+  tpl4Name:'Loyalty Program',tpl4Subject:'Subject: Your exclusive rewards await',tpl4Perf:'Predicted: 42% Open',
+  clickToSelect:'Click to select',
+  paletteTitle:'Components',
+  palHeader:'Header',palHero:'Hero Image',palProducts:'Product Grid',palCta:'CTA Button',palFooter:'Footer',
+  canvasTitle:'Email Canvas',
+  suggestionsTitle:'AI Suggestions',
+  sug1:'<strong>Recommended layout:</strong> Hero + 2-column product grid \u2014 +18% CTR vs linear layout',
+  sug2:'<strong>Color palette:</strong> brand #1e3a5f with accent #c9a227 \u2014 consistent with visual identity',
+  sug3:'<strong>Image optimization:</strong> compress hero image to &lt;200KB for faster mobile load',
+  variantTitle:'Component Variants',
+  var1Label:'Variant A',var1Perf:'Predicted: +12% CTR',
+  var2Label:'Variant B',var2Perf:'Predicted: +8% CTR',
+  var3Label:'Variant C',var3Perf:'Predicted: +5% CTR',
+  varClose:'Close',
+
+  subjectTitle:'Subject Line Optimization',
+  ctaOptTitle:'CTA Optimization',
+  responsiveTitle:'Responsive Preview',
+  spamTitle:'Spam Score Check',spamPass:'Passed',
+  origLabel:'ORIGINAL',optLabel:'OPTIMIZED',
+  origSubject:'Nuova Collezione Esclusiva',optSubject:'Accesso Anticipato: Collezione Esclusiva Solo Per Te',
+  ctaA:'Scopri Ora',ctaAPerf:'Baseline click rate',
+  ctaB:'Vedi la Collezione',ctaBPerf:'Predicted +12% click',
+  previewText:'Preview text optimization: Added personalized preview text with subscriber name',
+
+  spam1:'SPF/DKIM authentication: verified',
+  spam2:'Unsubscribe link: present',
+  spam3:'Image-to-text ratio: 40/60 (optimal)',
+  spam4:'Spam trigger words: none detected',
+  spam5:'Broken links: 0 found',
+  spam6:'Alt tags on images: all present',
+
+  deployConfigTitle:'Send Configuration',checklistTitle:'Pre-Send Checklist',
+  cfgSegment:'Segment',cfgSegmentVal:'VIP Frequent Buyers (3,240)',
+  cfgSplit:'A/B Split',cfgSplitVal:'20% test, 80% winner',
+  cfgSchedule:'Schedule',cfgScheduleVal:'Tue 10:30 (AI-optimized)',
+  cfgFallback:'Fallback',cfgFallbackVal:'Variant A after 4h',
+
+  cfgSubject:'Subject A',cfgSubjectValA:'Accesso Anticipato: Collezione Esclusiva',
+  cfgSubjectB:'Subject B',cfgSubjectValB:'La Nuova Collezione Ti Aspetta',
+  cfgMetric:'Winning metric',cfgMetricVal:'Open Rate after 4 hours',
+
+  chk1:'Links validated: 12/12 functional',
+  chk2:'Images optimized: all under 200KB',
+  chk3:'Unsubscribe link: present and functional',
+  chk4:'SPF/DKIM: authenticated',
+  chk5:'Responsive: tested on 3 device sizes',
+  chk6:'Spam score: 0.2/10 (excellent)',
+
+  readyTitle:'Ready to Send',readySubtitle:'Scheduled send: Tuesday 10:30',
+  cdHours:'Hours',cdMinutes:'Minutes',cdSeconds:'Seconds',
+  projOpen:'Predicted Open Rate',projClick:'Predicted Click Rate',projRev:'Predicted Revenue',
+  ctaTitle:'Create Perfect Emails with AI',ctaSubtitle:'Optimize every aspect of your Klaviyo campaigns',ctaBtn:'Start with Praxis AI',
+  stepOf:'Step',of:'of',progressLabel:'Step {n} of 4',
+  clickBlock:'Click a block for variant options'
+},
+it: {
+  headerTitle:'Klaviyo AI Ops',
+  btnNext:'Avanti',
+  step1Label:'Galleria Template',step2Label:'Design AI',step3Label:'Ottimizzazione Contenuti',step4Label:'Deploy & Monitor',
+  galleryTitle:'Template Email Klaviyo',galleryCount:'4 template disponibili',
+  tpl1Name:'Lancio Prodotto',tpl1Subject:'Oggetto: Scopri la nuova collezione Primavera',tpl1Perf:'Previsione: 48% Open',
+  tpl2Name:'Newsletter Settimanale',tpl2Subject:'Oggetto: Questa settimana da Fashion Brand Italia',tpl2Perf:'Previsione: 35% Open',
+  tpl3Name:'Carrello Abbandonato',tpl3Subject:'Oggetto: Hai dimenticato qualcosa di speciale!',tpl3Perf:'Previsione: 55% Open',
+  tpl4Name:'Programma Fedelt\u00E0',tpl4Subject:'Oggetto: I tuoi premi esclusivi ti aspettano',tpl4Perf:'Previsione: 42% Open',
+  clickToSelect:'Clicca per selezionare',
+  paletteTitle:'Componenti',
+  palHeader:'Header',palHero:'Immagine Hero',palProducts:'Griglia Prodotti',palCta:'Pulsante CTA',palFooter:'Footer',
+  canvasTitle:'Email Canvas',
+  suggestionsTitle:'Suggerimenti AI',
+  sug1:'<strong>Layout consigliato:</strong> Hero + griglia prodotti 2 colonne \u2014 +18% CTR vs layout lineare',
+  sug2:'<strong>Palette colori:</strong> brand #1e3a5f con accento #c9a227 \u2014 coerente con identit\u00E0 visiva',
+  sug3:'<strong>Ottimizzazione immagini:</strong> comprimere immagine hero a &lt;200KB per caricamento mobile pi\u00F9 veloce',
+  variantTitle:'Varianti Componente',
+  var1Label:'Variante A',var1Perf:'Previsione: +12% CTR',
+  var2Label:'Variante B',var2Perf:'Previsione: +8% CTR',
+  var3Label:'Variante C',var3Perf:'Previsione: +5% CTR',
+  varClose:'Chiudi',
+
+  subjectTitle:'Ottimizzazione Oggetto',
+  ctaOptTitle:'Ottimizzazione CTA',
+  responsiveTitle:'Anteprima Responsiva',
+  spamTitle:'Spam Score Check',spamPass:'Superato',
+  origLabel:'ORIGINALE',optLabel:'OTTIMIZZATO',
+  origSubject:'Nuova Collezione Esclusiva',optSubject:'Accesso Anticipato: Collezione Esclusiva Solo Per Te',
+  ctaA:'Scopri Ora',ctaAPerf:'Click rate di base',
+  ctaB:'Vedi la Collezione',ctaBPerf:'Previsto +12% click',
+  previewText:'Ottimizzazione preview text: Aggiunto testo anteprima personalizzato con nome iscritto',
+
+  spam1:'Autenticazione SPF/DKIM: verificata',
+  spam2:'Link di disiscrizione: presente',
+  spam3:'Rapporto immagini/testo: 40/60 (ottimale)',
+  spam4:'Parole spam trigger: nessuna rilevata',
+  spam5:'Link non funzionanti: 0 trovati',
+  spam6:'Tag alt sulle immagini: tutti presenti',
+
+  deployConfigTitle:'Configurazione Invio',checklistTitle:'Pre-Send Checklist',
+  cfgSegment:'Segmento',cfgSegmentVal:'VIP Frequent Buyers (3.240)',
+  cfgSplit:'A/B Split',cfgSplitVal:'20% test, 80% vincitore',
+  cfgSchedule:'Programmazione',cfgScheduleVal:'Mar 10:30 (AI-optimized)',
+  cfgFallback:'Fallback',cfgFallbackVal:'Variante A dopo 4h',
+
+  cfgSubject:'Oggetto A',cfgSubjectValA:'Accesso Anticipato: Collezione Esclusiva',
+  cfgSubjectB:'Oggetto B',cfgSubjectValB:'La Nuova Collezione Ti Aspetta',
+  cfgMetric:'Metrica vincente',cfgMetricVal:'Open Rate dopo 4 ore',
+
+  chk1:'Link validati: 12/12 funzionanti',
+  chk2:'Immagini ottimizzate: tutte sotto 200KB',
+  chk3:'Link disiscrizione: presente e funzionante',
+  chk4:'SPF/DKIM: autenticato',
+  chk5:'Responsive: testato su 3 dispositivi',
+  chk6:'Spam score: 0.2/10 (eccellente)',
+
+  readyTitle:'Pronto per l\'invio',readySubtitle:'Invio programmato: Marted\u00EC 10:30',
+  cdHours:'Ore',cdMinutes:'Minuti',cdSeconds:'Secondi',
+  projOpen:'Open Rate Previsto',projClick:'Click Rate Previsto',projRev:'Revenue Previsto',
+  ctaTitle:'Crea Email Perfette con l\'AI',ctaSubtitle:'Ottimizza ogni aspetto delle tue campagne Klaviyo',ctaBtn:'Inizia con Praxis AI',
+  stepOf:'Step',of:'di',progressLabel:'Step {n} di 4',
+  clickBlock:'Clicca un blocco per le varianti'
+}
+};
+
+var T = T_ALL[LOCALE] || T_ALL.it;
+
+/* State */
+var currentStep = 0;
+var totalSteps = 4;
+var demoTimers = [];
+var countdownInterval = null;
+
+function dt(fn, ms) { var id = setTimeout(fn, ms); demoTimers.push(id); return id; }
+
+/* i18n */
+function applyI18n() {
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var k = el.getAttribute('data-i18n');
+    if (T[k] !== undefined) el.textContent = T[k];
+  });
+  document.documentElement.lang = LOCALE;
+}
+
+/* Progress */
+function updateProgress(step) {
+  for (var i = 1; i <= totalSteps; i++) {
+    var el = document.getElementById('pstep' + i);
+    el.className = 'progress-step';
+    if (i < step) el.classList.add('done');
+    else if (i === step) el.classList.add('active');
+  }
+  document.getElementById('progressLabel').textContent = T.stepOf + ' ' + step + ' ' + T.of + ' ' + totalSteps;
+  var btn = document.getElementById('btnNext');
+  btn.disabled = step >= totalSteps;
+  btn.textContent = step >= totalSteps ? (LOCALE === 'en' ? 'Complete' : 'Completato') : T.btnNext;
+}
+
+/* Animate counter */
+function animateValue(el, target, prefix, suffix, duration) {
+  duration = duration || 1000;
+  var start = null;
+  function step(ts) {
+    if (!start) start = ts;
+    var p = Math.min((ts - start) / duration, 1);
+    var ease = 1 - Math.pow(1 - p, 3);
+    el.textContent = (prefix || '') + Math.round(target * ease).toLocaleString('it-IT') + (suffix || '');
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+/* Template data */
+var templates = [
+  {name:T.tpl1Name, subject:T.tpl1Subject, perf:T.tpl1Perf, icon:'\uD83D\uDE80', perfBadge:'badge-green', pulse:true},
+  {name:T.tpl2Name, subject:T.tpl2Subject, perf:T.tpl2Perf, icon:'\uD83D\uDCF0', perfBadge:'badge-blue', pulse:false},
+  {name:T.tpl3Name, subject:T.tpl3Subject, perf:T.tpl3Perf, icon:'\uD83D\uDED2', perfBadge:'badge-green', pulse:false},
+  {name:T.tpl4Name, subject:T.tpl4Subject, perf:T.tpl4Perf, icon:'\u2B50', perfBadge:'badge-amber', pulse:false}
+];
+
+function buildTemplateGallery() {
+  var grid = document.getElementById('templateGrid');
+  grid.innerHTML = '';
+  templates.forEach(function(tpl, i) {
+    var card = document.createElement('div');
+    card.className = 'template-card';
+    if (tpl.pulse) card.classList.add('pulse-card');
+    card.setAttribute('data-index', i);
+    card.innerHTML =
+      '<div class="template-preview">' +
+        '<span class="template-preview-icon">' + tpl.icon + '</span>' +
+        '<div class="template-preview-lines"><div class="template-preview-line"></div><div class="template-preview-line"></div><div class="template-preview-line"></div></div>' +
+      '</div>' +
+      '<div class="template-info">' +
+        '<div class="template-name">' + tpl.name + '</div>' +
+        '<div class="template-subject">' + tpl.subject + '</div>' +
+        '<div class="template-perf"><span class="badge ' + tpl.perfBadge + '">' + tpl.perf + '</span></div>' +
+      '</div>';
+    card.addEventListener('click', function() {
+      document.querySelectorAll('.template-card').forEach(function(c) {
+        c.classList.remove('selected', 'pulse-card');
+      });
+      card.classList.add('selected');
+    });
+    grid.appendChild(card);
+  });
+}
+
+/* Palette components */
+var paletteComponents = [
+  {name:T.palHeader, icon:'\uD83C\uDFE0'},
+  {name:T.palHero, icon:'\uD83D\uDDBC'},
+  {name:T.palProducts, icon:'\uD83D\uDED2'},
+  {name:T.palCta, icon:'\uD83D\uDD18'},
+  {name:T.palFooter, icon:'\uD83D\uDCCB'}
+];
+
+function buildPalette() {
+  var container = document.getElementById('paletteItems');
+  container.innerHTML = '';
+  paletteComponents.forEach(function(comp) {
+    var el = document.createElement('div');
+    el.className = 'palette-item';
+    el.innerHTML = '<span class="p-icon">' + comp.icon + '</span> ' + comp.name;
+    container.appendChild(el);
+  });
+}
+
+/* Build email blocks on canvas */
+function buildCanvasBlocks() {
+  var canvas = document.getElementById('canvasContent');
+  canvas.innerHTML = '';
+
+  var blocks = [
+    {id:'block-header', html:
+      '<div class="block-header">' +
+        '<div class="brand-name">Fashion Brand Italia</div>' +
+        '<div class="nav-links"><span>Donna</span><span>Uomo</span><span>Accessori</span><span>Sale</span></div>' +
+      '</div>'
+    },
+    {id:'block-hero', html:
+      '<div class="block-hero">' +
+        '<div class="hero-label">' + (LOCALE === 'en' ? 'EXCLUSIVE EARLY ACCESS' : 'ACCESSO ANTICIPATO ESCLUSIVO') + '</div>' +
+        '<div class="hero-title">' + (LOCALE === 'en' ? 'Spring Collection 2026' : 'Collezione Primavera 2026') + '</div>' +
+        '<div class="hero-desc">' + (LOCALE === 'en' ? 'Discover the new line inspired by the Italian coast' : 'Scopri la nuova linea ispirata alla costa italiana') + '</div>' +
+      '</div>'
+    },
+    {id:'block-products', html:
+      '<div class="block-products">' +
+        '<div class="block-product"><div class="prod-img">\uD83D\uDC57</div><div class="prod-name">' + (LOCALE === 'en' ? 'Amalfi Dress' : 'Abito Amalfi') + '</div><div class="prod-price">\u20AC189</div></div>' +
+        '<div class="block-product"><div class="prod-img">\uD83D\uDC5C</div><div class="prod-name">' + (LOCALE === 'en' ? 'Portofino Bag' : 'Borsa Portofino') + '</div><div class="prod-price">\u20AC245</div></div>' +
+        '<div class="block-product"><div class="prod-img">\uD83D\uDC5E</div><div class="prod-name">' + (LOCALE === 'en' ? 'Capri Sandals' : 'Sandali Capri') + '</div><div class="prod-price">\u20AC129</div></div>' +
+        '<div class="block-product"><div class="prod-img">\uD83D\uDC53</div><div class="prod-name">' + (LOCALE === 'en' ? 'Riviera Sunglasses' : 'Occhiali Riviera') + '</div><div class="prod-price">\u20AC95</div></div>' +
+      '</div>'
+    },
+    {id:'block-cta', html:
+      '<div class="block-cta">' +
+        '<div class="block-cta-btn">' + (LOCALE === 'en' ? 'EXPLORE THE COLLECTION' : 'SCOPRI LA COLLEZIONE') + '</div>' +
+      '</div>'
+    },
+    {id:'block-footer', html:
+      '<div class="block-footer">' +
+        'Fashion Brand Italia S.r.l. | Via Montenapoleone 12, Milano<br>' +
+        '<a href="#" style="color:var(--navy-muted);text-decoration:underline">' + (LOCALE === 'en' ? 'Unsubscribe' : 'Disiscriviti') + '</a> | ' +
+        '<a href="#" style="color:var(--navy-muted);text-decoration:underline">' + (LOCALE === 'en' ? 'View online' : 'Visualizza online') + '</a>' +
+      '</div>'
+    }
+  ];
+
+  blocks.forEach(function(block) {
+    var el = document.createElement('div');
+    el.className = 'canvas-block';
+    el.id = block.id;
+    el.innerHTML = block.html;
+    el.addEventListener('click', function() {
+      showVariantPanel(block.id);
+    });
+    canvas.appendChild(el);
+  });
+}
+
+function showVariantPanel(blockId) {
+  var panel = document.getElementById('variantPanel');
+  panel.innerHTML =
+    '<div class="variant-title">\uD83C\uDFA8 ' + T.variantTitle + '</div>' +
+    '<div class="variant-options">' +
+      '<div class="variant-option"><div class="var-label">' + T.var1Label + '</div><div class="var-perf">' + T.var1Perf + '</div><div class="var-badge"><span class="badge badge-green">' + (LOCALE === 'en' ? 'Recommended' : 'Consigliato') + '</span></div></div>' +
+      '<div class="variant-option"><div class="var-label">' + T.var2Label + '</div><div class="var-perf">' + T.var2Perf + '</div></div>' +
+      '<div class="variant-option"><div class="var-label">' + T.var3Label + '</div><div class="var-perf">' + T.var3Perf + '</div></div>' +
+    '</div>' +
+    '<div class="variant-close"><button class="variant-close-btn">' + T.varClose + '</button></div>';
+  panel.classList.add('visible');
+
+  panel.querySelector('.variant-close-btn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    panel.classList.remove('visible');
+  });
+
+  panel.querySelectorAll('.variant-option').forEach(function(opt) {
+    opt.addEventListener('click', function(e) {
+      e.stopPropagation();
+      panel.classList.remove('visible');
+      /* Highlight the selected block */
+      document.querySelectorAll('.canvas-block').forEach(function(b) { b.classList.remove('selected'); });
+      var target = document.getElementById(blockId);
+      if (target) target.classList.add('selected');
+    });
+  });
+}
+
+/* Build suggestions */
+function buildSuggestions() {
+  var list = document.getElementById('suggestionsList');
+  list.innerHTML = '';
+  var suggestions = [T.sug1, T.sug2, T.sug3];
+  suggestions.forEach(function(s, i) {
+    var el = document.createElement('div');
+    el.className = 'suggestion-item';
+    el.setAttribute('data-si', i);
+    el.innerHTML = s;
+    list.appendChild(el);
+  });
+}
+
+/* ---------- STEP RUNNERS ---------- */
+
+function runStep1() {
+  var sc = document.getElementById('step1');
+  sc.classList.add('active');
+  dt(function() { sc.classList.add('visible'); }, 50);
+
+  var cards = document.querySelectorAll('.template-card');
+  cards.forEach(function(card, i) {
+    dt(function() { card.classList.add('visible'); }, 200 + i * 250);
+  });
+}
+
+function runStep2() {
+  var sc = document.getElementById('step2');
+  sc.classList.add('active');
+  dt(function() { sc.classList.add('visible'); }, 50);
+
+  /* Animate palette items getting "used" */
+  var palItems = document.querySelectorAll('.palette-item');
+
+  /* Animate canvas blocks sliding in */
+  var blocks = document.querySelectorAll('.canvas-block');
+  blocks.forEach(function(block, i) {
+    dt(function() {
+      block.classList.add('visible');
+      if (palItems[i]) palItems[i].classList.add('used');
+    }, 600 + i * 600);
+  });
+
+  /* Animate suggestions */
+  var sItems = document.querySelectorAll('.suggestion-item');
+  dt(function() {
+    sItems.forEach(function(s, i) {
+      dt(function() { s.classList.add('visible'); }, i * 400);
+    });
+  }, 600 + blocks.length * 600 + 300);
+
+  /* Color swatches after suggestion 2 */
+  dt(function() {
+    var sug2 = sItems[1];
+    if (sug2) {
+      var swatchContainer = document.createElement('div');
+      swatchContainer.className = 'color-swatches';
+      var colors = ['#1e3a5f','#2a5080','#c9a227','#edf2f7','#ffffff'];
+      colors.forEach(function(c, ci) {
+        var sw = document.createElement('div');
+        sw.className = 'color-swatch';
+        sw.style.background = c;
+        swatchContainer.appendChild(sw);
+        dt(function() { sw.classList.add('visible'); }, ci * 100);
+      });
+      sug2.appendChild(swatchContainer);
+    }
+  }, 600 + blocks.length * 600 + 300 + sItems.length * 400 + 200);
+
+  /* Show interactive hint */
+  dt(function() {
+    var heroBlock = document.getElementById('block-hero');
+    if (heroBlock) {
+      heroBlock.style.animation = 'pulseGlow 2s ease-in-out infinite';
+      heroBlock.title = T.clickBlock;
+    }
+  }, 600 + blocks.length * 600 + 300 + sItems.length * 400 + 600);
+}
+
+function runStep3() {
+  var sc = document.getElementById('step3');
+  sc.classList.add('active');
+  dt(function() { sc.classList.add('visible'); }, 50);
+
+  /* Subject line comparison */
+  var subjectBody = document.getElementById('subjectBody');
+  subjectBody.innerHTML =
+    '<div class="optim-section">' +
+      '<div class="optim-section-title">\uD83D\uDCE7 ' + T.subjectTitle + '</div>' +
+      '<div class="subject-compare">' +
+        '<div class="subject-row original" id="origSubject">' +
+          '<div class="subject-label">' + T.origLabel + '</div>' +
+          '<div class="subject-text">' + T.origSubject + '</div>' +
+          '<div class="subject-score low">72</div>' +
+        '</div>' +
+        '<div class="subject-row optimized" id="optSubject">' +
+          '<div class="subject-label">' + T.optLabel + '</div>' +
+          '<div class="subject-text">' + T.optSubject + '</div>' +
+          '<div class="subject-score high">89</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+  dt(function() { document.getElementById('origSubject').classList.add('visible'); }, 400);
+  dt(function() { document.getElementById('optSubject').classList.add('visible'); }, 900);
+
+  /* CTA comparison */
+  var ctaOptBody = document.getElementById('ctaOptBody');
+  ctaOptBody.innerHTML =
+    '<div class="cta-compare">' +
+      '<div class="cta-option" id="ctaOptA"><div class="cta-text">"' + T.ctaA + '"</div><div class="cta-perf">' + T.ctaAPerf + '</div></div>' +
+      '<div class="cta-option winner" id="ctaOptB"><div class="cta-text">"' + T.ctaB + '"</div><div class="cta-perf">' + T.ctaBPerf + '</div><div style="margin-top:6px"><span class="badge badge-green">\u2191 Winner</span></div></div>' +
+    '</div>' +
+    '<div style="font-size:12px;color:var(--navy-muted);padding:8px 0;opacity:0;transition:opacity .4s" id="previewTextNote">' + T.previewText + '</div>';
+
+  dt(function() { document.getElementById('ctaOptA').classList.add('visible'); }, 1400);
+  dt(function() { document.getElementById('ctaOptB').classList.add('visible'); }, 1800);
+  dt(function() { document.getElementById('previewTextNote').style.opacity = '1'; }, 2200);
+
+  /* Responsive preview */
+  var responsiveBody = document.getElementById('responsiveBody');
+  var miniContent =
+    '<div class="mini-header">Fashion Brand Italia</div>' +
+    '<div class="mini-hero"><div class="mh-title">' + (LOCALE==='en'?'Spring Collection':'Collezione Primavera') + '</div></div>' +
+    '<div class="mini-products"><div class="mini-prod"><div class="mp-box"></div></div><div class="mini-prod"><div class="mp-box"></div></div></div>' +
+    '<div class="mini-cta"><span class="mini-cta-btn">' + (LOCALE==='en'?'SHOP':'SCOPRI') + '</span></div>';
+
+  responsiveBody.innerHTML =
+    '<div class="responsive-preview">' +
+      '<div><div class="preview-device desktop" id="prevDesktop"><div class="preview-device-bar"><div class="preview-device-dot"></div><div class="preview-device-dot"></div><div class="preview-device-dot"></div></div><div class="preview-device-content">' + miniContent + '</div></div><div class="preview-label">Desktop</div></div>' +
+      '<div><div class="preview-device tablet" id="prevTablet"><div class="preview-device-bar"><div class="preview-device-dot"></div><div class="preview-device-dot"></div><div class="preview-device-dot"></div></div><div class="preview-device-content">' + miniContent + '</div></div><div class="preview-label">Tablet</div></div>' +
+      '<div><div class="preview-device mobile" id="prevMobile"><div class="preview-device-bar"><div class="preview-device-dot"></div><div class="preview-device-dot"></div><div class="preview-device-dot"></div></div><div class="preview-device-content">' + miniContent + '</div></div><div class="preview-label">Mobile</div></div>' +
+    '</div>';
+
+  dt(function() { document.getElementById('prevDesktop').classList.add('visible'); }, 2600);
+  dt(function() { document.getElementById('prevTablet').classList.add('visible'); }, 3000);
+  dt(function() { document.getElementById('prevMobile').classList.add('visible'); }, 3400);
+
+  /* Spam score */
+  var spamList = document.getElementById('spamList');
+  spamList.innerHTML = '';
+  var spamItems = [T.spam1,T.spam2,T.spam3,T.spam4,T.spam5,T.spam6];
+  spamItems.forEach(function(s) {
+    var el = document.createElement('div');
+    el.className = 'spam-item';
+    el.innerHTML = '<span class="check">\u2705</span> ' + s;
+    spamList.appendChild(el);
+  });
+
+  var spamEls = spamList.querySelectorAll('.spam-item');
+  spamEls.forEach(function(el, i) {
+    dt(function() { el.classList.add('visible'); }, 3800 + i * 200);
+  });
+  dt(function() { document.getElementById('spamBadge').style.opacity = '1'; }, 3800 + spamEls.length * 200 + 200);
+}
+
+function runStep4() {
+  var sc = document.getElementById('step4');
+  sc.classList.add('active');
+  dt(function() { sc.classList.add('visible'); }, 50);
+
+  /* Deploy config */
+  var deployEl = document.getElementById('deployConfig');
+  deployEl.innerHTML =
+    '<div class="config-group">' +
+      '<div class="config-group-title">' + (LOCALE==='en'?'Send Settings':'Impostazioni Invio') + '</div>' +
+      '<div class="config-row"><span class="config-label">' + T.cfgSegment + '</span><span class="config-value">' + T.cfgSegmentVal + '</span></div>' +
+      '<div class="config-row"><span class="config-label">' + T.cfgSplit + '</span><span class="config-value">' + T.cfgSplitVal + '</span></div>' +
+      '<div class="config-row"><span class="config-label">' + T.cfgSchedule + '</span><span class="config-value">' + T.cfgScheduleVal + '</span></div>' +
+      '<div class="config-row"><span class="config-label">' + T.cfgFallback + '</span><span class="config-value">' + T.cfgFallbackVal + '</span></div>' +
+    '</div>' +
+    '<div class="config-group">' +
+      '<div class="config-group-title">A/B Test</div>' +
+      '<div class="config-row"><span class="config-label">' + T.cfgSubject + '</span><span class="config-value">' + T.cfgSubjectValA + '</span></div>' +
+      '<div class="config-row"><span class="config-label">' + T.cfgSubjectB + '</span><span class="config-value">' + T.cfgSubjectValB + '</span></div>' +
+      '<div class="config-row"><span class="config-label">' + T.cfgMetric + '</span><span class="config-value">' + T.cfgMetricVal + '</span></div>' +
+    '</div>';
+
+  /* Checklist */
+  var checklistEl = document.getElementById('checklist');
+  checklistEl.innerHTML = '';
+  var checks = [T.chk1,T.chk2,T.chk3,T.chk4,T.chk5,T.chk6];
+  checks.forEach(function(c) {
+    var el = document.createElement('div');
+    el.className = 'checklist-item';
+    el.innerHTML = '<span class="cl-icon">\u2705</span> ' + c;
+    checklistEl.appendChild(el);
+  });
+
+  var checkEls = checklistEl.querySelectorAll('.checklist-item');
+  checkEls.forEach(function(el, i) {
+    dt(function() { el.classList.add('visible'); }, 400 + i * 250);
+  });
+
+  /* Countdown */
+  dt(function() {
+    document.getElementById('countdownSection').classList.add('visible');
+    startCountdown();
+  }, 400 + checks.length * 250 + 300);
+
+  /* Projected metrics */
+  dt(function() {
+    document.getElementById('projectedCard').classList.add('visible');
+    animateValue(document.getElementById('projOpen'), 52, '', '%', 1200);
+    animateValue(document.getElementById('projClick'), 14, '', '%', 1200);
+    animateValue(document.getElementById('projRev'), 18400, '\u20AC', '', 1400);
+  }, 400 + checks.length * 250 + 800);
+
+  /* CTA */
+  dt(function() {
+    document.getElementById('ctaSection').classList.add('visible');
+  }, 400 + checks.length * 250 + 1600);
+}
+
+function startCountdown() {
+  if (countdownInterval) clearInterval(countdownInterval);
+  var h = 2, m = 47, s = 33;
+  document.getElementById('cdHours').textContent = pad(h);
+  document.getElementById('cdMinutes').textContent = pad(m);
+  document.getElementById('cdSeconds').textContent = pad(s);
+  countdownInterval = setInterval(function() {
+    s--;
+    if (s < 0) { s = 59; m--; }
+    if (m < 0) { m = 59; h--; }
+    if (h < 0) { clearInterval(countdownInterval); return; }
+    document.getElementById('cdHours').textContent = pad(h);
+    document.getElementById('cdMinutes').textContent = pad(m);
+    document.getElementById('cdSeconds').textContent = pad(s);
+  }, 1000);
+}
+
+function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+/* Step navigation */
+function goToStep(step) {
+  if (step < 1 || step > totalSteps) return;
+  currentStep = step;
+  updateProgress(step);
+  if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+
+  for (var i = 1; i <= totalSteps; i++) {
+    var el = document.getElementById('step' + i);
+    if (i === step) {
+      el.style.display = 'block';
+      el.classList.add('active');
+      dt(function(s) { return function() { s.classList.add('visible'); }; }(el), 50);
+    } else {
+      el.classList.remove('active', 'visible');
+      el.style.display = 'none';
+    }
+  }
+
+  /* Reset variant panel */
+  document.getElementById('variantPanel').classList.remove('visible');
+
+  switch(step) {
+    case 1: runStep1(); break;
+    case 2: runStep2(); break;
+    case 3: runStep3(); break;
+    case 4: runStep4(); break;
+  }
+}
+
+document.getElementById('btnNext').addEventListener('click', function() {
+  if (currentStep < totalSteps) {
+    goToStep(currentStep + 1);
+  }
+});
+
+/* Init */
+function init() {
+  applyI18n();
+  buildTemplateGallery();
+  buildPalette();
+  buildCanvasBlocks();
+  buildSuggestions();
+  goToStep(1);
+}
+
+init();
+
+})();
+</script>
+</body>
+</html>

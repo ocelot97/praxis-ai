@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shopify AI Ops — Praxis AI Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1e3a5f;--navy-light:#2a5080;--navy-muted:#5a7a9b;
+  --silver:#6b7280;--ice:#edf2f7;--accent:#c9a227;
+  --surface:#f0f4f8;--border:#d1dae4;--white:#ffffff;
+  --green:#16a34a;--green-light:#dcfce7;--red:#dc2626;--red-light:#fee2e2;
+  --amber:#d97706;--amber-light:#fef3c7;--blue:#2563eb;--blue-light:#dbeafe;
+  --font-body:'Inter',system-ui,sans-serif;--font-display:'Caveat',cursive;
+  --shadow-sm:0 1px 3px rgba(30,58,95,0.06);--shadow-md:0 4px 12px rgba(30,58,95,0.08);
+  --shadow-lg:0 8px 30px rgba(30,58,95,0.12);
+  --radius-sm:8px;--radius-md:12px;--radius-lg:16px
+}
+html{font-size:16px}
+body{font-family:var(--font-body);background:var(--surface);color:var(--navy);min-height:100vh;-webkit-font-smoothing:antialiased;padding-bottom:20px}
+
+/* Header */
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--navy);color:var(--white);position:sticky;top:0;z-index:100}
+.header-left{display:flex;align-items:center;gap:14px}
+.header-brand{font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--white)}
+.header-title{font-size:13px;color:rgba(255,255,255,0.7);font-weight:500}
+.header-badge{display:inline-block;background:var(--accent);color:var(--white);font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:1px;text-transform:uppercase}
+
+/* Progress */
+.progress-bar{display:flex;align-items:center;gap:12px;padding:12px 24px;background:var(--white);border-bottom:1px solid var(--border)}
+.progress-steps{display:flex;gap:6px;flex:1}
+.progress-step{flex:1;height:4px;border-radius:2px;background:var(--ice);transition:background .4s}
+.progress-step.active{background:var(--navy)}
+.progress-step.done{background:var(--green)}
+.progress-label{font-size:12px;font-weight:600;color:var(--navy-muted);white-space:nowrap}
+.btn-next{padding:8px 22px;background:var(--navy);color:var(--white);border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:var(--font-body);cursor:pointer;transition:background .2s,transform .15s}
+.btn-next:hover{background:var(--navy-light)}
+.btn-next:active{transform:scale(.97)}
+.btn-next:disabled{opacity:.4;cursor:not-allowed}
+
+/* Main */
+.main{max-width:1100px;margin:0 auto;padding:20px 20px 0}
+.step-container{display:none;opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
+.step-container.visible{display:block;opacity:1;transform:translateY(0)}
+.step-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--silver);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--navy);color:var(--white);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* Card */
+.card{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);box-shadow:var(--shadow-sm);padding:20px;margin-bottom:14px;position:relative;overflow:hidden}
+.card-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card-title .icon{font-size:18px}
+
+/* Grid */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* Status badges */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:3px 10px;border-radius:12px}
+.badge-waiting{background:var(--amber-light);color:var(--amber)}
+.badge-preparing{background:var(--blue-light);color:var(--blue)}
+.badge-shipped{background:var(--green-light);color:var(--green)}
+.badge-delivered{background:rgba(30,58,95,0.08);color:var(--navy)}
+.badge-alert{background:var(--red-light);color:var(--red)}
+.badge-ok{background:var(--green-light);color:var(--green)}
+.badge-auto{background:var(--blue-light);color:var(--blue)}
+
+/* Order list */
+.order-list{display:flex;flex-direction:column;gap:6px}
+.order-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface);border-radius:var(--radius-sm);transition:background .2s,box-shadow .2s,border-color .2s;border:1px solid transparent;cursor:default}
+.order-row:hover{background:var(--ice)}
+.order-row.clickable{cursor:pointer;border-color:var(--accent);animation:pulseGlow 2s ease-in-out infinite}
+.order-row.clickable.clicked{animation:none}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(201,162,39,0.3)}50%{box-shadow:0 0 0 6px rgba(201,162,39,0)}}
+.order-id{font-size:11px;font-weight:700;color:var(--navy);min-width:110px}
+.order-customer{font-size:11px;color:var(--navy-muted);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.order-product{font-size:10px;color:var(--silver);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.order-amount{font-size:11px;font-weight:700;color:var(--navy);min-width:60px;text-align:right}
+
+/* Inventory alerts */
+.alert-list{display:flex;flex-direction:column;gap:8px}
+.alert-item{display:flex;align-items:flex-start;gap:10px;padding:12px;background:var(--surface);border-radius:var(--radius-sm);border-left:3px solid var(--amber)}
+.alert-item.critical{border-left-color:var(--red)}
+.alert-item.ok{border-left-color:var(--blue)}
+.alert-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.alert-text{font-size:12px;color:var(--navy);line-height:1.6;flex:1}
+.alert-text strong{font-weight:700}
+
+/* Order Processing */
+.process-card{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);box-shadow:var(--shadow-md);padding:24px;margin-bottom:14px;position:relative;overflow:hidden}
+.process-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.process-order-id{font-size:16px;font-weight:700;color:var(--navy)}
+.process-customer{font-size:12px;color:var(--navy-muted)}
+.process-steps{display:flex;flex-direction:column;gap:8px}
+.process-step{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface);border-radius:var(--radius-sm);opacity:0;transform:translateX(-12px);transition:all .4s ease}
+.process-step.visible{opacity:1;transform:translateX(0)}
+.process-step.done{background:var(--green-light);border:1px solid rgba(22,163,74,0.2)}
+.process-step.processing{background:var(--blue-light);border:1px solid rgba(37,99,235,0.2)}
+.process-step-icon{font-size:16px;flex-shrink:0;width:24px;text-align:center}
+.process-step-text{font-size:12px;color:var(--navy);flex:1;line-height:1.5}
+.process-step-text strong{font-weight:700}
+.process-step-status{font-size:14px;flex-shrink:0;font-weight:700}
+.process-step-status.ok{color:var(--green)}
+.process-step-status.pending{color:var(--silver)}
+
+/* Counter */
+.counter-card{display:flex;align-items:center;justify-content:center;gap:12px;padding:16px;background:linear-gradient(135deg,var(--navy),var(--navy-light));border-radius:var(--radius-md);color:var(--white);opacity:0;transition:opacity .5s}
+.counter-card.visible{opacity:1}
+.counter-number{font-size:24px;font-weight:700}
+.counter-text{font-size:13px;color:rgba(255,255,255,0.8)}
+
+/* Flagged order detail */
+.flagged-detail{display:none;margin-top:12px;padding:18px;background:var(--white);border-radius:var(--radius-md);border:1px solid var(--accent);box-shadow:var(--shadow-md)}
+.flagged-detail.visible{display:block;animation:detailSlideIn .4s ease}
+@keyframes detailSlideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.flagged-title{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.flagged-body{font-size:12px;color:var(--navy);line-height:1.6}
+.flagged-suggestion{margin-top:10px;padding:12px;background:var(--surface);border-radius:var(--radius-sm);border-left:3px solid var(--green)}
+.flagged-suggestion strong{font-weight:700;color:var(--green)}
+.flagged-actions{display:flex;gap:8px;margin-top:12px}
+.flagged-btn{padding:8px 16px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;font-family:var(--font-body);cursor:pointer;border:none;transition:all .2s}
+.flagged-btn.primary{background:var(--green);color:var(--white)}
+.flagged-btn.primary:hover{background:#15803d}
+.flagged-btn.secondary{background:var(--surface);color:var(--navy);border:1px solid var(--border)}
+
+/* Demand Grid */
+.demand-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.demand-card{padding:14px;background:var(--surface);border-radius:var(--radius-md);opacity:0;transform:translateY(8px);transition:opacity .4s,transform .4s}
+.demand-card.visible{opacity:1;transform:translateY(0)}
+.demand-name{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.demand-chart{height:40px;display:flex;align-items:flex-end;gap:2px;margin-bottom:6px}
+.demand-bar{flex:1;background:var(--navy-light);border-radius:2px 2px 0 0;transition:height 1s cubic-bezier(.22,1,.36,1);opacity:.6}
+.demand-bar.projected{opacity:.3;background:var(--accent)}
+.demand-meta{display:flex;justify-content:space-between;font-size:10px;color:var(--silver)}
+.demand-meta strong{color:var(--navy);font-weight:600}
+
+/* Season overlay */
+.season-bar{display:flex;margin-bottom:14px;border-radius:var(--radius-sm);overflow:hidden;height:28px}
+.season-segment{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--white)}
+.season-pe{background:var(--accent);flex:1}
+.season-ai{background:var(--navy-light);flex:1}
+
+/* Supplier comparison */
+.supplier-compare{padding:16px;background:var(--surface);border-radius:var(--radius-md);margin-bottom:14px;opacity:0;transition:opacity .5s}
+.supplier-compare.visible{opacity:1}
+.supplier-row{display:flex;align-items:center;gap:12px;padding:8px 12px;margin-bottom:6px;background:var(--white);border-radius:var(--radius-sm);border:1px solid var(--border)}
+.supplier-row.recommended{border-color:var(--green);background:var(--green-light)}
+.supplier-name{font-size:12px;font-weight:700;color:var(--navy);min-width:90px}
+.supplier-detail{font-size:11px;color:var(--navy-muted);flex:1}
+.supplier-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px}
+
+/* Stock health */
+.health-score{display:flex;align-items:center;gap:16px;padding:16px;background:var(--white);border-radius:var(--radius-md);border:1px solid var(--border);margin-bottom:14px;opacity:0;transition:opacity .5s}
+.health-score.visible{opacity:1}
+.health-circle{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:var(--white);background:conic-gradient(var(--green) 0deg,var(--green) 0deg,var(--ice) 0deg);transition:background 1.5s;flex-shrink:0}
+.health-info{flex:1}
+.health-label{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.health-detail{font-size:11px;color:var(--navy-muted);line-height:1.6}
+
+/* Automation rules */
+.automation-list{display:flex;flex-direction:column;gap:10px}
+.automation-item{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--surface);border-radius:var(--radius-md);border:1px solid var(--border);opacity:0;transform:translateX(-12px);transition:opacity .4s,transform .4s}
+.automation-item.visible{opacity:1;transform:translateX(0)}
+.automation-icon{font-size:22px;flex-shrink:0}
+.automation-info{flex:1}
+.automation-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:2px}
+.automation-desc{font-size:11px;color:var(--navy-muted)}
+.automation-stat{font-size:12px;font-weight:700;color:var(--green);text-align:right;min-width:80px}
+
+/* Savings card */
+.savings-card{padding:20px;background:linear-gradient(135deg,var(--navy),var(--navy-light));border-radius:var(--radius-lg);color:var(--white);text-align:center;margin-bottom:14px;opacity:0;transition:opacity .5s}
+.savings-card.visible{opacity:1}
+.savings-title{font-size:14px;font-weight:700;margin-bottom:14px;color:rgba(255,255,255,0.9)}
+.savings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.savings-item{padding:12px}
+.savings-value{font-size:28px;font-weight:700;color:var(--accent)}
+.savings-label{font-size:11px;color:rgba(255,255,255,0.7);margin-top:4px}
+
+/* CTA */
+.cta-final{text-align:center;margin-top:20px;padding:24px;background:linear-gradient(135deg,var(--navy),var(--navy-light));border-radius:var(--radius-lg);opacity:0;transition:opacity .5s}
+.cta-final.visible{opacity:1}
+.cta-final-text{font-size:16px;font-weight:700;color:var(--white);margin-bottom:4px}
+.cta-final-sub{font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:14px}
+.cta-final-btn{padding:12px 32px;background:var(--accent);color:var(--white);border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;font-family:var(--font-body);cursor:pointer;transition:background .2s,transform .15s}
+.cta-final-btn:hover{background:#b8911f;transform:translateY(-1px)}
+
+/* AI badge */
+.ai-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:var(--navy);background:var(--ice);border:1px solid var(--border);border-radius:10px;padding:2px 8px;margin-bottom:8px}
+.ai-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:aiPulse 2s ease-in-out infinite}
+@keyframes aiPulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Click hint */
+.click-hint{font-size:10px;color:var(--accent);font-weight:600;margin-top:4px;animation:hintFade 2s ease-in-out infinite}
+@keyframes hintFade{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* Typing indicator */
+.typing-indicator{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:var(--surface);border-radius:12px}
+.typing-dot{width:6px;height:6px;border-radius:50%;background:var(--navy-muted);animation:typingBounce 1.4s ease-in-out infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
+
+/* Scanner */
+.scanner-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 0%,rgba(30,58,95,0.03) 50%,transparent 100%);opacity:0;pointer-events:none}
+.scanner-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--navy),transparent);opacity:0;top:0}
+.scanning .scanner-overlay{opacity:1}
+.scanning .scanner-line{opacity:1;animation:scanDown 2s ease-in-out infinite}
+@keyframes scanDown{0%{top:0}100%{top:100%}}
+
+/* Courier compare */
+.courier-compare{display:flex;gap:8px;margin:8px 0}
+.courier-option{flex:1;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border);font-size:11px;text-align:center;transition:all .3s}
+.courier-option.selected{border-color:var(--green);background:var(--green-light)}
+.courier-name{font-weight:700;color:var(--navy);margin-bottom:2px}
+.courier-detail{color:var(--navy-muted);font-size:10px}
+.courier-badge-ai{font-size:9px;font-weight:700;color:var(--green);margin-top:4px}
+
+/* Responsive */
+@media(max-width:900px){
+  .grid-2{grid-template-columns:1fr}
+  .demand-grid{grid-template-columns:repeat(2,1fr)}
+  .savings-grid{grid-template-columns:1fr}
+  .courier-compare{flex-direction:column}
+}
+@media(max-width:600px){
+  .demand-grid{grid-template-columns:1fr}
+  .header{padding:10px 14px;flex-wrap:wrap;gap:6px}
+  .main{padding:14px 10px 0}
+  .order-product{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <span class="header-brand">Praxis AI</span>
+    <span class="header-title" id="headerTitle">Shopify AI Ops</span>
+  </div>
+  <span class="header-badge">DEMO</span>
+</header>
+
+<div class="progress-bar">
+  <div class="progress-steps">
+    <div class="progress-step" id="pstep1"></div>
+    <div class="progress-step" id="pstep2"></div>
+    <div class="progress-step" id="pstep3"></div>
+    <div class="progress-step" id="pstep4"></div>
+  </div>
+  <span class="progress-label" id="progressLabel">Step 1 di 4</span>
+  <button class="btn-next" id="btnNext">Avanti</button>
+</div>
+
+<div class="main">
+
+  <!-- STEP 1: Operations Center -->
+  <div class="step-container" id="step1">
+    <div class="step-label"><span class="step-num">1</span> <span id="step1Label">Centro Operativo</span></div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="icon">&#128230;</span> <span id="ordersTitle">Coda Ordini</span></div>
+        <div class="order-list" id="orderList"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">&#9888;&#65039;</span> <span id="inventoryTitle">Avvisi Inventario</span></div>
+        <div class="alert-list" id="alertList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: AI Order Processing -->
+  <div class="step-container" id="step2">
+    <div class="step-label"><span class="step-num">2</span> <span id="step2Label">Elaborazione Ordini AI</span></div>
+    <div class="ai-badge">AI ORDER ENGINE</div>
+    <div class="process-card" id="processCard">
+      <div class="scanner-overlay"></div>
+      <div class="scanner-line"></div>
+      <div class="process-header">
+        <div>
+          <div class="process-order-id" id="processOrderId">Ordine #IT-2026-1847</div>
+          <div class="process-customer" id="processCustomer">Marco Bellini — Milano, MI</div>
+        </div>
+        <span class="badge badge-preparing" id="processStatus">In elaborazione</span>
+      </div>
+      <div class="process-steps" id="processSteps"></div>
+    </div>
+    <div class="counter-card" id="counterCard">
+      <span class="counter-number" id="counterNumber">4</span>
+      <span class="counter-text" id="counterText"></span>
+    </div>
+    <div id="flaggedContainer"></div>
+  </div>
+
+  <!-- STEP 3: Inventory Intelligence -->
+  <div class="step-container" id="step3">
+    <div class="step-label"><span class="step-num">3</span> <span id="step3Label">Intelligenza Inventario</span></div>
+    <div class="ai-badge">AI DEMAND FORECAST</div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">&#128200;</span> <span id="demandTitle">Previsione Domanda (30 giorni)</span></div>
+      <div class="season-bar">
+        <div class="season-segment season-pe" id="seasonPE">Primavera/Estate</div>
+        <div class="season-segment season-ai" id="seasonAI">Autunno/Inverno</div>
+      </div>
+      <div class="demand-grid" id="demandGrid"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">&#128666;</span> <span id="supplierTitle">Confronto Fornitori</span></div>
+      <div class="supplier-compare" id="supplierCompare"></div>
+    </div>
+
+    <div class="health-score" id="healthScore">
+      <div class="health-circle" id="healthCircle">0</div>
+      <div class="health-info">
+        <div class="health-label" id="healthLabel">Stock Health Score</div>
+        <div class="health-detail" id="healthDetail"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: Automations Dashboard -->
+  <div class="step-container" id="step4">
+    <div class="step-label"><span class="step-num">4</span> <span id="step4Label">Dashboard Automazioni</span></div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">&#9889;</span> <span id="autoTitle">Automazioni Attive</span></div>
+      <div class="automation-list" id="automationList"></div>
+    </div>
+
+    <div class="savings-card" id="savingsCard">
+      <div class="savings-title" id="savingsTitle">Risparmio Mensile</div>
+      <div class="savings-grid">
+        <div class="savings-item">
+          <div class="savings-value" id="savingsHours">0</div>
+          <div class="savings-label" id="savingsHoursLabel">ore risparmiate</div>
+        </div>
+        <div class="savings-item">
+          <div class="savings-value" id="savingsCost">&euro;0</div>
+          <div class="savings-label" id="savingsCostLabel">costo evitato</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-final" id="ctaFinal">
+      <div class="cta-final-text" id="ctaText">Vuoi automatizzare le operazioni del tuo store?</div>
+      <div class="cta-final-sub" id="ctaSub">Praxis AI gestisce ordini, inventario e logistica con intelligenza artificiale</div>
+      <button class="cta-final-btn" id="ctaBtn">Scopri Praxis AI</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+'use strict';
+
+var LOCALE = (typeof window !== 'undefined' && window.__PRAXIS_LOCALE__) || 'it';
+
+/* ── Translations ── */
+var T_ALL = {
+en: {
+  headerTitle:'Shopify AI Ops',
+  btnNext:'Next',complete:'Complete',stepOf:'Step',of:'of',
+  step1Label:'Operations Center',
+  step2Label:'AI Order Processing',
+  step3Label:'Inventory Intelligence',
+  step4Label:'Automations Dashboard',
+  ordersTitle:'Order Queue',
+  inventoryTitle:'Inventory Alerts',
+  orders:[
+    {id:'#IT-2026-1847',customer:'Marco Bellini',product:'Borsa Artigianale Toscana',amount:'\u20AC285',status:'waiting',statusLabel:'Pending'},
+    {id:'#IT-2026-1846',customer:'Giulia Conti',product:'Sciarpa Cashmere Blu x2',amount:'\u20AC158',status:'waiting',statusLabel:'Pending'},
+    {id:'#IT-2026-1845',customer:'Alessandro Russo',product:'Giacca Pelle Nera M',amount:'\u20AC420',status:'preparing',statusLabel:'Preparing',flagged:true},
+    {id:'#IT-2026-1844',customer:'Francesca Moretti',product:'Portafoglio + Cintura',amount:'\u20AC195',status:'preparing',statusLabel:'Preparing'},
+    {id:'#IT-2026-1843',customer:'Luca Bianchi',product:'Sciarpa Cashmere Rossa',amount:'\u20AC79',status:'shipped',statusLabel:'Shipped'},
+    {id:'#IT-2026-1842',customer:'Sofia Esposito',product:'Borsa Weekend Toscana',amount:'\u20AC345',status:'delivered',statusLabel:'Delivered'}
+  ],
+  alerts:[
+    {icon:'\u26A0\uFE0F',text:'<strong>Sciarpa Cashmere Blu</strong> \u2014 3 units remaining (below minimum threshold of 10)',type:'critical'},
+    {icon:'\u274C',text:'<strong>Giacca Pelle Nera M</strong> \u2014 Out of stock, 12 on waitlist',type:'critical'},
+    {icon:'\u2705',text:'<strong>Portafoglio Artigianale</strong> \u2014 Auto-reorder activated: 50 units arriving 22/03',type:'ok'}
+  ],
+  processOrderId:'Order #IT-2026-1847',
+  processCustomer:'Marco Bellini \u2014 Milano, MI',
+  processStatus:'Processing',
+  processSteps:[
+    {icon:'\uD83D\uDCE6',text:'Inventory check',done:'Available: 8 units in stock \u2714'},
+    {icon:'\uD83D\uDCCD',text:'Address validated (maps preview)',done:'Via Dante 15, 20121 Milano MI \u2714'},
+    {icon:'\uD83D\uDE9A',text:'Optimal courier selection',done:'<strong>BRT Express (2d, \u20AC4.80)</strong> vs GLS Standard (3d, \u20AC3.20) \u2014 Premium customer tier'},
+    {icon:'\uD83D\uDCC4',text:'Documents: DDT + Invoice auto-generated',done:'DDT #2026-1847 + Invoice #FA-2026-0312 \u2714'},
+    {icon:'\uD83D\uDCE7',text:'Tracking email prepared',done:'Email scheduled: delivery confirmation + tracking link \u2714'}
+  ],
+  counterText:'orders processed in 45 seconds \u2014 average manual time: 8 min/order',
+  flaggedTitle:'\u26A0\uFE0F Flagged Order #IT-2026-1845',
+  flaggedBody:'Incomplete address: missing ZIP code.',
+  flaggedSuggestion:'Suggestion: <strong>20121 Milano</strong> (based on street and city). Confirm?',
+  flaggedConfirm:'Confirm & Process',
+  flaggedEdit:'Edit Manually',
+  clickHint:'Click to expand AI analysis',
+  demandTitle:'Demand Forecast (30 days)',
+  seasonPE:'Spring/Summer',seasonAI:'Autumn/Winter',
+  demandProducts:[
+    {name:'Borsa Artigianale',current:[8,7,9,6,8,7],projected:[10,12,14,16,18,15],stock:24,reorder:'+30 units'},
+    {name:'Sciarpa Cashmere',current:[12,15,11,14,13,12],projected:[8,6,5,4,3,2],stock:3,reorder:'URGENT'},
+    {name:'Giacca Pelle',current:[3,4,3,5,4,3],projected:[6,8,9,10,12,11],stock:0,reorder:'+20 units'},
+    {name:'Portafoglio',current:[20,18,22,19,21,20],projected:[22,24,25,26,28,30],stock:45,reorder:'Auto: 50 units'},
+    {name:'Cintura Cuoio',current:[15,14,16,13,15,14],projected:[16,17,18,19,20,18],stock:32,reorder:'OK'},
+    {name:'Foulard Seta',current:[5,6,4,7,5,6],projected:[10,14,18,22,20,16],stock:18,reorder:'+25 units'}
+  ],
+  supplierTitle:'Supplier Comparison',
+  suppliers:[
+    {name:'Supplier A',detail:'\u20AC12/unit, 7 day delivery',recommended:false},
+    {name:'Supplier B',detail:'\u20AC10.50/unit, 14 day delivery',recommended:false},
+    {name:'Mixed',detail:'AI suggests: mixed order for optimal cost/time balance',recommended:true}
+  ],
+  supplierAI:'AI recommends: split order \u2014 70% Supplier B (non-urgent) + 30% Supplier A (urgent items)',
+  healthLabel:'Stock Health Score',
+  healthDetail:'3 products below threshold \u2022 1 out of stock \u2022 2 auto-reorders active \u2022 Improvement: activate alerts for seasonal items',
+  autoTitle:'Active Automations',
+  automations:[
+    {icon:'\uD83D\uDD04',title:'Auto-reorder below threshold',desc:'12 products monitored',stat:'Active'},
+    {icon:'\uD83D\uDCE7',title:'Post-shipment tracking email',desc:'98% delivery rate',stat:'98%'},
+    {icon:'\uD83D\uDCE6',title:'AI returns management',desc:'Avg time reduced from 15min to 2min',stat:'-87%'},
+    {icon:'\uD83D\uDD14',title:'Waitlist customer notifications',desc:'85% conversion on restock',stat:'85%'}
+  ],
+  savingsTitle:'Monthly Savings',
+  savingsHoursLabel:'hours saved',
+  savingsCostLabel:'cost avoided',
+  ctaText:'Want to automate your store operations?',
+  ctaSub:'Praxis AI manages orders, inventory and logistics with artificial intelligence',
+  ctaBtn:'Discover Praxis AI'
+},
+it: {
+  headerTitle:'Shopify AI Ops',
+  btnNext:'Avanti',complete:'Completato',stepOf:'Step',of:'di',
+  step1Label:'Centro Operativo',
+  step2Label:'Elaborazione Ordini AI',
+  step3Label:'Intelligenza Inventario',
+  step4Label:'Dashboard Automazioni',
+  ordersTitle:'Coda Ordini',
+  inventoryTitle:'Avvisi Inventario',
+  orders:[
+    {id:'#IT-2026-1847',customer:'Marco Bellini',product:'Borsa Artigianale Toscana',amount:'\u20AC285',status:'waiting',statusLabel:'In attesa'},
+    {id:'#IT-2026-1846',customer:'Giulia Conti',product:'Sciarpa Cashmere Blu x2',amount:'\u20AC158',status:'waiting',statusLabel:'In attesa'},
+    {id:'#IT-2026-1845',customer:'Alessandro Russo',product:'Giacca Pelle Nera M',amount:'\u20AC420',status:'preparing',statusLabel:'In preparazione',flagged:true},
+    {id:'#IT-2026-1844',customer:'Francesca Moretti',product:'Portafoglio + Cintura',amount:'\u20AC195',status:'preparing',statusLabel:'In preparazione'},
+    {id:'#IT-2026-1843',customer:'Luca Bianchi',product:'Sciarpa Cashmere Rossa',amount:'\u20AC79',status:'shipped',statusLabel:'Spedito'},
+    {id:'#IT-2026-1842',customer:'Sofia Esposito',product:'Borsa Weekend Toscana',amount:'\u20AC345',status:'delivered',statusLabel:'Consegnato'}
+  ],
+  alerts:[
+    {icon:'\u26A0\uFE0F',text:'<strong>Sciarpa Cashmere Blu</strong> \u2014 3 unit\u00E0 rimanenti (sotto soglia minima 10)',type:'critical'},
+    {icon:'\u274C',text:'<strong>Giacca Pelle Nera M</strong> \u2014 Esaurito, 12 in lista d\'attesa',type:'critical'},
+    {icon:'\u2705',text:'<strong>Portafoglio Artigianale</strong> \u2014 Riordino automatico attivato: 50 unit\u00E0 in arrivo 22/03',type:'ok'}
+  ],
+  processOrderId:'Ordine #IT-2026-1847',
+  processCustomer:'Marco Bellini \u2014 Milano, MI',
+  processStatus:'In elaborazione',
+  processSteps:[
+    {icon:'\uD83D\uDCE6',text:'Verifica inventario',done:'Disponibile: 8 unit\u00E0 in stock \u2714'},
+    {icon:'\uD83D\uDCCD',text:'Indirizzo validato (maps preview)',done:'Via Dante 15, 20121 Milano MI \u2714'},
+    {icon:'\uD83D\uDE9A',text:'Corriere ottimale selezionato',done:'<strong>BRT Express (2gg, \u20AC4.80)</strong> vs GLS Standard (3gg, \u20AC3.20) \u2014 Cliente tier Premium'},
+    {icon:'\uD83D\uDCC4',text:'Documenti: DDT + Fattura auto-generati',done:'DDT #2026-1847 + Fattura #FA-2026-0312 \u2714'},
+    {icon:'\uD83D\uDCE7',text:'Tracking email preparata',done:'Email programmata: conferma consegna + link tracking \u2714'}
+  ],
+  counterText:'ordini processati in 45 secondi \u2014 tempo medio manuale: 8 minuti/ordine',
+  flaggedTitle:'\u26A0\uFE0F Ordine Segnalato #IT-2026-1845',
+  flaggedBody:'Indirizzo incompleto: manca CAP.',
+  flaggedSuggestion:'Suggerimento: <strong>20121 Milano</strong> (basato su via e comune). Confermare?',
+  flaggedConfirm:'Conferma e Processa',
+  flaggedEdit:'Modifica Manualmente',
+  clickHint:'Clicca per espandere l\'analisi AI',
+  demandTitle:'Previsione Domanda (30 giorni)',
+  seasonPE:'Primavera/Estate',seasonAI:'Autunno/Inverno',
+  demandProducts:[
+    {name:'Borsa Artigianale',current:[8,7,9,6,8,7],projected:[10,12,14,16,18,15],stock:24,reorder:'+30 unit\u00E0'},
+    {name:'Sciarpa Cashmere',current:[12,15,11,14,13,12],projected:[8,6,5,4,3,2],stock:3,reorder:'URGENTE'},
+    {name:'Giacca Pelle',current:[3,4,3,5,4,3],projected:[6,8,9,10,12,11],stock:0,reorder:'+20 unit\u00E0'},
+    {name:'Portafoglio',current:[20,18,22,19,21,20],projected:[22,24,25,26,28,30],stock:45,reorder:'Auto: 50 unit\u00E0'},
+    {name:'Cintura Cuoio',current:[15,14,16,13,15,14],projected:[16,17,18,19,20,18],stock:32,reorder:'OK'},
+    {name:'Foulard Seta',current:[5,6,4,7,5,6],projected:[10,14,18,22,20,16],stock:18,reorder:'+25 unit\u00E0'}
+  ],
+  supplierTitle:'Confronto Fornitori',
+  suppliers:[
+    {name:'Fornitore A',detail:'\u20AC12/unit\u00E0, 7gg consegna',recommended:false},
+    {name:'Fornitore B',detail:'\u20AC10.50/unit\u00E0, 14gg consegna',recommended:false},
+    {name:'Misto',detail:'AI consiglia: ordine misto per bilanciamento costo/tempo ottimale',recommended:true}
+  ],
+  supplierAI:'AI consiglia: ordine diviso \u2014 70% Fornitore B (non urgenti) + 30% Fornitore A (articoli urgenti)',
+  healthLabel:'Stock Health Score',
+  healthDetail:'3 prodotti sotto soglia \u2022 1 esaurito \u2022 2 riordini automatici attivi \u2022 Miglioramento: attivare avvisi per articoli stagionali',
+  autoTitle:'Automazioni Attive',
+  automations:[
+    {icon:'\uD83D\uDD04',title:'Riordino automatico sotto soglia',desc:'12 prodotti monitorati',stat:'Attivo'},
+    {icon:'\uD83D\uDCE7',title:'Email tracking post-spedizione',desc:'98% delivery rate',stat:'98%'},
+    {icon:'\uD83D\uDCE6',title:'Gestione resi AI',desc:'Tempo medio ridotto da 15min a 2min',stat:'-87%'},
+    {icon:'\uD83D\uDD14',title:'Notifica clienti lista d\'attesa',desc:'85% conversione al riassortimento',stat:'85%'}
+  ],
+  savingsTitle:'Risparmio Mensile',
+  savingsHoursLabel:'ore risparmiate',
+  savingsCostLabel:'costo evitato',
+  ctaText:'Vuoi automatizzare le operazioni del tuo store?',
+  ctaSub:'Praxis AI gestisce ordini, inventario e logistica con intelligenza artificiale',
+  ctaBtn:'Scopri Praxis AI'
+}
+};
+
+var T = T_ALL[LOCALE] || T_ALL.it;
+
+/* ── State ── */
+var currentStep = 0;
+var totalSteps = 4;
+var timers = [];
+var flaggedOpen = false;
+
+function dt(fn, ms){ var id = setTimeout(fn, ms); timers.push(id); return id; }
+function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
+
+/* ── i18n ── */
+function applyI18n(){
+  var map = {
+    headerTitle:'headerTitle',step1Label:'step1Label',step2Label:'step2Label',
+    step3Label:'step3Label',step4Label:'step4Label',
+    ordersTitle:'ordersTitle',inventoryTitle:'inventoryTitle',
+    processOrderId:'processOrderId',processCustomer:'processCustomer',
+    demandTitle:'demandTitle',seasonPE:'seasonPE',seasonAI:'seasonAI',
+    supplierTitle:'supplierTitle',healthLabel:'healthLabel',
+    autoTitle:'autoTitle',savingsTitle:'savingsTitle',
+    savingsHoursLabel:'savingsHoursLabel',savingsCostLabel:'savingsCostLabel',
+    ctaText:'ctaText',ctaSub:'ctaSub',ctaBtn:'ctaBtn'
+  };
+  Object.keys(map).forEach(function(elId){
+    var el = document.getElementById(elId);
+    if(el && T[map[elId]]) el.textContent = T[map[elId]];
+  });
+  var psEl = document.getElementById('processStatus');
+  if(psEl) psEl.textContent = T.processStatus;
+  document.getElementById('btnNext').textContent = T.btnNext;
+  document.documentElement.lang = LOCALE;
+}
+
+/* ── Progress ── */
+function updateProgress(step){
+  for(var i=1;i<=totalSteps;i++){
+    var el=document.getElementById('pstep'+i);
+    el.className='progress-step';
+    if(i<step) el.classList.add('done');
+    else if(i===step) el.classList.add('active');
+  }
+  document.getElementById('progressLabel').textContent=T.stepOf+' '+step+' '+T.of+' '+totalSteps;
+  var btn=document.getElementById('btnNext');
+  btn.disabled=step>=totalSteps;
+  btn.textContent=step>=totalSteps?T.complete:T.btnNext;
+}
+
+/* ── Animate Value ── */
+function animateValue(el,target,prefix,suffix,duration){
+  prefix=prefix||'';suffix=suffix||'';duration=duration||1000;
+  var start=null;
+  function step(ts){
+    if(!start) start=ts;
+    var p=Math.min((ts-start)/duration,1);
+    var ease=1-Math.pow(1-p,3);
+    el.textContent=prefix+Math.round(target*ease).toLocaleString('it-IT')+suffix;
+    if(p<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+/* ── Build Orders ── */
+function buildOrders(){
+  var list=document.getElementById('orderList');
+  list.innerHTML='';
+  var statusClasses={waiting:'badge-waiting',preparing:'badge-preparing',shipped:'badge-shipped',delivered:'badge-delivered'};
+  T.orders.forEach(function(o,i){
+    var row=document.createElement('div');
+    row.className='order-row';
+    if(o.flagged){
+      row.classList.add('clickable');
+      row.addEventListener('click',toggleFlagged);
+    }
+    row.style.opacity='0';row.style.transform='translateY(6px)';
+    row.style.transition='opacity .3s ease '+(i*80)+'ms, transform .3s ease '+(i*80)+'ms';
+    row.innerHTML=
+      '<span class="order-id">'+o.id+'</span>'+
+      '<span class="order-customer">'+o.customer+'</span>'+
+      '<span class="order-product">'+o.product+'</span>'+
+      '<span class="order-amount">'+o.amount+'</span>'+
+      '<span class="badge '+statusClasses[o.status]+'">'+o.statusLabel+'</span>';
+    if(o.flagged){
+      row.innerHTML+='<div class="click-hint">'+T.clickHint+'</div>';
+    }
+    list.appendChild(row);
+  });
+}
+
+/* ── Build Alerts ── */
+function buildAlerts(){
+  var list=document.getElementById('alertList');
+  list.innerHTML='';
+  T.alerts.forEach(function(a,i){
+    var item=document.createElement('div');
+    item.className='alert-item';
+    if(a.type==='critical') item.classList.add('critical');
+    if(a.type==='ok') item.classList.add('ok');
+    item.style.opacity='0';item.style.transform='translateX(-8px)';
+    item.style.transition='opacity .4s ease '+(i*150)+'ms, transform .4s ease '+(i*150)+'ms';
+    item.innerHTML=
+      '<span class="alert-icon">'+a.icon+'</span>'+
+      '<div class="alert-text">'+a.text+'</div>';
+    list.appendChild(item);
+  });
+}
+
+/* ── Build Process Steps ── */
+function buildProcessSteps(){
+  var container=document.getElementById('processSteps');
+  container.innerHTML='';
+  T.processSteps.forEach(function(s,i){
+    var step=document.createElement('div');
+    step.className='process-step';
+    step.setAttribute('data-index',i);
+    step.innerHTML=
+      '<span class="process-step-icon">'+s.icon+'</span>'+
+      '<span class="process-step-text">'+s.text+'</span>'+
+      '<span class="process-step-status pending">...</span>';
+    container.appendChild(step);
+  });
+}
+
+/* ── Build Flagged Detail ── */
+function buildFlagged(){
+  var container=document.getElementById('flaggedContainer');
+  container.innerHTML=
+    '<div class="flagged-detail" id="flaggedDetail">'+
+    '<div class="flagged-title">'+T.flaggedTitle+'</div>'+
+    '<div class="flagged-body">'+T.flaggedBody+'</div>'+
+    '<div class="flagged-suggestion">'+T.flaggedSuggestion+'</div>'+
+    '<div class="flagged-actions">'+
+    '<button class="flagged-btn primary">'+T.flaggedConfirm+'</button>'+
+    '<button class="flagged-btn secondary">'+T.flaggedEdit+'</button>'+
+    '</div></div>';
+}
+
+function toggleFlagged(){
+  var detail=document.getElementById('flaggedDetail');
+  flaggedOpen=!flaggedOpen;
+  if(flaggedOpen){
+    detail.classList.add('visible');
+    var row=document.querySelector('.order-row.clickable');
+    if(row) row.classList.add('clicked');
+  } else {
+    detail.classList.remove('visible');
+    var row2=document.querySelector('.order-row.clickable');
+    if(row2) row2.classList.remove('clicked');
+  }
+}
+
+/* ── Build Demand Grid ── */
+function buildDemandGrid(){
+  var grid=document.getElementById('demandGrid');
+  grid.innerHTML='';
+  T.demandProducts.forEach(function(p,i){
+    var card=document.createElement('div');
+    card.className='demand-card';
+    card.setAttribute('data-index',i);
+    var barsHtml='';
+    var maxVal=30;
+    p.current.forEach(function(v){
+      barsHtml+='<div class="demand-bar" style="height:0" data-target="'+(v/maxVal*100)+'"></div>';
+    });
+    p.projected.forEach(function(v){
+      barsHtml+='<div class="demand-bar projected" style="height:0" data-target="'+(v/maxVal*100)+'"></div>';
+    });
+    var reorderClass=p.reorder.indexOf('URGEN')>=0?'color:var(--red);font-weight:700':
+      p.reorder==='OK'?'color:var(--green);font-weight:600':'color:var(--blue);font-weight:600';
+    card.innerHTML=
+      '<div class="demand-name">'+p.name+'</div>'+
+      '<div class="demand-chart">'+barsHtml+'</div>'+
+      '<div class="demand-meta">'+
+      '<span>Stock: <strong>'+p.stock+'</strong></span>'+
+      '<span style="'+reorderClass+'">'+p.reorder+'</span>'+
+      '</div>';
+    grid.appendChild(card);
+  });
+}
+
+/* ── Build Suppliers ── */
+function buildSuppliers(){
+  var container=document.getElementById('supplierCompare');
+  container.innerHTML='';
+  T.suppliers.forEach(function(s){
+    var row=document.createElement('div');
+    row.className='supplier-row';
+    if(s.recommended) row.classList.add('recommended');
+    row.innerHTML=
+      '<span class="supplier-name">'+s.name+'</span>'+
+      '<span class="supplier-detail">'+s.detail+'</span>'+
+      (s.recommended?'<span class="supplier-badge" style="background:var(--green-light);color:var(--green)">AI \u2713</span>':'');
+    container.appendChild(row);
+  });
+  var aiNote=document.createElement('div');
+  aiNote.style.cssText='font-size:11px;color:var(--navy-muted);padding:8px 12px;background:var(--surface);border-radius:var(--radius-sm);margin-top:8px;border-left:3px solid var(--accent)';
+  aiNote.innerHTML='\uD83E\uDD16 '+T.supplierAI;
+  container.appendChild(aiNote);
+}
+
+/* ── Build Automations ── */
+function buildAutomations(){
+  var list=document.getElementById('automationList');
+  list.innerHTML='';
+  T.automations.forEach(function(a,i){
+    var item=document.createElement('div');
+    item.className='automation-item';
+    item.setAttribute('data-index',i);
+    item.innerHTML=
+      '<span class="automation-icon">'+a.icon+'</span>'+
+      '<div class="automation-info">'+
+      '<div class="automation-title">'+a.title+'</div>'+
+      '<div class="automation-desc">'+a.desc+'</div>'+
+      '</div>'+
+      '<span class="automation-stat">'+a.stat+'</span>';
+    list.appendChild(item);
+  });
+}
+
+/* ── Step Runners ── */
+function showStep(id){
+  var el=document.getElementById(id);
+  el.style.display='block';
+  dt(function(){el.classList.add('visible');},30);
+}
+function hideStep(id){
+  var el=document.getElementById(id);
+  el.classList.remove('visible');
+  el.style.display='none';
+}
+
+function runStep1(){
+  showStep('step1');
+  // Animate order rows
+  dt(function(){
+    document.querySelectorAll('.order-row').forEach(function(r){
+      r.style.opacity='1';r.style.transform='translateY(0)';
+    });
+  },200);
+  // Animate alert items
+  dt(function(){
+    document.querySelectorAll('.alert-item').forEach(function(a){
+      a.style.opacity='1';a.style.transform='translateX(0)';
+    });
+  },400);
+}
+
+function runStep2(){
+  showStep('step2');
+  var card=document.getElementById('processCard');
+  card.classList.add('scanning');
+
+  var steps=document.querySelectorAll('.process-step');
+  steps.forEach(function(step,i){
+    dt(function(){
+      step.classList.add('visible');
+      step.classList.add('processing');
+      // After a brief delay, mark as done
+      dt(function(){
+        step.classList.remove('processing');
+        step.classList.add('done');
+        var statusEl=step.querySelector('.process-step-status');
+        statusEl.className='process-step-status ok';
+        statusEl.textContent='\u2713';
+        var textEl=step.querySelector('.process-step-text');
+        textEl.innerHTML=T.processSteps[i].done;
+
+        // Add courier comparison on step 3
+        if(i===2){
+          var courierDiv=document.createElement('div');
+          courierDiv.className='courier-compare';
+          courierDiv.innerHTML=
+            '<div class="courier-option selected">'+
+            '<div class="courier-name">BRT Express</div>'+
+            '<div class="courier-detail">2gg \u2014 \u20AC4.80</div>'+
+            '<div class="courier-badge-ai">AI Selected \u2713</div>'+
+            '</div>'+
+            '<div class="courier-option">'+
+            '<div class="courier-name">GLS Standard</div>'+
+            '<div class="courier-detail">3gg \u2014 \u20AC3.20</div>'+
+            '</div>';
+          step.parentNode.insertBefore(courierDiv,step.nextSibling);
+        }
+      },400);
+    },500+i*800);
+  });
+
+  // Stop scanning and show counter
+  var totalDelay=500+steps.length*800+600;
+  dt(function(){
+    card.classList.remove('scanning');
+    document.getElementById('processStatus').textContent=LOCALE==='en'?'Completed':'Completato';
+    document.getElementById('processStatus').className='badge badge-shipped';
+  },totalDelay);
+
+  dt(function(){
+    var cc=document.getElementById('counterCard');
+    cc.classList.add('visible');
+    document.getElementById('counterText').textContent=T.counterText;
+  },totalDelay+400);
+}
+
+function runStep3(){
+  showStep('step3');
+  // Animate demand cards
+  var cards=document.querySelectorAll('.demand-card');
+  cards.forEach(function(card,i){
+    dt(function(){
+      card.classList.add('visible');
+      // Animate bars inside this card
+      dt(function(){
+        card.querySelectorAll('.demand-bar').forEach(function(bar){
+          bar.style.height=bar.getAttribute('data-target')+'%';
+        });
+      },150);
+    },200+i*200);
+  });
+
+  // Show supplier comparison
+  dt(function(){
+    document.getElementById('supplierCompare').classList.add('visible');
+  },200+cards.length*200+400);
+
+  // Show health score
+  dt(function(){
+    var hs=document.getElementById('healthScore');
+    hs.classList.add('visible');
+    document.getElementById('healthDetail').textContent=T.healthDetail;
+    // Animate circle
+    var circle=document.getElementById('healthCircle');
+    var target=78;
+    var start=null;
+    function anim(ts){
+      if(!start) start=ts;
+      var p=Math.min((ts-start)/1500,1);
+      var ease=1-Math.pow(1-p,3);
+      var val=Math.round(target*ease);
+      circle.textContent=val;
+      var deg=val/100*360;
+      circle.style.background='conic-gradient(var(--green) 0deg, var(--green) '+deg+'deg, var(--ice) '+deg+'deg)';
+      if(p<1) requestAnimationFrame(anim);
+    }
+    requestAnimationFrame(anim);
+  },200+cards.length*200+800);
+}
+
+function runStep4(){
+  showStep('step4');
+  // Animate automation items
+  var items=document.querySelectorAll('.automation-item');
+  items.forEach(function(item,i){
+    dt(function(){ item.classList.add('visible'); },200+i*300);
+  });
+
+  // Show savings card
+  dt(function(){
+    var sc=document.getElementById('savingsCard');
+    sc.classList.add('visible');
+    animateValue(document.getElementById('savingsHours'),47,'','',1200);
+    animateValue(document.getElementById('savingsCost'),2840,'\u20AC','',1200);
+  },200+items.length*300+400);
+
+  // Show CTA
+  dt(function(){
+    document.getElementById('ctaFinal').classList.add('visible');
+  },200+items.length*300+900);
+}
+
+/* ── Navigation ── */
+function goToStep(step){
+  if(step<1||step>totalSteps) return;
+  currentStep=step;
+  updateProgress(step);
+  for(var i=1;i<=totalSteps;i++){
+    if(i!==step) hideStep('step'+i);
+  }
+  switch(step){
+    case 1:runStep1();break;
+    case 2:runStep2();break;
+    case 3:runStep3();break;
+    case 4:runStep4();break;
+  }
+}
+
+document.getElementById('btnNext').addEventListener('click',function(){
+  if(currentStep<totalSteps) goToStep(currentStep+1);
+});
+
+/* ── Auto-advance ── */
+function autoAdvance(){
+  var delays={1:5000,2:7000,3:6000};
+  var delay=delays[currentStep];
+  if(delay && currentStep<totalSteps){
+    dt(function(){
+      if(currentStep<totalSteps){
+        goToStep(currentStep+1);
+        autoAdvance();
+      }
+    },delay);
+  }
+}
+
+/* ── Init ── */
+function init(){
+  applyI18n();
+  buildOrders();
+  buildAlerts();
+  buildProcessSteps();
+  buildFlagged();
+  buildDemandGrid();
+  buildSuppliers();
+  buildAutomations();
+  goToStep(1);
+  autoAdvance();
+}
+
+init();
+
+})();
+</script>
+</body>
+</html>

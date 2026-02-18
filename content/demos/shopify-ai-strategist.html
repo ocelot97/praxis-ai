@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shopify AI Strategist — Praxis AI Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1e3a5f;--navy-light:#2a5080;--navy-muted:#5a7a9b;
+  --silver:#6b7280;--ice:#edf2f7;--accent:#c9a227;
+  --surface:#f0f4f8;--border:#d1dae4;--white:#ffffff;
+  --green:#16a34a;--green-light:#dcfce7;--red:#dc2626;--red-light:#fee2e2;
+  --amber:#d97706;--amber-light:#fef3c7;--blue:#2563eb;--blue-light:#dbeafe;
+  --font-body:'Inter',system-ui,sans-serif;--font-display:'Caveat',cursive;
+  --shadow-sm:0 1px 3px rgba(30,58,95,0.06);--shadow-md:0 4px 12px rgba(30,58,95,0.08);
+  --shadow-lg:0 8px 30px rgba(30,58,95,0.12);
+  --radius-sm:8px;--radius-md:12px;--radius-lg:16px
+}
+html{font-size:16px}
+body{font-family:var(--font-body);background:var(--surface);color:var(--navy);min-height:100vh;-webkit-font-smoothing:antialiased;padding-bottom:20px}
+
+/* Header */
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--navy);color:var(--white);position:sticky;top:0;z-index:100}
+.header-left{display:flex;align-items:center;gap:14px}
+.header-brand{font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--white)}
+.header-title{font-size:13px;color:rgba(255,255,255,0.7);font-weight:500}
+.header-badge{display:inline-block;background:var(--accent);color:var(--white);font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:1px;text-transform:uppercase}
+
+/* Progress */
+.progress-bar{display:flex;align-items:center;gap:12px;padding:12px 24px;background:var(--white);border-bottom:1px solid var(--border)}
+.progress-steps{display:flex;gap:6px;flex:1}
+.progress-step{flex:1;height:4px;border-radius:2px;background:var(--ice);transition:background .4s}
+.progress-step.active{background:var(--navy)}
+.progress-step.done{background:var(--green)}
+.progress-label{font-size:12px;font-weight:600;color:var(--navy-muted);white-space:nowrap}
+.btn-next{padding:8px 22px;background:var(--navy);color:var(--white);border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:var(--font-body);cursor:pointer;transition:background .2s,transform .15s}
+.btn-next:hover{background:var(--navy-light)}
+.btn-next:active{transform:scale(.97)}
+.btn-next:disabled{opacity:.4;cursor:not-allowed}
+
+/* Main */
+.main{max-width:1100px;margin:0 auto;padding:20px 20px 0}
+.step-container{display:none;opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
+.step-container.visible{display:block;opacity:1;transform:translateY(0)}
+.step-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--silver);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--navy);color:var(--white);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* Cards */
+.card{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);box-shadow:var(--shadow-sm);padding:20px;margin-bottom:14px;position:relative;overflow:hidden}
+.card-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card-title .icon{font-size:18px}
+
+/* Metrics Row */
+.metrics-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.metric-card{background:var(--white);border-radius:var(--radius-md);border:1px solid var(--border);box-shadow:var(--shadow-sm);padding:16px;text-align:center;transition:transform .2s,box-shadow .2s}
+.metric-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.metric-label{font-size:11px;font-weight:600;color:var(--silver);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.metric-value{font-size:24px;font-weight:700;color:var(--navy);line-height:1.2}
+.metric-change{font-size:11px;font-weight:600;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:4px}
+.metric-change.up{color:var(--green)}
+.metric-change.down{color:var(--red)}
+
+/* Mini Chart */
+.chart-container{position:relative;height:140px;margin:8px 0}
+.chart-canvas{width:100%;height:100%}
+.chart-label-y{position:absolute;left:0;font-size:9px;color:var(--silver);font-weight:500}
+.chart-label-x{position:absolute;bottom:-2px;font-size:9px;color:var(--silver);font-weight:500}
+
+/* Product List */
+.product-list{display:flex;flex-direction:column;gap:8px}
+.product-row{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--surface);border-radius:var(--radius-sm);transition:background .2s}
+.product-row:hover{background:var(--ice)}
+.product-thumb{width:36px;height:36px;border-radius:var(--radius-sm);background:var(--navy-light);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;color:var(--white)}
+.product-info{flex:1;min-width:0}
+.product-name{font-size:12px;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.product-cat{font-size:10px;color:var(--silver)}
+.product-revenue{font-size:12px;font-weight:700;color:var(--navy);text-align:right;min-width:70px}
+.product-units{font-size:10px;color:var(--silver);text-align:right;min-width:50px}
+
+/* Traffic Sources */
+.traffic-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.traffic-item{text-align:center;padding:12px 8px;background:var(--surface);border-radius:var(--radius-sm)}
+.traffic-bar-wrap{height:60px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:8px}
+.traffic-bar{width:32px;border-radius:4px 4px 0 0;transition:height 1.2s cubic-bezier(.22,1,.36,1);background:var(--navy)}
+.traffic-bar.b2{background:var(--navy-light)}
+.traffic-bar.b3{background:var(--accent)}
+.traffic-bar.b4{background:var(--navy-muted)}
+.traffic-pct{font-size:14px;font-weight:700;color:var(--navy)}
+.traffic-label{font-size:10px;color:var(--silver);margin-top:2px}
+
+/* Grid layouts */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid-3-1{display:grid;grid-template-columns:2fr 1fr;gap:14px}
+
+/* Scanning animation */
+.scanner-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 0%,rgba(30,58,95,0.03) 50%,transparent 100%);opacity:0;pointer-events:none}
+.scanner-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--navy),transparent);opacity:0;top:0}
+.scanning .scanner-overlay{opacity:1}
+.scanning .scanner-line{opacity:1;animation:scanDown 2s ease-in-out infinite}
+@keyframes scanDown{0%{top:0}100%{top:100%}}
+
+/* Insight Cards */
+.insight-list{display:flex;flex-direction:column;gap:10px}
+.insight-card{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--surface);border-radius:var(--radius-sm);border-left:3px solid var(--navy);opacity:0;transform:translateX(-12px);transition:opacity .4s,transform .4s,box-shadow .3s,border-color .3s;cursor:default}
+.insight-card.visible{opacity:1;transform:translateX(0)}
+.insight-card.clickable{cursor:pointer;border-left-color:var(--accent);animation:pulseGlow 2s ease-in-out infinite}
+.insight-card.clickable.clicked{animation:none;border-left-color:var(--accent)}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(201,162,39,0.3)}50%{box-shadow:0 0 0 6px rgba(201,162,39,0)}}
+.insight-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.insight-text{font-size:12px;color:var(--navy);line-height:1.6;flex:1}
+.insight-text strong{font-weight:700}
+.insight-tag{display:inline-block;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:6px;text-transform:uppercase;letter-spacing:.5px}
+.tag-opportunity{background:var(--green-light);color:var(--green)}
+.tag-warning{background:var(--red-light);color:var(--red)}
+.tag-action{background:var(--amber-light);color:var(--amber)}
+.tag-growth{background:var(--blue-light);color:var(--blue)}
+
+/* Expanded Insight Detail */
+.insight-detail{display:none;margin-top:12px;padding:18px;background:var(--white);border-radius:var(--radius-md);border:1px solid var(--accent);box-shadow:var(--shadow-md)}
+.insight-detail.visible{display:block;animation:detailSlideIn .4s ease}
+@keyframes detailSlideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.insight-detail-title{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+/* Funnel */
+.funnel{display:flex;flex-direction:column;align-items:center;gap:0;margin:14px 0}
+.funnel-step{display:flex;align-items:center;justify-content:center;padding:10px;font-size:12px;font-weight:600;color:var(--white);transition:width .8s cubic-bezier(.22,1,.36,1);border-radius:4px;position:relative;text-align:center}
+.funnel-step .funnel-label{display:flex;align-items:center;justify-content:space-between;width:100%;padding:0 12px}
+.funnel-step .funnel-pct{font-weight:700;font-size:13px}
+.funnel-arrow{width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid var(--border);margin:2px 0}
+.funnel-drop{position:absolute;right:-90px;top:50%;transform:translateY(-50%);font-size:10px;font-weight:600;color:var(--red);background:var(--red-light);padding:2px 8px;border-radius:10px;white-space:nowrap}
+
+/* Recovery Strategies */
+.recovery-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.recovery-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:var(--surface);border-radius:var(--radius-sm);border-left:3px solid var(--navy)}
+.recovery-num{width:20px;height:20px;border-radius:50%;background:var(--navy);color:var(--white);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.recovery-text{font-size:12px;color:var(--navy);line-height:1.5;flex:1}
+.recovery-amount{font-size:12px;font-weight:700;color:var(--green);white-space:nowrap;margin-left:8px}
+
+/* CLV Chart placeholder */
+.clv-chart{height:120px;position:relative;margin:12px 0;display:flex;align-items:flex-end;gap:6px;padding:0 4px}
+.clv-bar-group{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.clv-bar{width:100%;border-radius:4px 4px 0 0;transition:height 1s cubic-bezier(.22,1,.36,1)}
+.clv-bar.current{background:var(--navy)}
+.clv-bar.repeat{background:var(--accent)}
+.clv-bar-label{font-size:9px;color:var(--silver);text-align:center}
+.clv-legend{display:flex;gap:16px;justify-content:center;margin-top:8px}
+.clv-legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--silver)}
+.clv-legend-dot{width:8px;height:8px;border-radius:2px}
+
+/* Strategy Cards */
+.strategy-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.strategy-card{padding:16px;background:var(--white);border-radius:var(--radius-md);border:1px solid var(--border);box-shadow:var(--shadow-sm);opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}
+.strategy-card.visible{opacity:1;transform:translateY(0)}
+.strategy-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.strategy-icon{font-size:20px}
+.strategy-title{font-size:13px;font-weight:700;color:var(--navy)}
+.strategy-desc{font-size:11px;color:var(--navy-muted);line-height:1.6;margin-bottom:10px}
+.strategy-metrics{display:flex;gap:8px;flex-wrap:wrap}
+.strategy-metric{font-size:10px;font-weight:600;padding:3px 10px;border-radius:12px;background:var(--green-light);color:var(--green)}
+.strategy-metric.timeline{background:var(--blue-light);color:var(--blue)}
+
+/* Priority Matrix */
+.matrix-container{position:relative;height:220px;background:var(--surface);border-radius:var(--radius-md);border:1px solid var(--border);overflow:hidden}
+.matrix-label-y{position:absolute;left:6px;top:50%;transform:translateY(-50%) rotate(-90deg);font-size:10px;font-weight:600;color:var(--silver);letter-spacing:1px;text-transform:uppercase}
+.matrix-label-x{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:600;color:var(--silver);letter-spacing:1px;text-transform:uppercase}
+.matrix-quadrant{position:absolute;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:var(--silver);opacity:.3}
+.matrix-dot{position:absolute;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--white);transition:all .8s cubic-bezier(.22,1,.36,1);opacity:0;transform:scale(0)}
+.matrix-dot.visible{opacity:1;transform:scale(1)}
+.matrix-dot.d1{background:var(--green)}
+.matrix-dot.d2{background:var(--accent)}
+.matrix-dot.d3{background:var(--blue)}
+.matrix-dot.d4{background:var(--navy-light)}
+.matrix-grid-line{position:absolute;background:var(--border)}
+.matrix-grid-h{left:40px;right:10px;height:1px;top:50%}
+.matrix-grid-v{top:10px;bottom:24px;width:1px;left:50%}
+
+/* Report Preview */
+.report-preview{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);box-shadow:var(--shadow-md);overflow:hidden}
+.report-header{background:var(--navy);padding:20px 24px;color:var(--white)}
+.report-title{font-size:18px;font-weight:700;margin-bottom:4px}
+.report-subtitle{font-size:12px;color:rgba(255,255,255,0.7)}
+.report-body{padding:20px 24px}
+.report-projections{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.projection-card{text-align:center;padding:14px;background:var(--surface);border-radius:var(--radius-md)}
+.projection-label{font-size:10px;font-weight:600;color:var(--silver);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.projection-value{font-size:22px;font-weight:700;color:var(--green)}
+.projection-detail{font-size:10px;color:var(--navy-muted);margin-top:2px}
+
+/* Roadmap */
+.roadmap{position:relative;padding-left:24px;margin:16px 0}
+.roadmap-line{position:absolute;left:10px;top:0;bottom:0;width:2px;background:var(--border)}
+.roadmap-item{position:relative;padding:10px 0 10px 20px;opacity:0;transform:translateX(-8px);transition:opacity .4s,transform .4s}
+.roadmap-item.visible{opacity:1;transform:translateX(0)}
+.roadmap-dot{position:absolute;left:-18px;top:14px;width:12px;height:12px;border-radius:50%;border:2px solid var(--navy);background:var(--white)}
+.roadmap-dot.active{background:var(--navy)}
+.roadmap-period{font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.roadmap-title{font-size:12px;font-weight:700;color:var(--navy)}
+.roadmap-desc{font-size:11px;color:var(--navy-muted);line-height:1.5;margin-top:2px}
+
+/* CTA */
+.cta-final{text-align:center;margin-top:20px;padding:24px;background:linear-gradient(135deg,var(--navy),var(--navy-light));border-radius:var(--radius-lg);opacity:0;transition:opacity .5s}
+.cta-final.visible{opacity:1}
+.cta-final-text{font-size:16px;font-weight:700;color:var(--white);margin-bottom:4px}
+.cta-final-sub{font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:14px}
+.cta-final-btn{padding:12px 32px;background:var(--accent);color:var(--white);border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;font-family:var(--font-body);cursor:pointer;transition:background .2s,transform .15s}
+.cta-final-btn:hover{background:#b8911f;transform:translateY(-1px)}
+
+/* Typing indicator */
+.typing-indicator{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:var(--surface);border-radius:12px;margin-bottom:10px}
+.typing-dot{width:6px;height:6px;border-radius:50%;background:var(--navy-muted);animation:typingBounce 1.4s ease-in-out infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
+
+/* AI badge */
+.ai-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:var(--navy);background:var(--ice);border:1px solid var(--border);border-radius:10px;padding:2px 8px;margin-bottom:8px}
+.ai-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:aiPulse 2s ease-in-out infinite}
+@keyframes aiPulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Click hint */
+.click-hint{font-size:10px;color:var(--accent);font-weight:600;margin-top:4px;animation:hintFade 2s ease-in-out infinite}
+@keyframes hintFade{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* Responsive */
+@media(max-width:900px){
+  .metrics-row{grid-template-columns:repeat(2,1fr)}
+  .grid-2,.strategy-grid{grid-template-columns:1fr}
+  .grid-3-1{grid-template-columns:1fr}
+  .traffic-grid{grid-template-columns:repeat(2,1fr)}
+  .report-projections{grid-template-columns:1fr}
+  .funnel-drop{display:none}
+}
+@media(max-width:600px){
+  .metrics-row{grid-template-columns:1fr}
+  .header{padding:10px 14px;flex-wrap:wrap;gap:6px}
+  .main{padding:14px 10px 0}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <span class="header-brand">Praxis AI</span>
+    <span class="header-title" id="headerTitle">Shopify AI Strategist</span>
+  </div>
+  <span class="header-badge">DEMO</span>
+</header>
+
+<div class="progress-bar">
+  <div class="progress-steps">
+    <div class="progress-step" id="pstep1"></div>
+    <div class="progress-step" id="pstep2"></div>
+    <div class="progress-step" id="pstep3"></div>
+    <div class="progress-step" id="pstep4"></div>
+  </div>
+  <span class="progress-label" id="progressLabel">Step 1 di 4</span>
+  <button class="btn-next" id="btnNext">Avanti</button>
+</div>
+
+<div class="main">
+
+  <!-- STEP 1: Store Dashboard -->
+  <div class="step-container" id="step1">
+    <div class="step-label"><span class="step-num">1</span> <span id="step1Label">Store Dashboard</span></div>
+
+    <div class="metrics-row" id="metricsRow">
+      <div class="metric-card">
+        <div class="metric-label" id="metricLabel1">Fatturato Mensile</div>
+        <div class="metric-value" id="metricVal1">&euro;0</div>
+        <div class="metric-change up">+12.3%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label" id="metricLabel2">Ordini</div>
+        <div class="metric-value" id="metricVal2">0</div>
+        <div class="metric-change up">+8.7%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label" id="metricLabel3">Valore Medio Ordine</div>
+        <div class="metric-value" id="metricVal3">&euro;0</div>
+        <div class="metric-change up">+3.2%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label" id="metricLabel4">Tasso Conversione</div>
+        <div class="metric-value" id="metricVal4">0%</div>
+        <div class="metric-change down">-0.3%</div>
+      </div>
+    </div>
+
+    <div class="grid-3-1">
+      <div>
+        <div class="card">
+          <div class="card-title"><span class="icon">&#128200;</span> <span id="chartTitle">Andamento Fatturato (30gg)</span></div>
+          <div class="chart-container">
+            <canvas id="revenueChart" class="chart-canvas"></canvas>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="icon">&#127942;</span> <span id="productsTitle">Top 5 Prodotti</span></div>
+          <div class="product-list" id="productList"></div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-title"><span class="icon">&#128202;</span> <span id="trafficTitle">Fonti di Traffico</span></div>
+          <div class="traffic-grid" id="trafficGrid"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: AI Analysis -->
+  <div class="step-container" id="step2">
+    <div class="step-label"><span class="step-num">2</span> <span id="step2Label">Analisi AI</span></div>
+
+    <div class="card" id="analysisCard">
+      <div class="scanner-overlay"></div>
+      <div class="scanner-line"></div>
+      <div class="ai-badge">AI ANALYSIS ENGINE</div>
+      <div class="card-title"><span class="icon">&#129302;</span> <span id="analysisTitle">Analisi Strategica del Negozio</span></div>
+      <div class="typing-indicator" id="typingIndicator" style="display:none">
+        <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+      </div>
+      <div class="insight-list" id="insightList"></div>
+      <div id="insightDetailContainer"></div>
+    </div>
+
+    <div class="card" id="clvCard" style="opacity:0;transition:opacity .5s">
+      <div class="card-title"><span class="icon">&#128176;</span> <span id="clvTitle">Customer Lifetime Value per Coorte</span></div>
+      <div class="clv-chart" id="clvChart"></div>
+      <div class="clv-legend">
+        <span class="clv-legend-item"><span class="clv-legend-dot" style="background:var(--navy)"></span> <span id="clvLeg1">Primo acquisto</span></span>
+        <span class="clv-legend-item"><span class="clv-legend-dot" style="background:var(--accent)"></span> <span id="clvLeg2">Clienti ricorrenti</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Growth Plan -->
+  <div class="step-container" id="step3">
+    <div class="step-label"><span class="step-num">3</span> <span id="step3Label">Piano di Crescita</span></div>
+
+    <div class="ai-badge">AI GROWTH ENGINE</div>
+    <div class="strategy-grid" id="strategyGrid"></div>
+
+    <div class="card" id="matrixCard" style="opacity:0;transition:opacity .5s">
+      <div class="card-title"><span class="icon">&#127919;</span> <span id="matrixTitle">Matrice Priorita (Impatto vs Sforzo)</span></div>
+      <div class="matrix-container" id="matrixContainer">
+        <div class="matrix-grid-line matrix-grid-h"></div>
+        <div class="matrix-grid-line matrix-grid-v"></div>
+        <span class="matrix-label-y" id="matrixLabelY">Impatto</span>
+        <span class="matrix-label-x" id="matrixLabelX">Sforzo</span>
+        <span class="matrix-quadrant" style="top:15%;left:25%" id="mq1">ALTO IMPATTO / BASSO SFORZO</span>
+        <span class="matrix-quadrant" style="top:15%;right:10%" id="mq2">ALTO IMPATTO / ALTO SFORZO</span>
+        <span class="matrix-quadrant" style="bottom:20%;left:30%" id="mq3">BASSO IMPATTO / BASSO SFORZO</span>
+        <span class="matrix-quadrant" style="bottom:20%;right:10%" id="mq4">BASSO IMPATTO / ALTO SFORZO</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: Action Plan Export -->
+  <div class="step-container" id="step4">
+    <div class="step-label"><span class="step-num">4</span> <span id="step4Label">Report Esecutivo</span></div>
+
+    <div class="report-preview" id="reportPreview" style="opacity:0;transition:opacity .6s">
+      <div class="report-header">
+        <div class="report-title" id="reportTitle">Piano Crescita E-Commerce Q2 2026</div>
+        <div class="report-subtitle" id="reportSubtitle">Bottega Toscana — Analisi e Strategia AI</div>
+      </div>
+      <div class="report-body">
+        <div class="report-projections" id="reportProjections">
+          <div class="projection-card">
+            <div class="projection-label">Revenue</div>
+            <div class="projection-value" id="projVal1">+0%</div>
+            <div class="projection-detail" id="projDetail1">&euro;47.500 &rarr; &euro;62.700</div>
+          </div>
+          <div class="projection-card">
+            <div class="projection-label" id="projLabel2">Valore Medio Ordine</div>
+            <div class="projection-value" id="projVal2">+0%</div>
+            <div class="projection-detail" id="projDetail2">&euro;152 &rarr; &euro;179</div>
+          </div>
+          <div class="projection-card">
+            <div class="projection-label" id="projLabel3">Conversione</div>
+            <div class="projection-value" id="projVal3">+0%</div>
+            <div class="projection-detail" id="projDetail3">2.8% &rarr; 3.8%</div>
+          </div>
+        </div>
+
+        <div class="card-title" style="margin-bottom:12px"><span class="icon">&#128197;</span> <span id="roadmapTitle">Roadmap 90 Giorni</span></div>
+        <div class="roadmap" id="roadmap">
+          <div class="roadmap-line"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-final" id="ctaFinal">
+      <div class="cta-final-text" id="ctaText">Vuoi implementare questo piano di crescita?</div>
+      <div class="cta-final-sub" id="ctaSub">Praxis AI trasforma l'analisi in azione automatizzata</div>
+      <button class="cta-final-btn" id="ctaBtn">Scopri Praxis AI</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+'use strict';
+
+var LOCALE = (typeof window !== 'undefined' && window.__PRAXIS_LOCALE__) || 'it';
+
+/* ── Translations ── */
+var T_ALL = {
+en: {
+  headerTitle:'Shopify AI Strategist',
+  btnNext:'Next',
+  complete:'Complete',
+  stepOf:'Step',of:'of',
+  step1Label:'Store Dashboard',
+  step2Label:'AI Analysis',
+  step3Label:'Growth Plan',
+  step4Label:'Executive Report',
+  metricLabel1:'Monthly Revenue',metricLabel2:'Orders',metricLabel3:'Avg Order Value',metricLabel4:'Conversion Rate',
+  chartTitle:'Revenue Trend (30d)',
+  productsTitle:'Top 5 Products',
+  trafficTitle:'Traffic Sources',
+  trafficLabels:['Organic','Social','Email','Direct'],
+  products:[
+    {name:'Borsa Artigianale Toscana',cat:'Accessori',rev:'\u20AC8.450',units:'56 pz'},
+    {name:'Sciarpa Cashmere Firenze',cat:'Accessori',rev:'\u20AC6.320',units:'79 pz'},
+    {name:'Giacca Pelle Nera',cat:'Abbigliamento',rev:'\u20AC5.880',units:'28 pz'},
+    {name:'Portafoglio Artigianale',cat:'Accessori',rev:'\u20AC4.200',units:'105 pz'},
+    {name:'Cintura Cuoio Toscano',cat:'Accessori',rev:'\u20AC3.150',units:'90 pz'}
+  ],
+  analysisTitle:'Strategic Store Analysis',
+  insights:[
+    {icon:'\uD83D\uDCC8',text:'Products in the <strong>\'Accessories\'</strong> category have <strong>68% margin</strong> vs 42% average \u2014 cross-sell opportunity',tag:'opportunity'},
+    {icon:'\uD83D\uDED2',text:'Cart abandonment rate: <strong>72%</strong> \u2014 15% above fashion industry benchmark',tag:'warning',clickable:true},
+    {icon:'\uD83D\uDD0D',text:'Product page <strong>\'Borsa Artigianale Toscana\'</strong> has 3,200 visits/month but only <strong>1.2% conversion</strong> \u2014 optimization needed',tag:'action'},
+    {icon:'\uD83D\uDC51',text:'Repeat customers generate <strong>3.2x more revenue</strong> \u2014 loyalty segment underdeveloped',tag:'growth'}
+  ],
+  clvTitle:'Customer Lifetime Value by Cohort',
+  clvLeg1:'First purchase',clvLeg2:'Repeat customers',
+  clickHint:'Click to expand analysis',
+  funnelTitle:'Cart Abandonment Funnel',
+  funnelSteps:['Product View: 3,200','Add to Cart: 1,120','Checkout Started: 576','Payment: 384','Completed: 320'],
+  funnelDrops:['-65%','-49%','-33%','-17%'],
+  recoveryTitle:'Recovery Strategies',
+  recoveries:[
+    {text:'Exit-intent popup with 10% discount on first order',amount:'+\u20AC1.200/mo'},
+    {text:'Abandoned cart email sequence (3 emails, 24h/48h/72h)',amount:'+\u20AC2.100/mo'},
+    {text:'Checkout simplification: reduce from 4 to 2 steps',amount:'+\u20AC890/mo'},
+    {text:'Live chat widget on cart page with AI assistant',amount:'+\u20AC650/mo'}
+  ],
+  projectedRecovery:'Projected total recovery:',
+  projectedRecoveryAmount:'+\u20AC4.840/month',
+  step3Label:'Growth Plan',
+  strategies:[
+    {icon:'\uD83D\uDD27',title:'Conversion Optimization',desc:'Product page improvements, checkout simplification, trust signals',metrics:['CR +0.8%','ROI 340%'],timeline:'4 weeks'},
+    {icon:'\uD83D\uDCB0',title:'Pricing Strategy',desc:'Bundle offers, volume discounts, premium product tier',metrics:['AOV +15%','ROI 280%'],timeline:'3 weeks'},
+    {icon:'\u2764\uFE0F',title:'Retention',desc:'Loyalty program design, post-purchase flow, VIP segment',metrics:['+25% repeat','ROI 420%'],timeline:'6 weeks'},
+    {icon:'\uD83D\uDE80',title:'Expansion',desc:'New product category based on data: leather home accessories',metrics:['+18% catalog','ROI 190%'],timeline:'8 weeks'}
+  ],
+  matrixTitle:'Priority Matrix (Impact vs Effort)',
+  matrixLabelY:'Impact',matrixLabelX:'Effort',
+  mq1:'HIGH IMPACT / LOW EFFORT',mq2:'HIGH IMPACT / HIGH EFFORT',mq3:'LOW IMPACT / LOW EFFORT',mq4:'LOW IMPACT / HIGH EFFORT',
+  step4Label:'Executive Report',
+  reportTitle:'E-Commerce Growth Plan Q2 2026',
+  reportSubtitle:'Bottega Toscana \u2014 AI Analysis & Strategy',
+  projLabel2:'Avg Order Value',projLabel3:'Conversion',
+  roadmapTitle:'90-Day Roadmap',
+  roadmapItems:[
+    {period:'Week 1\u20132',title:'Quick Wins',desc:'Checkout optimization, exit-intent popups, cart recovery emails'},
+    {period:'Week 3\u20134',title:'Conversion Boost',desc:'Product page redesign, trust badges, social proof widgets'},
+    {period:'Week 5\u20136',title:'Pricing & Bundles',desc:'Launch bundle offers, volume discounts, A/B test pricing'},
+    {period:'Week 7\u20138',title:'Loyalty Program',desc:'Launch loyalty points, VIP tier, post-purchase flow'},
+    {period:'Week 9\u201312',title:'Expansion',desc:'New product line launch, cross-sell automation, performance review'}
+  ],
+  ctaText:'Want to implement this growth plan?',
+  ctaSub:'Praxis AI turns analysis into automated action',
+  ctaBtn:'Discover Praxis AI'
+},
+it: {
+  headerTitle:'Shopify AI Strategist',
+  btnNext:'Avanti',
+  complete:'Completato',
+  stepOf:'Step',of:'di',
+  step1Label:'Dashboard Negozio',
+  step2Label:'Analisi AI',
+  step3Label:'Piano di Crescita',
+  step4Label:'Report Esecutivo',
+  metricLabel1:'Fatturato Mensile',metricLabel2:'Ordini',metricLabel3:'Valore Medio Ordine',metricLabel4:'Tasso Conversione',
+  chartTitle:'Andamento Fatturato (30gg)',
+  productsTitle:'Top 5 Prodotti',
+  trafficTitle:'Fonti di Traffico',
+  trafficLabels:['Organico','Social','Email','Diretto'],
+  products:[
+    {name:'Borsa Artigianale Toscana',cat:'Accessori',rev:'\u20AC8.450',units:'56 pz'},
+    {name:'Sciarpa Cashmere Firenze',cat:'Accessori',rev:'\u20AC6.320',units:'79 pz'},
+    {name:'Giacca Pelle Nera',cat:'Abbigliamento',rev:'\u20AC5.880',units:'28 pz'},
+    {name:'Portafoglio Artigianale',cat:'Accessori',rev:'\u20AC4.200',units:'105 pz'},
+    {name:'Cintura Cuoio Toscano',cat:'Accessori',rev:'\u20AC3.150',units:'90 pz'}
+  ],
+  analysisTitle:'Analisi Strategica del Negozio',
+  insights:[
+    {icon:'\uD83D\uDCC8',text:'Prodotti della categoria <strong>\'Accessori\'</strong> hanno <strong>margine 68%</strong> vs 42% media \u2014 opportunit\u00E0 cross-sell',tag:'opportunity'},
+    {icon:'\uD83D\uDED2',text:'Tasso di abbandono carrello: <strong>72%</strong> \u2014 15% sopra benchmark settore moda',tag:'warning',clickable:true},
+    {icon:'\uD83D\uDD0D',text:'Pagina prodotto <strong>\'Borsa Artigianale Toscana\'</strong> ha 3.200 visite/mese ma solo <strong>1.2% conversione</strong> \u2014 ottimizzazione necessaria',tag:'action'},
+    {icon:'\uD83D\uDC51',text:'Clienti ricorrenti generano <strong>3.2x pi\u00F9 revenue</strong> \u2014 segmento loyalty sottosviluppato',tag:'growth'}
+  ],
+  clvTitle:'Customer Lifetime Value per Coorte',
+  clvLeg1:'Primo acquisto',clvLeg2:'Clienti ricorrenti',
+  clickHint:'Clicca per espandere l\'analisi',
+  funnelTitle:'Funnel Abbandono Carrello',
+  funnelSteps:['Visualizzazione prodotto: 3.200','Aggiunta al carrello: 1.120','Checkout iniziato: 576','Pagamento: 384','Completato: 320'],
+  funnelDrops:['-65%','-49%','-33%','-17%'],
+  recoveryTitle:'Strategie di Recupero',
+  recoveries:[
+    {text:'Popup exit-intent con sconto 10% sul primo ordine',amount:'+\u20AC1.200/mese'},
+    {text:'Sequenza email carrello abbandonato (3 email, 24h/48h/72h)',amount:'+\u20AC2.100/mese'},
+    {text:'Semplificazione checkout: riduzione da 4 a 2 passaggi',amount:'+\u20AC890/mese'},
+    {text:'Widget live chat sulla pagina carrello con assistente AI',amount:'+\u20AC650/mese'}
+  ],
+  projectedRecovery:'Recupero totale proiettato:',
+  projectedRecoveryAmount:'+\u20AC4.840/mese',
+  strategies:[
+    {icon:'\uD83D\uDD27',title:'Ottimizzazione Conversione',desc:'Miglioramento pagine prodotto, semplificazione checkout, segnali di fiducia',metrics:['CR +0.8%','ROI 340%'],timeline:'4 settimane'},
+    {icon:'\uD83D\uDCB0',title:'Strategia Pricing',desc:'Offerte bundle, sconti volume, fascia prodotti premium',metrics:['AOV +15%','ROI 280%'],timeline:'3 settimane'},
+    {icon:'\u2764\uFE0F',title:'Retention',desc:'Progettazione programma fedelt\u00E0, flusso post-acquisto, segmento VIP',metrics:['+25% repeat','ROI 420%'],timeline:'6 settimane'},
+    {icon:'\uD83D\uDE80',title:'Espansione',desc:'Nuova categoria prodotti basata sui dati: accessori casa in pelle',metrics:['+18% catalogo','ROI 190%'],timeline:'8 settimane'}
+  ],
+  matrixTitle:'Matrice Priorit\u00E0 (Impatto vs Sforzo)',
+  matrixLabelY:'Impatto',matrixLabelX:'Sforzo',
+  mq1:'ALTO IMPATTO / BASSO SFORZO',mq2:'ALTO IMPATTO / ALTO SFORZO',mq3:'BASSO IMPATTO / BASSO SFORZO',mq4:'BASSO IMPATTO / ALTO SFORZO',
+  reportTitle:'Piano Crescita E-Commerce Q2 2026',
+  reportSubtitle:'Bottega Toscana \u2014 Analisi e Strategia AI',
+  projLabel2:'Valore Medio Ordine',projLabel3:'Conversione',
+  roadmapTitle:'Roadmap 90 Giorni',
+  roadmapItems:[
+    {period:'Settimana 1\u20132',title:'Quick Wins',desc:'Ottimizzazione checkout, popup exit-intent, email recupero carrello'},
+    {period:'Settimana 3\u20134',title:'Boost Conversione',desc:'Redesign pagine prodotto, badge fiducia, widget social proof'},
+    {period:'Settimana 5\u20136',title:'Pricing e Bundle',desc:'Lancio offerte bundle, sconti volume, A/B test pricing'},
+    {period:'Settimana 7\u20138',title:'Programma Fedelt\u00E0',desc:'Lancio punti fedelt\u00E0, livello VIP, flusso post-acquisto'},
+    {period:'Settimana 9\u201312',title:'Espansione',desc:'Lancio nuova linea prodotti, automazione cross-sell, revisione performance'}
+  ],
+  ctaText:'Vuoi implementare questo piano di crescita?',
+  ctaSub:'Praxis AI trasforma l\'analisi in azione automatizzata',
+  ctaBtn:'Scopri Praxis AI'
+}
+};
+
+var T = T_ALL[LOCALE] || T_ALL.it;
+
+/* ── State ── */
+var currentStep = 0;
+var totalSteps = 4;
+var timers = [];
+var insightDetailOpen = false;
+
+function dt(fn, ms){ var id = setTimeout(fn, ms); timers.push(id); return id; }
+function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
+
+/* ── i18n ── */
+function applyI18n(){
+  var map = {
+    headerTitle:'headerTitle',step1Label:'step1Label',step2Label:'step2Label',
+    step3Label:'step3Label',step4Label:'step4Label',
+    metricLabel1:'metricLabel1',metricLabel2:'metricLabel2',
+    metricLabel3:'metricLabel3',metricLabel4:'metricLabel4',
+    chartTitle:'chartTitle',productsTitle:'productsTitle',trafficTitle:'trafficTitle',
+    analysisTitle:'analysisTitle',clvTitle:'clvTitle',clvLeg1:'clvLeg1',clvLeg2:'clvLeg2',
+    matrixTitle:'matrixTitle',matrixLabelY:'matrixLabelY',matrixLabelX:'matrixLabelX',
+    mq1:'mq1',mq2:'mq2',mq3:'mq3',mq4:'mq4',
+    reportTitle:'reportTitle',reportSubtitle:'reportSubtitle',
+    projLabel2:'projLabel2',projLabel3:'projLabel3',
+    roadmapTitle:'roadmapTitle',
+    ctaText:'ctaText',ctaSub:'ctaSub',ctaBtn:'ctaBtn'
+  };
+  Object.keys(map).forEach(function(elId){
+    var el = document.getElementById(elId);
+    if(el && T[map[elId]]) el.textContent = T[map[elId]];
+  });
+  document.getElementById('btnNext').textContent = T.btnNext;
+  document.documentElement.lang = LOCALE;
+}
+
+/* ── Progress ── */
+function updateProgress(step){
+  for(var i=1;i<=totalSteps;i++){
+    var el=document.getElementById('pstep'+i);
+    el.className='progress-step';
+    if(i<step) el.classList.add('done');
+    else if(i===step) el.classList.add('active');
+  }
+  document.getElementById('progressLabel').textContent=T.stepOf+' '+step+' '+T.of+' '+totalSteps;
+  var btn=document.getElementById('btnNext');
+  btn.disabled=step>=totalSteps;
+  btn.textContent=step>=totalSteps?T.complete:T.btnNext;
+}
+
+/* ── Animate Counter ── */
+function animateValue(el,target,prefix,suffix,duration,decimals){
+  prefix=prefix||'';suffix=suffix||'';duration=duration||1000;decimals=decimals||0;
+  var start=null;
+  function step(ts){
+    if(!start) start=ts;
+    var p=Math.min((ts-start)/duration,1);
+    var ease=1-Math.pow(1-p,3);
+    var val=target*ease;
+    if(decimals>0) el.textContent=prefix+val.toFixed(decimals)+suffix;
+    else el.textContent=prefix+Math.round(val).toLocaleString('it-IT')+suffix;
+    if(p<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+/* ── Build Products ── */
+function buildProducts(){
+  var list=document.getElementById('productList');
+  list.innerHTML='';
+  var emojis=['\uD83D\uDC5C','\uD83E\uDDE3','\uD83E\uDDE5','\uD83D\uDC5B','\uD83D\uDC54'];
+  T.products.forEach(function(p,i){
+    var row=document.createElement('div');
+    row.className='product-row';
+    row.style.opacity='0';row.style.transform='translateY(8px)';
+    row.style.transition='opacity .4s ease '+(i*100)+'ms, transform .4s ease '+(i*100)+'ms';
+    row.innerHTML=
+      '<div class="product-thumb">'+emojis[i]+'</div>'+
+      '<div class="product-info"><div class="product-name">'+p.name+'</div><div class="product-cat">'+p.cat+'</div></div>'+
+      '<div class="product-revenue">'+p.rev+'</div>'+
+      '<div class="product-units">'+p.units+'</div>';
+    list.appendChild(row);
+  });
+}
+
+/* ── Build Traffic ── */
+function buildTraffic(){
+  var grid=document.getElementById('trafficGrid');
+  grid.innerHTML='';
+  var pcts=[35,28,22,15];
+  var labels=T.trafficLabels;
+  var classes=['','b2','b3','b4'];
+  pcts.forEach(function(pct,i){
+    var item=document.createElement('div');
+    item.className='traffic-item';
+    item.innerHTML=
+      '<div class="traffic-bar-wrap"><div class="traffic-bar '+classes[i]+'" style="height:0%" data-target="'+pct+'"></div></div>'+
+      '<div class="traffic-pct">'+pct+'%</div>'+
+      '<div class="traffic-label">'+labels[i]+'</div>';
+    grid.appendChild(item);
+  });
+}
+
+/* ── Draw Revenue Chart (Canvas) ── */
+function drawRevenueChart(animate){
+  var canvas=document.getElementById('revenueChart');
+  if(!canvas) return;
+  var ctx=canvas.getContext('2d');
+  var dpr=window.devicePixelRatio||1;
+  var rect=canvas.parentElement.getBoundingClientRect();
+  canvas.width=rect.width*dpr;
+  canvas.height=rect.height*dpr;
+  canvas.style.width=rect.width+'px';
+  canvas.style.height=rect.height+'px';
+  ctx.scale(dpr,dpr);
+  var W=rect.width,H=rect.height;
+  var pad={top:10,right:10,bottom:20,left:45};
+  var data=[1200,1350,1100,1450,1600,1380,1520,1700,1550,1680,1800,1650,1750,1900,1820,1950,2000,1880,2050,2100,1950,2200,2150,2300,2250,2400,2350,2500,2450,2600];
+  var minV=Math.min.apply(null,data)*0.9;
+  var maxV=Math.max.apply(null,data)*1.05;
+  var chartW=W-pad.left-pad.right;
+  var chartH=H-pad.top-pad.bottom;
+
+  function getX(i){return pad.left+i/(data.length-1)*chartW}
+  function getY(v){return pad.top+chartH-(v-minV)/(maxV-minV)*chartH}
+
+  var progress={v:animate?0:1};
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // Grid lines
+    ctx.strokeStyle='#e5e7eb';ctx.lineWidth=0.5;
+    for(var g=0;g<4;g++){
+      var gy=pad.top+chartH*g/3;
+      ctx.beginPath();ctx.moveTo(pad.left,gy);ctx.lineTo(W-pad.right,gy);ctx.stroke();
+      var gv=maxV-(maxV-minV)*g/3;
+      ctx.fillStyle='#9ca3af';ctx.font='9px Inter, sans-serif';ctx.textAlign='right';
+      ctx.fillText('\u20AC'+Math.round(gv),pad.left-4,gy+3);
+    }
+    // X labels
+    ctx.fillStyle='#9ca3af';ctx.font='9px Inter, sans-serif';ctx.textAlign='center';
+    var xLabels=['1','5','10','15','20','25','30'];
+    xLabels.forEach(function(l,i){
+      var xi=pad.left+(i/(xLabels.length-1))*chartW;
+      ctx.fillText(l,xi,H-4);
+    });
+
+    // Area fill
+    var len=Math.floor(data.length*progress.v);
+    if(len<2) return;
+    ctx.beginPath();
+    ctx.moveTo(getX(0),getY(data[0]));
+    for(var i=1;i<len;i++){
+      var xc=(getX(i-1)+getX(i))/2;
+      var yc=(getY(data[i-1])+getY(data[i]))/2;
+      ctx.quadraticCurveTo(getX(i-1),getY(data[i-1]),xc,yc);
+    }
+    ctx.quadraticCurveTo(getX(len-2),getY(data[len-2]),getX(len-1),getY(data[len-1]));
+    // close for fill
+    ctx.lineTo(getX(len-1),pad.top+chartH);
+    ctx.lineTo(getX(0),pad.top+chartH);
+    ctx.closePath();
+    var grad=ctx.createLinearGradient(0,pad.top,0,pad.top+chartH);
+    grad.addColorStop(0,'rgba(30,58,95,0.15)');
+    grad.addColorStop(1,'rgba(30,58,95,0.01)');
+    ctx.fillStyle=grad;ctx.fill();
+
+    // Line
+    ctx.beginPath();
+    ctx.moveTo(getX(0),getY(data[0]));
+    for(var j=1;j<len;j++){
+      var xc2=(getX(j-1)+getX(j))/2;
+      var yc2=(getY(data[j-1])+getY(data[j]))/2;
+      ctx.quadraticCurveTo(getX(j-1),getY(data[j-1]),xc2,yc2);
+    }
+    ctx.quadraticCurveTo(getX(len-2),getY(data[len-2]),getX(len-1),getY(data[len-1]));
+    ctx.strokeStyle='var(--navy)';ctx.lineWidth=2;ctx.stroke();
+
+    // Dot at end
+    ctx.beginPath();ctx.arc(getX(len-1),getY(data[len-1]),4,0,Math.PI*2);
+    ctx.fillStyle='var(--navy)';ctx.fill();
+    ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
+  }
+
+  if(animate){
+    var startTime=null;
+    function anim(ts){
+      if(!startTime) startTime=ts;
+      progress.v=Math.min((ts-startTime)/1500,1);
+      draw();
+      if(progress.v<1) requestAnimationFrame(anim);
+    }
+    requestAnimationFrame(anim);
+  } else {
+    draw();
+  }
+}
+
+/* ── Build Insights ── */
+function buildInsights(){
+  var list=document.getElementById('insightList');
+  list.innerHTML='';
+  var tagMap={opportunity:'tag-opportunity',warning:'tag-warning',action:'tag-action',growth:'tag-growth'};
+  var tagLabels={opportunity:'Opportunit\u00E0',warning:'Attenzione',action:'Azione',growth:'Crescita'};
+  if(LOCALE==='en') tagLabels={opportunity:'Opportunity',warning:'Warning',action:'Action',growth:'Growth'};
+
+  T.insights.forEach(function(ins,i){
+    var card=document.createElement('div');
+    card.className='insight-card';
+    if(ins.clickable) card.classList.add('clickable');
+    card.setAttribute('data-index',i);
+    card.innerHTML=
+      '<span class="insight-icon">'+ins.icon+'</span>'+
+      '<div><div class="insight-text">'+ins.text+'</div>'+
+      '<span class="insight-tag '+tagMap[ins.tag]+'">'+tagLabels[ins.tag]+'</span>'+
+      (ins.clickable?'<div class="click-hint">'+T.clickHint+'</div>':'')+
+      '</div>';
+    if(ins.clickable){
+      card.addEventListener('click',toggleInsightDetail);
+    }
+    list.appendChild(card);
+  });
+
+  // Build detail panel
+  var container=document.getElementById('insightDetailContainer');
+  var funnelColors=['#1e3a5f','#2a5080','#5a7a9b','#6b7280','#9ca3af'];
+  var funnelWidths=[100,65,42,28,23];
+
+  var html='<div class="insight-detail" id="insightDetail">';
+  html+='<div class="insight-detail-title">\uD83D\uDED2 '+T.funnelTitle+'</div>';
+  html+='<div class="funnel" id="funnelViz">';
+  T.funnelSteps.forEach(function(step,i){
+    html+='<div class="funnel-step" style="width:'+funnelWidths[i]+'%;background:'+funnelColors[i]+'">';
+    html+='<span style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 4px">'+step+'</span>';
+    if(i<T.funnelDrops.length) html+='<span class="funnel-drop">'+T.funnelDrops[i]+'</span>';
+    html+='</div>';
+    if(i<T.funnelSteps.length-1) html+='<div class="funnel-arrow"></div>';
+  });
+  html+='</div>';
+  html+='<div class="insight-detail-title" style="font-size:13px;margin-top:14px">\uD83D\uDCA1 '+T.recoveryTitle+'</div>';
+  html+='<div class="recovery-list">';
+  T.recoveries.forEach(function(r,i){
+    html+='<div class="recovery-item">';
+    html+='<span class="recovery-num">'+(i+1)+'</span>';
+    html+='<span class="recovery-text">'+r.text+'</span>';
+    html+='<span class="recovery-amount">'+r.amount+'</span>';
+    html+='</div>';
+  });
+  html+='</div>';
+  html+='<div style="margin-top:12px;padding:10px 14px;background:var(--green-light);border-radius:var(--radius-sm);text-align:center">';
+  html+='<span style="font-size:12px;color:var(--green);font-weight:600">'+T.projectedRecovery+' </span>';
+  html+='<span style="font-size:16px;font-weight:700;color:var(--green)">'+T.projectedRecoveryAmount+'</span>';
+  html+='</div>';
+  html+='</div>';
+  container.innerHTML=html;
+}
+
+function toggleInsightDetail(){
+  var detail=document.getElementById('insightDetail');
+  insightDetailOpen=!insightDetailOpen;
+  if(insightDetailOpen){
+    detail.classList.add('visible');
+    var card=document.querySelector('.insight-card.clickable');
+    if(card) card.classList.add('clicked');
+  } else {
+    detail.classList.remove('visible');
+    var card2=document.querySelector('.insight-card.clickable');
+    if(card2) card2.classList.remove('clicked');
+  }
+}
+
+/* ── Build CLV Chart ── */
+function buildCLV(){
+  var chart=document.getElementById('clvChart');
+  chart.innerHTML='';
+  var cohorts=['Gen','Feb','Mar','Apr','Mag','Giu'];
+  if(LOCALE==='en') cohorts=['Jan','Feb','Mar','Apr','May','Jun'];
+  var firstBuy=[85,92,78,95,88,82];
+  var repeat=[35,42,48,55,62,70];
+  var maxVal=170;
+
+  cohorts.forEach(function(c,i){
+    var group=document.createElement('div');
+    group.className='clv-bar-group';
+    var h1=firstBuy[i]/maxVal*90;
+    var h2=repeat[i]/maxVal*90;
+    group.innerHTML=
+      '<div style="display:flex;gap:3px;align-items:flex-end;height:90px;width:100%">'+
+      '<div class="clv-bar current" style="height:0;flex:1" data-target="'+h1+'"></div>'+
+      '<div class="clv-bar repeat" style="height:0;flex:1" data-target="'+h2+'"></div>'+
+      '</div>'+
+      '<div class="clv-bar-label">'+c+'</div>';
+    chart.appendChild(group);
+  });
+}
+
+/* ── Build Strategies ── */
+function buildStrategies(){
+  var grid=document.getElementById('strategyGrid');
+  grid.innerHTML='';
+  T.strategies.forEach(function(s,i){
+    var card=document.createElement('div');
+    card.className='strategy-card';
+    card.setAttribute('data-index',i);
+    var metricsHtml='';
+    s.metrics.forEach(function(m){ metricsHtml+='<span class="strategy-metric">'+m+'</span>'; });
+    metricsHtml+='<span class="strategy-metric timeline">'+s.timeline+'</span>';
+    card.innerHTML=
+      '<div class="strategy-header"><span class="strategy-icon">'+s.icon+'</span><span class="strategy-title">'+s.title+'</span></div>'+
+      '<div class="strategy-desc">'+s.desc+'</div>'+
+      '<div class="strategy-metrics">'+metricsHtml+'</div>';
+    grid.appendChild(card);
+  });
+}
+
+/* ── Build Roadmap ── */
+function buildRoadmap(){
+  var container=document.getElementById('roadmap');
+  // Keep the line element
+  var lineEl=container.querySelector('.roadmap-line');
+  container.innerHTML='';
+  container.appendChild(lineEl);
+  T.roadmapItems.forEach(function(r,i){
+    var item=document.createElement('div');
+    item.className='roadmap-item';
+    item.setAttribute('data-index',i);
+    item.innerHTML=
+      '<div class="roadmap-dot'+(i===0?' active':'')+'"></div>'+
+      '<div class="roadmap-period">'+r.period+'</div>'+
+      '<div class="roadmap-title">'+r.title+'</div>'+
+      '<div class="roadmap-desc">'+r.desc+'</div>';
+    container.appendChild(item);
+  });
+}
+
+/* ── Step Runners ── */
+function showStep(id){
+  var el=document.getElementById(id);
+  el.style.display='block';
+  dt(function(){el.classList.add('visible');},30);
+}
+function hideStep(id){
+  var el=document.getElementById(id);
+  el.classList.remove('visible');
+  el.style.display='none';
+}
+
+function runStep1(){
+  showStep('step1');
+  // Animate metrics
+  dt(function(){
+    animateValue(document.getElementById('metricVal1'),47500,'\u20AC','',1200);
+    animateValue(document.getElementById('metricVal2'),312,'','',1000);
+    animateValue(document.getElementById('metricVal3'),152,'\u20AC','',1000);
+    animateValue(document.getElementById('metricVal4'),2.8,'','%',1000,1);
+  },300);
+  // Animate chart
+  dt(function(){ drawRevenueChart(true); },400);
+  // Animate products
+  dt(function(){
+    var rows=document.querySelectorAll('.product-row');
+    rows.forEach(function(r){r.style.opacity='1';r.style.transform='translateY(0)';});
+  },600);
+  // Animate traffic bars
+  dt(function(){
+    document.querySelectorAll('.traffic-bar').forEach(function(bar){
+      bar.style.height=bar.getAttribute('data-target')+'%';
+    });
+  },800);
+}
+
+function runStep2(){
+  showStep('step2');
+  var card=document.getElementById('analysisCard');
+  card.classList.add('scanning');
+  document.getElementById('typingIndicator').style.display='inline-flex';
+
+  // Show insights one by one
+  var insights=document.querySelectorAll('.insight-card');
+  insights.forEach(function(ins,i){
+    dt(function(){
+      ins.classList.add('visible');
+      if(i===insights.length-1){
+        dt(function(){
+          card.classList.remove('scanning');
+          document.getElementById('typingIndicator').style.display='none';
+        },400);
+      }
+    },800+i*700);
+  });
+
+  // Show CLV chart
+  dt(function(){
+    document.getElementById('clvCard').style.opacity='1';
+    dt(function(){
+      document.querySelectorAll('.clv-bar').forEach(function(bar){
+        bar.style.height=bar.getAttribute('data-target')+'px';
+      });
+    },200);
+  },800+T.insights.length*700+600);
+}
+
+function runStep3(){
+  showStep('step3');
+  var cards=document.querySelectorAll('.strategy-card');
+  cards.forEach(function(card,i){
+    dt(function(){ card.classList.add('visible'); },300+i*400);
+  });
+  // Show matrix
+  dt(function(){
+    document.getElementById('matrixCard').style.opacity='1';
+    // Position dots: [Conversion, Pricing, Retention, Expansion]
+    // x = effort (left=low, right=high), y = impact (top=high, bottom=low)
+    var dots=[
+      {cls:'d1',x:'30%',y:'18%',label:'CR'},  // high impact, low effort
+      {cls:'d2',x:'40%',y:'25%',label:'$'},    // high impact, medium effort
+      {cls:'d3',x:'60%',y:'15%',label:'\u2764'},// high impact, high effort
+      {cls:'d4',x:'75%',y:'35%',label:'\uD83D\uDE80'} // medium impact, high effort
+    ];
+    var mc=document.getElementById('matrixContainer');
+    dots.forEach(function(d,i){
+      var dot=document.createElement('div');
+      dot.className='matrix-dot '+d.cls;
+      dot.style.left=d.x;dot.style.top=d.y;
+      dot.textContent=d.label;
+      mc.appendChild(dot);
+      dt(function(){ dot.classList.add('visible'); },200+i*200);
+    });
+  },300+cards.length*400+400);
+}
+
+function runStep4(){
+  showStep('step4');
+  dt(function(){
+    document.getElementById('reportPreview').style.opacity='1';
+  },200);
+  dt(function(){
+    animateValue(document.getElementById('projVal1'),32,'+','%',1200);
+    animateValue(document.getElementById('projVal2'),18,'+','%',1200);
+    animateValue(document.getElementById('projVal3'),35,'+','%',1200);
+  },600);
+  // Animate roadmap items
+  var items=document.querySelectorAll('.roadmap-item');
+  items.forEach(function(item,i){
+    dt(function(){ item.classList.add('visible'); },900+i*300);
+  });
+  // Show CTA
+  dt(function(){
+    document.getElementById('ctaFinal').classList.add('visible');
+  },900+items.length*300+400);
+}
+
+/* ── Navigation ── */
+function goToStep(step){
+  if(step<1||step>totalSteps) return;
+  currentStep=step;
+  updateProgress(step);
+  for(var i=1;i<=totalSteps;i++){
+    if(i!==step) hideStep('step'+i);
+  }
+  switch(step){
+    case 1:runStep1();break;
+    case 2:runStep2();break;
+    case 3:runStep3();break;
+    case 4:runStep4();break;
+  }
+}
+
+document.getElementById('btnNext').addEventListener('click',function(){
+  if(currentStep<totalSteps) goToStep(currentStep+1);
+});
+
+/* ── Auto-advance ── */
+function autoAdvance(){
+  dt(function(){
+    if(currentStep<totalSteps){
+      goToStep(currentStep+1);
+      autoAdvance();
+    }
+  }, currentStep===1?5000:currentStep===2?6000:currentStep===3?5500:0);
+}
+
+/* ── Init ── */
+function init(){
+  applyI18n();
+  buildProducts();
+  buildTraffic();
+  buildInsights();
+  buildCLV();
+  buildStrategies();
+  buildRoadmap();
+  goToStep(1);
+  autoAdvance();
+}
+
+init();
+
+})();
+</script>
+</body>
+</html>

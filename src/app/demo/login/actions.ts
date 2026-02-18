@@ -18,8 +18,11 @@ export async function login(formData: FormData) {
     return { error: error.message };
   }
 
+  const profession = formData.get("profession") as string | null;
+  const redirectUrl = profession ? `/demo?profession=${profession}` : "/demo";
+
   revalidatePath("/demo", "layout");
-  redirect("/demo");
+  redirect(redirectUrl);
 }
 
 export async function logout() {

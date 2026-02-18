@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { validateEmail } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n";
+import { useProfilingContext } from "@/lib/profiling-context";
 
 interface FormData {
   name: string;
@@ -23,6 +24,17 @@ interface FormErrors {
 
 export function ContactForm() {
   const { t } = useLocale();
+  const [profiling, setProfiling] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    try {
+      const profilingContext = useProfilingContext();
+      setProfiling(profilingContext);
+    } catch {
+      // Provider not available yet, profiling will remain null
+    }
+  }, []);
+
   const [formData, setFormData] = React.useState<FormData>({
     name: "",
     email: "",
@@ -82,12 +94,15 @@ export function ContactForm() {
       const { createClient } = await import("@/lib/supabase/client");
       const supabase = createClient();
 
+      const profilingJson = profiling ? profiling.toJSON() : null;
+
       const { error } = await supabase.from("contact_submissions").insert({
         name: formData.name.trim(),
         email: formData.email.trim(),
         company: formData.company.trim() || null,
         message: formData.message.trim(),
         status: "new",
+        context: profilingJson,
       });
 
       if (error) {

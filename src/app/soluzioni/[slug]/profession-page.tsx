@@ -177,7 +177,7 @@ export default function ProfessionPage({ slug }: { slug: string }) {
             variants={fadeInUp}
             className="mt-10 flex flex-wrap gap-4 justify-center"
           >
-            <Link href="/demo/login">
+            <Link href={"/demo/login?profession=" + slug}>
               <Button size="lg" variant="default">
                 Prova la Demo
               </Button>
@@ -357,7 +357,7 @@ export default function ProfessionPage({ slug }: { slug: string }) {
             variants={fadeInUp}
             className="flex flex-wrap gap-4 justify-center"
           >
-            <Link href="/demo/login">
+            <Link href={"/demo/login?profession=" + slug}>
               <Button size="lg" variant="default">
                 Prova la Demo
               </Button>
