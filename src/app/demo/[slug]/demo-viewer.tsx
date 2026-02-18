@@ -205,20 +205,91 @@ export function DemoViewer({ html, slug }: { html: string; slug: string }) {
     setProgress(0);
   }, [slug]);
 
-  /* ---------- track demo viewed in profiling ---------- */
+  /* ---------- track demo viewed + time spent in profiling ---------- */
+  const demoStartRef = React.useRef<number>(Date.now());
+
   React.useEffect(() => {
     if (profiling && slug) {
       profiling.addDemoViewed(slug);
     }
+    demoStartRef.current = Date.now();
+
+    // On unmount or slug change, record time spent
+    return () => {
+      if (profiling && slug) {
+        const elapsed = Date.now() - demoStartRef.current;
+        if (elapsed > 1000) { // only record meaningful visits (>1s)
+          profiling.addDemoTime(slug, elapsed);
+        }
+      }
+    };
   }, [slug]);
 
-  /* ---------- srcDoc injection (preserved from original) ---------- */
+  /* ---------- listen for tracking messages from iframe ---------- */
+  React.useEffect(() => {
+    function handleMessage(e: MessageEvent) {
+      if (!e.data || typeof e.data !== "object") return;
+      const { type } = e.data;
+
+      if (type === "praxis:progress" && typeof e.data.pct === "number") {
+        profiling.updateDemoProgress(slug, e.data.pct);
+      }
+
+      if (type === "praxis:complete") {
+        profiling.addDemoCompleted(slug);
+        profiling.updateDemoProgress(slug, 100);
+      }
+    }
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [profiling, slug]);
+
+  /* ---------- srcDoc injection with tracking bridge ---------- */
   const srcDoc = React.useMemo(() => {
     const locale =
       (typeof window !== "undefined" && localStorage.getItem("praxis-locale")) ||
       "it";
     const localeScript = `<script>window.__PRAXIS_LOCALE__="${locale}";</script>`;
-    return html.replace("<head>", `<head><base target="_blank">${localeScript}`);
+
+    // Tracking bridge: observes progress bar and CTA completion from inside the
+    // sandboxed iframe and sends postMessage to the parent React app.
+    const trackingScript = `<script>
+(function(){
+  var lastPct=-1, completed=false;
+  function startObserving(){
+    var fill=document.getElementById('progressFill');
+    if(!fill) return;
+    var mo=new MutationObserver(function(){
+      var w=fill.style.width;
+      if(!w) return;
+      var pct=Math.round(parseFloat(w));
+      if(pct!==lastPct&&pct>=0){lastPct=pct;try{parent.postMessage({type:'praxis:progress',pct:pct},'*')}catch(e){}}
+    });
+    mo.observe(fill,{attributes:true,attributeFilter:['style']});
+  }
+  // Detect CTA completion: watch for "Demo terminata"/"Demo completed" text
+  function startCompletionWatch(){
+    var bo=new MutationObserver(function(){
+      if(completed) return;
+      var els=document.querySelectorAll('button,a,[role=button]');
+      for(var i=0;i<els.length;i++){
+        var t=els[i].textContent||'';
+        if(t.indexOf('Demo terminata')>-1||t.indexOf('Demo completed')>-1){
+          completed=true;try{parent.postMessage({type:'praxis:complete'},'*')}catch(e){}bo.disconnect();return;
+        }
+      }
+    });
+    bo.observe(document.body,{childList:true,subtree:true,characterData:true});
+  }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){startObserving();startCompletionWatch()})}
+  else{startObserving();startCompletionWatch()}
+})();
+</script>`;
+
+    return html
+      .replace("<head>", `<head><base target="_blank">${localeScript}`)
+      .replace("</body>", `${trackingScript}</body>`);
   }, [html]);
 
   /* ---------- simulated progress bar ---------- */

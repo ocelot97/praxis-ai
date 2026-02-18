@@ -13,15 +13,18 @@ interface ProfilingData {
   savingsBreakdown?: { area: string; hours: number }[];
   // Touchpoint 3: Demo Viewer
   demosViewed?: string[];
-  demoCompletionRate?: number;
-  interactedSteps?: string[];
+  demosCompleted?: string[];
+  demoMaxProgress?: Record<string, number>; // slug -> max % reached
+  demoTimeSpentMs?: Record<string, number>; // slug -> total ms spent
 }
 
 interface ProfilingContextType {
   data: ProfilingData;
   update: (partial: Partial<ProfilingData>) => void;
   addDemoViewed: (slug: string) => void;
-  addInteractedStep: (step: string) => void;
+  addDemoCompleted: (slug: string) => void;
+  updateDemoProgress: (slug: string, pct: number) => void;
+  addDemoTime: (slug: string, ms: number) => void;
   toJSON: () => string;
 }
 
@@ -68,11 +71,27 @@ export function ProfilingProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  const addInteractedStep = React.useCallback((step: string) => {
+  const addDemoCompleted = React.useCallback((slug: string) => {
     setData((prev) => {
-      const existing = prev.interactedSteps ?? [];
-      if (existing.includes(step)) return prev;
-      return { ...prev, interactedSteps: [...existing, step] };
+      const existing = prev.demosCompleted ?? [];
+      if (existing.includes(slug)) return prev;
+      return { ...prev, demosCompleted: [...existing, slug] };
+    });
+  }, []);
+
+  const updateDemoProgress = React.useCallback((slug: string, pct: number) => {
+    setData((prev) => {
+      const existing = prev.demoMaxProgress ?? {};
+      const current = existing[slug] ?? 0;
+      if (pct <= current) return prev;
+      return { ...prev, demoMaxProgress: { ...existing, [slug]: pct } };
+    });
+  }, []);
+
+  const addDemoTime = React.useCallback((slug: string, ms: number) => {
+    setData((prev) => {
+      const existing = prev.demoTimeSpentMs ?? {};
+      return { ...prev, demoTimeSpentMs: { ...existing, [slug]: (existing[slug] ?? 0) + ms } };
     });
   }, []);
 
@@ -81,8 +100,8 @@ export function ProfilingProvider({ children }: { children: React.ReactNode }) {
   }, [data]);
 
   const value = React.useMemo<ProfilingContextType>(
-    () => ({ data, update, addDemoViewed, addInteractedStep, toJSON }),
-    [data, update, addDemoViewed, addInteractedStep, toJSON]
+    () => ({ data, update, addDemoViewed, addDemoCompleted, updateDemoProgress, addDemoTime, toJSON }),
+    [data, update, addDemoViewed, addDemoCompleted, updateDemoProgress, addDemoTime, toJSON]
   );
 
   return (

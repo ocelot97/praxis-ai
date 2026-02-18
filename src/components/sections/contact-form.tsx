@@ -93,7 +93,7 @@ export function ContactForm() {
       const { createClient } = await import("@/lib/supabase/client");
       const supabase = createClient();
 
-      const profilingJson = profiling ? profiling.toJSON() : null;
+      const profilingData = profiling ? profiling.data : null;
 
       const { error } = await supabase.from("contact_submissions").insert({
         name: formData.name.trim(),
@@ -101,7 +101,7 @@ export function ContactForm() {
         company: formData.company.trim() || null,
         message: formData.message.trim(),
         status: "new",
-        context: profilingJson,
+        context: profilingData,
       });
 
       if (error) {
