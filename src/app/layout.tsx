@@ -4,6 +4,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { LocaleProvider } from "@/lib/i18n";
 import { ProfilingProvider } from "@/lib/profiling-context";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -53,6 +54,7 @@ export default function RootLayout({
             <Footer />
           </ProfilingProvider>
         </LocaleProvider>
+        <Analytics />
       </body>
     </html>
   );
