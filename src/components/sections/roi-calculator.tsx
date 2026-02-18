@@ -709,7 +709,7 @@ export function ROICalculator() {
             <div className="border-t border-border" />
 
             {/* CTA */}
-            <Link href="/demo/login" className="block">
+            <Link href={`/demo/login?profession=${selectedSlug}`} className="block">
               <Button size="lg" className="w-full">
                 {t.calculator.cta}
               </Button>

@@ -193,11 +193,9 @@ export function DemoViewer({ html, slug }: { html: string; slug: string }) {
   /* ---------- state ---------- */
   const [loaded, setLoaded] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
-  const [toolbarVisible, setToolbarVisible] = React.useState(true);
   const [isFullscreen, setIsFullscreen] = React.useState(false);
   const [showIntro, setShowIntro] = React.useState(true);
 
-  const hideTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const progressTimerRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
 
   /* ---------- reset intro when slug changes ---------- */
@@ -247,41 +245,9 @@ export function DemoViewer({ html, slug }: { html: string; slug: string }) {
     };
   }, [loaded]);
 
-  /* ---------- toolbar auto-hide ---------- */
-  const resetHideTimer = React.useCallback(() => {
-    setToolbarVisible(true);
-    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-    hideTimerRef.current = setTimeout(() => {
-      setToolbarVisible(false);
-    }, 3000);
-  }, []);
-
-  // Start initial auto-hide timer
-  React.useEffect(() => {
-    resetHideTimer();
-    return () => {
-      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-    };
-  }, [resetHideTimer]);
-
-  // Mouse movement: show toolbar when mouse is in top 60px
-  React.useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (e.clientY <= 60) {
-        resetHideTimer();
-      }
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [resetHideTimer]);
-
   /* ---------- keyboard shortcuts ---------- */
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Any key press shows the toolbar
-      resetHideTimer();
-
       if (e.key === "Escape") {
         e.preventDefault();
         router.push("/demo");
@@ -301,7 +267,7 @@ export function DemoViewer({ html, slug }: { html: string; slug: string }) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [router, prevDemo.slug, nextDemo.slug, resetHideTimer]);
+  }, [router, prevDemo.slug, nextDemo.slug]);
 
   /* ---------- fullscreen sync ---------- */
   React.useEffect(() => {
@@ -331,14 +297,7 @@ export function DemoViewer({ html, slug }: { html: string; slug: string }) {
       {/* ============================================================ */}
       {/*  TOOLBAR                                                      */}
       {/* ============================================================ */}
-      <div
-        className="flex-shrink-0 z-30 transition-all duration-300 ease-out"
-        style={{
-          transform: toolbarVisible ? "translateY(0)" : "translateY(-100%)",
-          opacity: toolbarVisible ? 1 : 0,
-        }}
-        onMouseEnter={resetHideTimer}
-      >
+      <div className="flex-shrink-0 z-30">
         <div className="flex items-center justify-between px-3 py-2 bg-navy-light/95 backdrop-blur-md border-b border-white/[0.06]">
           {/* --- Left: Back + Prev nav --- */}
           <div className="flex items-center gap-1 min-w-[180px]">
@@ -516,15 +475,10 @@ export function DemoViewer({ html, slug }: { html: string; slug: string }) {
           onLoad={handleIframeLoad}
         />
 
-        {/* --- Post-demo CTA --- */}
+        {/* --- Bottom bar — always visible --- */}
         {loaded && !showIntro && (
-          <div className="group/cta absolute bottom-0 left-0 right-0 z-15 transition-transform duration-300 translate-y-full hover:translate-y-0">
-            {/* Hover trigger tab */}
-            <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-3 py-1 rounded-t-lg bg-navy-light/80 text-[10px] font-sans text-white/40 group-hover/cta:text-white/60 transition-colors cursor-default">
-              ↑
-            </div>
-
-            <div className="bg-navy-light/95 backdrop-blur-sm border-t border-white/10 px-6 py-4 flex items-center justify-between">
+          <div className="absolute bottom-0 left-0 right-0 z-15">
+            <div className="bg-navy-light/95 backdrop-blur-sm border-t border-white/10 px-6 py-3 flex items-center justify-between">
               <span className="text-white/80 text-sm">{t.demoViewer.postDemoTitle}</span>
               <div className="flex items-center gap-3">
                 <Link

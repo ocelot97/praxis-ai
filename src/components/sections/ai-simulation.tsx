@@ -5,6 +5,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Section } from "@/components/ui/section";
 import { PROFESSIONS } from "@/lib/professions";
 import { useLocale } from "@/lib/i18n";
+import { useProfilingContext } from "@/lib/profiling-context";
+
+function useProfilingSafe() {
+  try {
+    return useProfilingContext();
+  } catch {
+    return null;
+  }
+}
 
 /* ---------- animation variants ---------- */
 
@@ -641,10 +650,18 @@ const SIMULATION_ANIMATIONS: Record<string, React.FC> = {
 
 export function AISimulation() {
   const { t } = useLocale();
+  const profiling = useProfilingSafe();
   const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
 
   const selectedProfession =
     selectedIndex !== null ? PROFESSIONS[selectedIndex] : null;
+
+  // Store profession selection in profiling context
+  React.useEffect(() => {
+    if (profiling && selectedProfession) {
+      profiling.update({ profession: selectedProfession.slug });
+    }
+  }, [profiling, selectedProfession]);
 
   const SimulationComponent = selectedProfession
     ? SIMULATION_ANIMATIONS[selectedProfession.slug]

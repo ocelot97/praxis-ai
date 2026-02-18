@@ -9,6 +9,14 @@ import { validateEmail } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n";
 import { useProfilingContext } from "@/lib/profiling-context";
 
+function useProfilingSafe() {
+  try {
+    return useProfilingContext();
+  } catch {
+    return null;
+  }
+}
+
 interface FormData {
   name: string;
   email: string;
@@ -24,16 +32,7 @@ interface FormErrors {
 
 export function ContactForm() {
   const { t } = useLocale();
-  const [profiling, setProfiling] = React.useState<any>(null);
-
-  React.useEffect(() => {
-    try {
-      const profilingContext = useProfilingContext();
-      setProfiling(profilingContext);
-    } catch {
-      // Provider not available yet, profiling will remain null
-    }
-  }, []);
+  const profiling = useProfilingSafe();
 
   const [formData, setFormData] = React.useState<FormData>({
     name: "",
