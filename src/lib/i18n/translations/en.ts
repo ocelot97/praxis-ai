@@ -79,6 +79,7 @@ export const en = {
     savingsLabel: "Savings",
     perWeek: "/week",
     perMonth: "/month",
+    suggestedHint: "For {clients} clients, typical admin hours are {low}-{high}h/week",
   },
   process: {
     heading: "How It Works",

@@ -1003,8 +1003,12 @@ function runStep4(){
 }
 
 /* ── Navigation ── */
+var autoAdvanceTimer = null;
+
 function goToStep(step){
   if(step<1||step>totalSteps) return;
+  /* Cancel any pending auto-advance to prevent race conditions */
+  if(autoAdvanceTimer){ clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
   currentStep=step;
   updateProgress(step);
   for(var i=1;i<=totalSteps;i++){
@@ -1016,6 +1020,8 @@ function goToStep(step){
     case 3:runStep3();break;
     case 4:runStep4();break;
   }
+  /* Schedule next auto-advance (unless we are on the last step) */
+  scheduleAutoAdvance();
 }
 
 document.getElementById('btnNext').addEventListener('click',function(){
@@ -1023,14 +1029,28 @@ document.getElementById('btnNext').addEventListener('click',function(){
 });
 
 /* ── Auto-advance ── */
-function autoAdvance(){
-  dt(function(){
-    if(currentStep<totalSteps){
-      goToStep(currentStep+1);
-      autoAdvance();
-    }
-  }, currentStep===1?5000:currentStep===2?6000:currentStep===3?5500:0);
+function scheduleAutoAdvance(){
+  if(autoAdvanceTimer){ clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
+  var delays={1:5000,2:6000,3:5500};
+  var delay=delays[currentStep];
+  if(delay && currentStep<totalSteps){
+    autoAdvanceTimer = setTimeout(function(){
+      autoAdvanceTimer = null;
+      if(currentStep<totalSteps){
+        goToStep(currentStep+1);
+      }
+    },delay);
+  }
 }
+
+/* CTA button feedback */
+document.getElementById('ctaBtn').addEventListener('click', function() {
+  var btn = this;
+  btn.disabled = true;
+  btn.style.background = 'var(--green)';
+  btn.style.boxShadow = '0 4px 16px rgba(22,163,74,0.35)';
+  btn.textContent = LOCALE === 'en' ? '\u2713 Thanks! We\'ll be in touch soon' : '\u2713 Grazie! Vi contatteremo presto';
+});
 
 /* ── Init ── */
 function init(){
@@ -1042,7 +1062,6 @@ function init(){
   buildStrategies();
   buildRoadmap();
   goToStep(1);
-  autoAdvance();
 }
 
 init();

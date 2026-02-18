@@ -852,6 +852,16 @@ body {
     }, 300 + sections.length * 400 + 500);
   }
 
+  /* ── CTA Button (sandbox-safe) ── */
+  document.querySelector('.cta-btn').addEventListener('click', function(e) {
+    e.preventDefault();
+    var btn = this;
+    btn.style.background = 'var(--accent-green)';
+    btn.textContent = '\u2713 ' + (LOCALE === 'en' ? 'Thank you! We will contact you soon' : 'Grazie! Vi contatteremo presto');
+    btn.style.cursor = 'default';
+    btn.disabled = true;
+  });
+
 })();
 </script>
 </body>

@@ -81,6 +81,7 @@ export const it: Translations = {
     savingsLabel: "Risparmio",
     perWeek: "/settimana",
     perMonth: "/mese",
+    suggestedHint: "Per {clients} clienti, le ore tipiche sono {low}-{high}h/settimana",
   },
   process: {
     heading: "Come Funziona",

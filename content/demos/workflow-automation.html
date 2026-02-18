@@ -546,6 +546,16 @@ $('#alertOverlay').addEventListener('click', function(e){
   if(e.target === this) this.classList.remove('visible');
 });
 
+/* ── CTA Button (sandbox-safe) ── */
+$('.cta-button').addEventListener('click', function(e) {
+  e.preventDefault();
+  var btn = this;
+  btn.style.background = 'var(--accent-green)';
+  btn.textContent = '\u2713 ' + (LOCALE === 'en' ? 'Thank you! We will contact you soon' : 'Grazie! Vi contatteremo presto');
+  btn.style.cursor = 'default';
+  btn.disabled = true;
+});
+
 /* ── Replay ── */
 window.replayDemo = function(){
   runDemo();

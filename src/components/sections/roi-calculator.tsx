@@ -28,7 +28,10 @@ function useProfilingSafe(): ProfilingSafe | null {
 
 // ---------------------------------------------------------------------------
 // Profession-specific multipliers (fraction of admin hours Praxis AI saves)
+// Calibrated at BASE_CLIENTS. Client count modulates via log scaling.
 // ---------------------------------------------------------------------------
+const BASE_CLIENTS = 100;
+
 const MULTIPLIERS: Record<string, number> = {
   avvocati: 0.35,
   commercialisti: 0.4,
@@ -38,12 +41,47 @@ const MULTIPLIERS: Record<string, number> = {
   geometri: 0.32,
 };
 
+// Per-area client sensitivity: how much each breakdown area scales with
+// client count (0 = fixed overhead, 1 = fully linear with clients).
+// Order matches the breakdown areas in translations.
+const AREA_CLIENT_SENSITIVITY: Record<string, number[]> = {
+  avvocati: [0.75, 0.2, 0.85, 0.9],           // contracts scale, jurisprudence less
+  commercialisti: [0.85, 0.7, 0.9, 0.3],       // invoices/reconciliation scale, F24 less
+  "consulenti-del-lavoro": [0.9, 0.6, 0.25, 0.8], // payroll scales, compliance is overhead
+  odontoiatri: [0.8, 0.85, 0.9, 0.15],         // scheduling/comms scale, clinical notes less
+  "architetti-ingegneri": [0.7, 0.5, 0.65, 0.8],
+  geometri: [0.75, 0.3, 0.4, 0.7],             // surveys scale, DOCFA/PREGEO less
+};
+
+// Suggested weekly admin hours per profession based on client count.
+// Returns [low, high] range for the hint text.
+function suggestedHours(slug: string, clients: number): [number, number] {
+  // Base minutes-per-client-per-week by profession (empirical averages)
+  const baseMinutes: Record<string, number> = {
+    avvocati: 12,
+    commercialisti: 10,
+    "consulenti-del-lavoro": 11,
+    odontoiatri: 8,
+    "architetti-ingegneri": 14,
+    geometri: 13,
+  };
+  const perClient = baseMinutes[slug] ?? 11;
+  // Diminishing returns: not perfectly linear, sqrt-ish scaling
+  const rawHours = (perClient * Math.pow(clients, 0.85)) / 60;
+  const low = Math.max(5, Math.round(rawHours * 0.8 / 5) * 5);
+  const high = Math.max(low + 5, Math.round(rawHours * 1.2 / 5) * 5);
+  return [Math.min(low, 55), Math.min(high, 60)];
+}
+
 // ---------------------------------------------------------------------------
 // ROI Calculation helpers
 // ---------------------------------------------------------------------------
-function calcHoursSaved(weeklyHours: number, slug: string): number {
+function calcHoursSaved(weeklyHours: number, clients: number, slug: string): number {
   const multiplier = MULTIPLIERS[slug] ?? 0.33;
-  return weeklyHours * multiplier;
+  // Client count modulates savings via log scaling centered on BASE_CLIENTS.
+  // At 100 clients: factor = 1.0; at 200: ~1.10; at 50: ~0.90; at 500: ~1.24
+  const clientFactor = 1 + Math.log(Math.max(clients, 10) / BASE_CLIENTS) * 0.15;
+  return weeklyHours * multiplier * clientFactor;
 }
 
 function calcMonthlySavings(hoursSaved: number): number {
@@ -321,25 +359,45 @@ export function ROICalculator() {
   const [weeklyHours, setWeeklyHours] = React.useState<number>(20);
 
   // Derived
-  const hoursSaved = calcHoursSaved(weeklyHours, selectedSlug);
+  const hoursSaved = calcHoursSaved(weeklyHours, clients, selectedSlug);
   const monthlySavings = calcMonthlySavings(hoursSaved);
 
-  // Breakdown areas from translations
+  // Suggested hours hint
+  const [sugLow, sugHigh] = React.useMemo(
+    () => suggestedHours(selectedSlug, clients),
+    [selectedSlug, clients],
+  );
+
+  // Breakdown areas from translations — client-adjusted weights
   const breakdownRaw = (
     t.calculatorBreakdown as Record<
       string,
       { area: string; tooltip: string; weight: number }[]
     >
   )[selectedSlug];
+  const sensitivities = AREA_CLIENT_SENSITIVITY[selectedSlug] ?? [];
   const breakdownAreas = React.useMemo(() => {
     if (!breakdownRaw) return [];
-    return breakdownRaw.map((b) => ({
-      area: b.area,
-      tooltip: b.tooltip,
-      weight: b.weight,
-      hours: hoursSaved * b.weight,
-    }));
-  }, [breakdownRaw, hoursSaved]);
+    const clientRatio = clients / BASE_CLIENTS;
+    // Compute client-adjusted raw weights
+    const adjusted = breakdownRaw.map((b, i) => {
+      const sens = sensitivities[i] ?? 0.5;
+      // Sensitivity modulates how much this area grows/shrinks with client count
+      const factor = 1 + (clientRatio - 1) * sens;
+      return { ...b, adjustedWeight: b.weight * Math.max(0.4, factor) };
+    });
+    // Normalize so adjusted weights sum to 1.0
+    const totalWeight = adjusted.reduce((s, a) => s + a.adjustedWeight, 0);
+    return adjusted.map((a) => {
+      const normalizedWeight = totalWeight > 0 ? a.adjustedWeight / totalWeight : a.weight;
+      return {
+        area: a.area,
+        tooltip: a.tooltip,
+        weight: normalizedWeight,
+        hours: hoursSaved * normalizedWeight,
+      };
+    });
+  }, [breakdownRaw, sensitivities, hoursSaved, clients]);
 
   const maxBreakdownHours = React.useMemo(() => {
     if (breakdownAreas.length === 0) return 1;
@@ -465,6 +523,14 @@ export function ROICalculator() {
               onChange={setWeeklyHours}
               formatLabel={(v) => `${v}h`}
             />
+            {/* Suggested hours hint based on client count */}
+            <p className="text-xs font-sans text-silver italic mt-1">
+              {t.calculator.suggestedHint
+                ?.replace("{clients}", String(clients))
+                .replace("{low}", String(sugLow))
+                .replace("{high}", String(sugHigh)) ??
+                `Per ${clients} clienti, le ore tipiche sono ${sugLow}-${sugHigh}h/settimana`}
+            </p>
           </div>
         </motion.div>
 

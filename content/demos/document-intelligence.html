@@ -869,9 +869,22 @@ body {
     document.getElementById('f24Badge').innerHTML =
       '<div class="f24-badge-inner">\u2713 ' + t('f24Badge') + '</div>';
 
-    // CTA
-    document.getElementById('f24Cta').innerHTML =
-      '<a href="#">' + t('f24Cta') + '</a>';
+    // CTA (sandbox-safe: no navigation)
+    var ctaEl = document.getElementById('f24Cta');
+    var ctaButton = document.createElement('button');
+    ctaButton.style.cssText = 'display:inline-block;background:var(--navy);color:var(--white);font-weight:600;font-size:0.88rem;padding:12px 28px;border-radius:8px;border:none;cursor:pointer;transition:background 0.2s;font-family:var(--font-body)';
+    ctaButton.textContent = t('f24Cta');
+    ctaButton.addEventListener('mouseenter', function() { ctaButton.style.background = 'var(--navy-light)'; });
+    ctaButton.addEventListener('mouseleave', function() { if (!ctaButton.disabled) ctaButton.style.background = 'var(--navy)'; });
+    ctaButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      ctaButton.style.background = 'var(--accent-green)';
+      ctaButton.textContent = '\u2713 ' + (locale === 'en' ? 'Thank you! We will contact you soon' : 'Grazie! Vi contatteremo presto');
+      ctaButton.style.cursor = 'default';
+      ctaButton.disabled = true;
+    });
+    ctaEl.innerHTML = '';
+    ctaEl.appendChild(ctaButton);
 
     // Animate sections
     setTimeout(function() {

@@ -777,6 +777,16 @@ function resetAll() {
   document.querySelectorAll('.kanban-progress-fill').forEach(function(f) { f.style.width = '0%'; });
 }
 
+/* ----- CTA Button (sandbox-safe) ----- */
+document.querySelector('.cta-final-btn').addEventListener('click', function(e) {
+  e.preventDefault();
+  var btn = this;
+  btn.style.background = 'var(--accent-green)';
+  btn.textContent = '\u2713 ' + (LOCALE === 'en' ? 'Thank you! We will contact you soon' : 'Grazie! Vi contatteremo presto');
+  btn.style.cursor = 'default';
+  btn.disabled = true;
+});
+
 /* ----- Init ----- */
 function init() {
   applyI18n();

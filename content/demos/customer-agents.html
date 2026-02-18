@@ -1000,9 +1000,25 @@ body {
     }, 300 + sections.length * 500 + 300);
   }
 
+  /* ──────────── CTA Button (sandbox-safe) ──────────── */
+  function initCtaButton() {
+    var ctaBtn = document.querySelector('.cta-btn');
+    if (ctaBtn) {
+      ctaBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        ctaBtn.style.animation = 'none';
+        ctaBtn.style.background = 'var(--accent-green)';
+        ctaBtn.textContent = '\u2713 ' + (lang() === 'en' ? 'Thank you! We will contact you soon' : 'Grazie! Vi contatteremo presto');
+        ctaBtn.style.cursor = 'default';
+        ctaBtn.disabled = true;
+      });
+    }
+  }
+
   /* ──────────── Init ──────────── */
   document.addEventListener('DOMContentLoaded', function() {
     applyI18n();
+    initCtaButton();
     var step1 = document.getElementById('step1');
     void step1.offsetWidth;
     setTimeout(function() { step1.classList.add('visible'); }, 100);

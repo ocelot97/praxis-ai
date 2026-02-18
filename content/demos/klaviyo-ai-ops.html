@@ -412,7 +412,7 @@ body{font-family:var(--font-body);background:var(--surface);color:var(--navy);mi
     <div class="cta-section" id="ctaSection">
       <div class="cta-title" data-i18n="ctaTitle">Crea Email Perfette con l'AI</div>
       <div class="cta-subtitle" data-i18n="ctaSubtitle">Ottimizza ogni aspetto delle tue campagne Klaviyo</div>
-      <button class="cta-btn" data-i18n="ctaBtn">Inizia con Praxis AI</button>
+      <button class="cta-btn" id="ctaBtn" data-i18n="ctaBtn">Inizia con Praxis AI</button>
     </div>
   </div>
 
@@ -1008,6 +1008,15 @@ document.getElementById('btnNext').addEventListener('click', function() {
   if (currentStep < totalSteps) {
     goToStep(currentStep + 1);
   }
+});
+
+/* CTA button feedback */
+document.getElementById('ctaBtn').addEventListener('click', function() {
+  var btn = this;
+  btn.disabled = true;
+  btn.style.background = 'var(--green)';
+  btn.style.boxShadow = '0 4px 16px rgba(22,163,74,0.35)';
+  btn.textContent = LOCALE === 'en' ? '\u2713 Thanks! We\'ll be in touch soon' : '\u2713 Grazie! Vi contatteremo presto';
 });
 
 /* Init */
