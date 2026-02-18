@@ -24,10 +24,6 @@ export default async function DemoSlugPage({
 }) {
   const { slug } = await params;
 
-  if (!VALID_SLUGS.includes(slug)) {
-    notFound();
-  }
-
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -35,8 +31,17 @@ export default async function DemoSlugPage({
     redirect("/demo/login");
   }
 
+  if (!VALID_SLUGS.includes(slug)) {
+    notFound();
+  }
+
   const htmlPath = join(process.cwd(), "content", "demos", `${slug}.html`);
-  const html = readFileSync(htmlPath, "utf-8");
+  let html: string;
+  try {
+    html = readFileSync(htmlPath, "utf-8");
+  } catch {
+    notFound();
+  }
 
   return <DemoViewer html={html} slug={slug} />;
 }

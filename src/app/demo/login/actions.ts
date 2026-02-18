@@ -3,6 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { PROFESSIONS } from "@/lib/professions";
+
+const VALID_PROFESSION_SLUGS = PROFESSIONS.map((p) => p.slug);
 
 export async function login(formData: FormData) {
   const supabase = await createClient();
@@ -19,7 +22,10 @@ export async function login(formData: FormData) {
   }
 
   const profession = formData.get("profession") as string | null;
-  const redirectUrl = profession ? `/demo?profession=${profession}` : "/demo";
+  const redirectUrl =
+    profession && VALID_PROFESSION_SLUGS.includes(profession)
+      ? `/demo?profession=${profession}`
+      : "/demo";
 
   revalidatePath("/demo", "layout");
   redirect(redirectUrl);

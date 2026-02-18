@@ -486,9 +486,11 @@ function DemoCard({
 export function DemoHub({
   userEmail,
   profession,
+  isAdmin,
 }: {
   userEmail: string;
   profession?: string;
+  isAdmin?: boolean;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -705,6 +707,17 @@ export function DemoHub({
             </span>
 
             <div className="flex items-center gap-2.5">
+              {isAdmin && (
+                <>
+                  <Link
+                    href="/demo/admin"
+                    className="text-sm font-sans font-medium text-navy-light hover:text-navy transition-colors"
+                  >
+                    {t.demoHub.admin}
+                  </Link>
+                  <div className="h-4 w-px bg-navy/10" />
+                </>
+              )}
               <form action={logout}>
                 <button
                   type="submit"

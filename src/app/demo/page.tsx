@@ -18,5 +18,11 @@ export default async function DemoPage({
 
   const { profession } = await searchParams;
 
-  return <DemoHub userEmail={user.email ?? ""} profession={profession} />;
+  const adminEmails = (process.env.ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+  const isAdmin = adminEmails.includes(user.email?.toLowerCase() ?? "");
+
+  return <DemoHub userEmail={user.email ?? ""} profession={profession} isAdmin={isAdmin} />;
 }
